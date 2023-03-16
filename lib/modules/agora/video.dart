@@ -2,8 +2,8 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../components/action_widget.dart';
-import '../../components/log_sink.dart';
+import '../../shared/widgets/action_widget.dart';
+import '../../shared/widgets/log_sink.dart';
 import '../../config/agora.config.dart' as config;
 
 /// MultiChannel Example

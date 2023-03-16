@@ -1,0 +1,128 @@
+// ignore_for_file: avoid_classes_with_only_static_members, avoid_redundant_argument_values, lines_longer_than_80_chars
+
+import 'package:flutter/material.dart';
+
+import './text_theme.dart';
+import '../shared/index.dart';
+
+class MyTheme {
+  static ThemeData dark = ThemeData.dark().copyWith(
+    useMaterial3: true,
+    switchTheme: SwitchThemeData(
+      trackColor: MaterialStateProperty.all(onSurface),
+      thumbColor: MaterialStateProperty.all(darkSecondary),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(darkPrimary),
+        foregroundColor: MaterialStateProperty.all(darkOnSurface),
+      ),
+    ),
+    navigationBarTheme: const NavigationBarThemeData(
+      indicatorColor: darkSecondary,
+    ),
+    radioTheme: RadioThemeData(
+      fillColor: MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return null; // Use the component's default.
+        },
+      ),
+    ),
+    primaryColor: darkPrimary,
+    textTheme: const TextTheme(
+      headline1: head1,
+      headline2: head2,
+      headline3: head3,
+      headline4: head4,
+      headline5: head5,
+      subtitle1: title1,
+      subtitle2: title2,
+      bodyText1: body,
+      headline6: body,
+    ),
+    colorScheme: const ColorScheme.dark(
+      secondaryContainer: darkPrimary,
+      primary: darkPrimary,
+      secondary: darkSecondary,
+      surface: darkSurface,
+      background: darkBackground,
+      error: darkError,
+      // shadow: shadow,
+      onPrimary: darkOnPrimary,
+      onSecondary: darkOnSecondary,
+      onSurface: darkOnSurface,
+      onBackground: darkOnBackground,
+      onError: darkOnError,
+    ),
+  );
+
+  static ThemeData light = ThemeData(
+    fontFamily: landrinaSolid,
+    primaryColor: primary,
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: secondary,
+    ),
+    navigationBarTheme: const NavigationBarThemeData(
+      indicatorColor: Colors.transparent,
+      surfaceTintColor: Colors.white,
+      backgroundColor: Colors.white,
+      elevation: 8.0,
+    ),
+    textTheme: const TextTheme(
+      headline1: head1,
+      headline2: head2,
+      headline3: head3,
+      headline4: head4,
+      headline5: head5,
+      subtitle1: title1,
+      subtitle2: title2,
+      bodyText1: body,
+      headline6: body,
+    ),
+    tabBarTheme: TabBarTheme(
+      labelColor: secondary,
+      unselectedLabelColor: Colors.black,
+      overlayColor: MaterialStateProperty.all(Colors.white),
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
+    ),
+    switchTheme: SwitchThemeData(
+      trackColor: MaterialStateProperty.all(divider),
+      thumbColor: MaterialStateProperty.all(primary),
+    ),
+    cardTheme: const CardTheme(
+      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+      elevation: 2.0,
+    ),
+    radioTheme: RadioThemeData(
+      fillColor: MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          if (states.contains(MaterialState.pressed)) return darkPrimary;
+          return null; // Use the component's default.
+        },
+      ),
+    ),
+    colorScheme: _flashColorScheme,
+  );
+}
+
+const _flashColorScheme = ColorScheme.light(
+  primary: primary,
+  secondaryContainer: primary,
+  secondary: secondary,
+  surface: surface,
+  background: background,
+  // shadow: shadow,
+  error: error,
+  onPrimary: onPrimary,
+  onSecondary: onSecondary,
+  onSurface: onSurface,
+  onBackground: onBackground,
+  onError: onError,
+);
