@@ -1,11 +1,6 @@
 import 'package:get/get.dart';
 
-// import '../../../providers/providers.dart';
-import '../../modules.dart';
-
-class HomeBinding extends Bindings {
+class AgoraBinding extends Bindings {
   @override
-  void dependencies() {
-    
-  }
+  void dependencies() {}
 }

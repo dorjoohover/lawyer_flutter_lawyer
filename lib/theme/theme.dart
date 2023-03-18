@@ -9,17 +9,17 @@ class MyTheme {
   static ThemeData dark = ThemeData.dark().copyWith(
     useMaterial3: true,
     switchTheme: SwitchThemeData(
-      trackColor: MaterialStateProperty.all(onSurface),
-      thumbColor: MaterialStateProperty.all(darkSecondary),
+      trackColor: MaterialStateProperty.all(secondary),
+      thumbColor: MaterialStateProperty.all(primary),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(darkPrimary),
-        foregroundColor: MaterialStateProperty.all(darkOnSurface),
+        backgroundColor: MaterialStateProperty.all(primary),
+        foregroundColor: MaterialStateProperty.all(secondary),
       ),
     ),
     navigationBarTheme: const NavigationBarThemeData(
-      indicatorColor: darkSecondary,
+      indicatorColor: primary,
     ),
     radioTheme: RadioThemeData(
       fillColor: MaterialStateProperty.resolveWith<Color?>(
@@ -28,31 +28,24 @@ class MyTheme {
         },
       ),
     ),
-    primaryColor: darkPrimary,
+    primaryColor: primary,
     textTheme: const TextTheme(
-      headline1: head1,
-      headline2: head2,
-      headline3: head3,
-      headline4: head4,
-      headline5: head5,
-      subtitle1: title1,
-      subtitle2: title2,
-      bodyText1: body,
-      headline6: body,
+      titleMedium: mediumTitle,
+      titleLarge: largeTitle,
     ),
     colorScheme: const ColorScheme.dark(
-      secondaryContainer: darkPrimary,
-      primary: darkPrimary,
-      secondary: darkSecondary,
-      surface: darkSurface,
-      background: darkBackground,
-      error: darkError,
+      primary: primary,
+      secondaryContainer: primary,
+      secondary: secondary,
+      surface: secondary,
+      background: secondary,
       // shadow: shadow,
-      onPrimary: darkOnPrimary,
-      onSecondary: darkOnSecondary,
-      onSurface: darkOnSurface,
-      onBackground: darkOnBackground,
-      onError: darkOnError,
+      error: secondary,
+      onPrimary: primary,
+      onSecondary: secondary,
+      onSurface: secondary,
+      onBackground: secondary,
+      onError: primary,
     ),
   );
 
@@ -69,15 +62,8 @@ class MyTheme {
       elevation: 8.0,
     ),
     textTheme: const TextTheme(
-      headline1: head1,
-      headline2: head2,
-      headline3: head3,
-      headline4: head4,
-      headline5: head5,
-      subtitle1: title1,
-      subtitle2: title2,
-      bodyText1: body,
-      headline6: body,
+      titleMedium: mediumTitle,
+      titleLarge: largeTitle,
     ),
     tabBarTheme: TabBarTheme(
       labelColor: secondary,
@@ -93,7 +79,7 @@ class MyTheme {
       ),
     ),
     switchTheme: SwitchThemeData(
-      trackColor: MaterialStateProperty.all(divider),
+      trackColor: MaterialStateProperty.all(secondary),
       thumbColor: MaterialStateProperty.all(primary),
     ),
     cardTheme: const CardTheme(
@@ -103,7 +89,7 @@ class MyTheme {
     radioTheme: RadioThemeData(
       fillColor: MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
-          if (states.contains(MaterialState.pressed)) return darkPrimary;
+          if (states.contains(MaterialState.pressed)) return primary;
           return null; // Use the component's default.
         },
       ),
@@ -116,13 +102,13 @@ const _flashColorScheme = ColorScheme.light(
   primary: primary,
   secondaryContainer: primary,
   secondary: secondary,
-  surface: surface,
-  background: background,
+  surface: secondary,
+  background: secondary,
   // shadow: shadow,
-  error: error,
-  onPrimary: onPrimary,
-  onSecondary: onSecondary,
-  onSurface: onSurface,
-  onBackground: onBackground,
-  onError: onError,
+  error: secondary,
+  onPrimary: primary,
+  onSecondary: secondary,
+  onSurface: secondary,
+  onBackground: secondary,
+  onError: primary,
 );

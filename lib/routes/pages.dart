@@ -1,17 +1,15 @@
-import 'package:frontend/modules/agora/views/audio.dart';
-import 'package:frontend/modules/agora/views/video.dart';
-import 'package:frontend/modules/home/bindings/home_bindings.dart';
-import 'package:frontend/modules/home/views/home_view.dart';
 import 'package:get/get.dart';
+
+import '../modules/modules.dart';
 
 // ignore_for_file: constant_identifier_names
 
-part './routes.dart';
+part 'routes.dart';
 
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.HOME;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -28,9 +26,24 @@ class AppPages {
             page: () => VideoView(),
           ),
         ]),
-    // GetPage(
-    //     name: Routes.FIND_MATCH,
-    //     page: () => const FindMatchView(),
-    //     binding: FindMatchBinding()),
+    GetPage(
+      name: _Paths.PRIME,
+      page: () => const PrimeView(),
+      binding: PrimeBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+    ),
+    GetPage(
+      name: _Paths.AUTH,
+      page: () => const AuthView(),
+      binding: AuthBinding(),
+      children: [
+        GetPage(name: _Paths.LOGIN, page: () => LoginView()),
+        // GetPage(name: _Paths.REGISTER, page: () => RegisterView()),
+      ],
+    ),
   ];
 }

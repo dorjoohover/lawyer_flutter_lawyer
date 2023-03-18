@@ -1,3 +1,5 @@
 enum StorageKeys {
-  home
+  home,
+  token
+  
 }

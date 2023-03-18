@@ -10,11 +10,11 @@ class DioProvider extends GetxService {
   @override
   void onInit() {
     dio.options.baseUrl = isProduction
-        ? 'https://api.tinylearn.app/v1'
-        // : 'https://api.tinylearn.app/v1';
-        : 'https://api.tinylearn.app/v1';
-    // : 'http://192.168.0.158:3001/v1';
-    // : 'http://chingun:3001/v1';
+        ? 'https://lawyernestjs-production.up.railway.app'
+        : 'https://lawyernestjs-production.up.railway.app';
+
+    // ? 'http://192.168.1.2:5050'
+    // : 'http://192.168.1.2:5050';
 
     dio.interceptors.addAll(
       [
@@ -22,7 +22,7 @@ class DioProvider extends GetxService {
           onRequest: (options, handler) async {
             // get token from storage
             final token =
-                Get.find<SharedPreferences>().getString(StorageKeys.home.name);
+                Get.find<SharedPreferences>().getString(StorageKeys.token.name);
             if (token != null) {
               options.headers['Authorization'] = 'Bearer $token';
             } else {}
@@ -50,6 +50,7 @@ class DioProvider extends GetxService {
       {Map<String, dynamic>? data, Options? options}) async {
     try {
       final response = await dio.post(path, data: data, options: options);
+
       return response.data;
     } on Exception {
       rethrow;
