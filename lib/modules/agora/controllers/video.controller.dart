@@ -1,7 +1,10 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:frontend/providers/api_repository.dart';
+import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../config/agora.config.dart' as config;
 import '../../../shared/index.dart';
@@ -12,7 +15,8 @@ class VideoController extends GetxController {
   late RtcEngine engine;
   final remoteUid = <int>[].obs;
 
-  final channelId = config.channelId.obs;
+  final channelId = "".obs;
+  final channelToken = "".obs;
   final isJoined = false.obs,
       switchCamera = true.obs,
       switchRender = true.obs,
@@ -27,7 +31,6 @@ class VideoController extends GetxController {
   final channelController = TextEditingController();
   @override
   void onInit() {
-    channelController.text = channelId.value;
     initEngine();
     super.onInit();
   }
@@ -39,15 +42,29 @@ class VideoController extends GetxController {
   }
 
   joinChannel() async {
-    await engine.joinChannel(
-      token: config.token,
-      channelId: channelController.text,
-      uid: config.uid,
-      options: ChannelMediaOptions(
-        channelProfile: channelProfileType.value,
-        clientRoleType: ClientRoleType.clientRoleBroadcaster,
-      ),
-    );
+    try {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        final cStatus = await Permission.camera.status;
+        final mStatus = await Permission.microphone.status;
+        if (!cStatus.isDenied && !mStatus.isDenied) {
+          await engine.joinChannel(
+            token:
+                "006a941d13a5641456b95014aa4fc703f70IADlLRiEQMbTlx4iBdA0eEdlhO+Y+6/b/KqZO+N6Y+t6n73zKVG379yDIgBysYQAvNkYZAQAAQBcpBdkAgBcpBdkAwBcpBdkBABcpBdk",
+            channelId: "asdf",
+            uid: 1,
+            options: ChannelMediaOptions(
+              channelProfile: channelProfileType.value,
+              clientRoleType: ClientRoleType.clientRoleBroadcaster,
+            ),
+          );
+        }
+      }
+    } on DioError catch (e) {
+      Get.snackbar(
+        'Error',
+        e.response?.data ?? 'Something went wrong',
+      );
+    }
   }
 
   Future<void> disposeChannel() async {
@@ -57,6 +74,9 @@ class VideoController extends GetxController {
 
   Future<void> initEngine() async {
     engine = createAgoraRtcEngine();
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      await Permission.camera.request();
+    }
     await engine.initialize(RtcEngineContext(
       appId: config.appId,
     ));
@@ -105,6 +125,7 @@ class VideoController extends GetxController {
 
   leaveChannel() async {
     await engine.leaveChannel();
+    Get.to(() => PrimeView());
   }
 
   switchCameras() async {

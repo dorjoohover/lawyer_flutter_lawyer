@@ -1,6 +1,9 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:frontend/modules/modules.dart';
+import 'package:frontend/providers/api_repository.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -9,15 +12,16 @@ import '../../../shared/index.dart';
 
 class AudioController extends GetxController {
   final showPerformanceOverlay = false.obs;
-
+  final ApiRepository _apiRepository = Get.find();
+  final channelName = "".obs;
   late RtcEngine engine;
-  final channelId = config.channelId.obs;
+  final channelId = "".obs;
+  final channelToken = "".obs;
   final isJoined = false.obs,
       openMicrophone = true.obs,
       enableSpeakerphone = true.obs,
       playEffect = false.obs,
       enableInEarMonitoring = false.obs;
-
   final recordingVolume = 100.0.obs,
       playbackVolume = 100.0.obs,
       inEarMonitoringVolume = 100.0.obs;
@@ -26,8 +30,6 @@ class AudioController extends GetxController {
   final channelController = TextEditingController();
   @override
   void onInit() {
-    channelController.text = channelId.value;
-    initEngine();
     super.onInit();
   }
 
@@ -41,16 +43,27 @@ class AudioController extends GetxController {
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
-
-    await engine.joinChannel(
-        token:
-            '006a941d13a5641456b95014aa4fc703f70IAAe7ayASteEEd4q2fy05l/3TwYMBceTfSS9jP12HjyAsb3zKVG379yDIgCFxHEEca8UZAQAAQARehNkAgARehNkAwARehNkBAARehNk',
-        channelId: channelController.text,
-        uid: 1,
-        options: ChannelMediaOptions(
-          channelProfile: channelProfileType.value,
-          clientRoleType: ClientRoleType.clientRoleBroadcaster,
-        ));
+    print(channelToken.value);
+    print(channelId.value);
+    try {
+      final status = await Permission.microphone.status;
+      if (!status.isDenied) {
+        await engine.joinChannel(
+            token:
+                "006a941d13a5641456b95014aa4fc703f70IADlLRiEQMbTlx4iBdA0eEdlhO+Y+6/b/KqZO+N6Y+t6n73zKVG379yDIgBysYQAvNkYZAQAAQBcpBdkAgBcpBdkAwBcpBdkBABcpBdk",
+            channelId: 'asdf',
+            uid: 1,
+            options: ChannelMediaOptions(
+              channelProfile: channelProfileType.value,
+              clientRoleType: ClientRoleType.clientRoleBroadcaster,
+            ));
+      }
+    } on DioError catch (e) {
+      Get.snackbar(
+        'Error',
+        e.response?.data ?? 'Something went wrong',
+      );
+    }
   }
 
   Future<void> disposeChannel() async {
@@ -89,7 +102,6 @@ class AudioController extends GetxController {
   }
 
   leaveChannel() async {
-    print('asdf');
     await engine.leaveChannel();
     isJoined.value = false;
     openMicrophone.value = true;
@@ -99,6 +111,7 @@ class AudioController extends GetxController {
     recordingVolume.value = 100;
     playbackVolume.value = 100;
     inEarMonitoringVolume.value = 100;
+    Get.to(() => PrimeView());
   }
 
   switchMicrophone() async {

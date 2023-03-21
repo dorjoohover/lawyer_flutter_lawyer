@@ -62,6 +62,7 @@ class LoginView extends StatelessWidget {
                         space16,
                         MainButton(
                           onPressed: () {},
+                          borderColor: Colors.transparent,
                           color: Colors.transparent,
                           contentColor: primary,
                           text: 'Нууц үг мартсан',

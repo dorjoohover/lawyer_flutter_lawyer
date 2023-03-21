@@ -23,161 +23,170 @@ class AudioView extends StatelessWidget {
             ))
         .toList();
 
-    return Stack(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
+    return Scaffold(
+      body: Container(
+        padding: EdgeInsets.all(30),
+        child: Stack(
           children: [
-            TextField(
-              controller: controller.channelController,
-              decoration: const InputDecoration(hintText: 'Channel ID'),
-            ),
-            const Text('Channel Profile: '),
-            Obx(
-              () => DropdownButton<ChannelProfileType>(
-                  items: items,
-                  value: controller.channelProfileType.value,
-                  onChanged: controller.isJoined.value
-                      ? null
-                      : (v) async {
-                          controller.channelProfileType.value = v!;
-                        }),
-            ),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: ElevatedButton(
-                      onPressed: () => {
-                            controller.isJoined.value
-                                ? controller.leaveChannel()
-                                : controller.joinChannel(),
-                          },
-                      child: Obx(
-                        () => Text(
-                            '${controller.isJoined.value ? 'Leave' : 'Join'} channel'),
-                      )),
-                )
+                TextField(
+                  controller: controller.channelController,
+                  decoration: const InputDecoration(hintText: 'Channel ID'),
+                ),
+                const Text('Channel Profile: '),
+                Obx(
+                  () => DropdownButton<ChannelProfileType>(
+                      items: items,
+                      value: controller.channelProfileType.value,
+                      onChanged: controller.isJoined.value
+                          ? null
+                          : (v) async {
+                              controller.channelProfileType.value = v!;
+                            }),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton(
+                          onPressed: () => {
+                                controller.isJoined.value
+                                    ? controller.leaveChannel()
+                                    : controller.joinChannel(),
+                              },
+                          child: Obx(
+                            () => Text(
+                                '${controller.isJoined.value ? 'Leave' : 'Join'} channel'),
+                          )),
+                    )
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-        Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => controller.switchMicrophone(),
-                    child: Obx(() => Text(
-                        'Microphone ${controller.openMicrophone.value ? 'on' : 'off'}')),
-                  ),
-                  ElevatedButton(
-                      onPressed: () => controller.isJoined.value
-                          ? controller.switchSpeakerphone()
-                          : null,
-                      child: Obx(
-                        () => Text(controller.enableSpeakerphone.value
-                            ? 'Speakerphone'
-                            : 'Earpiece'),
-                      )),
-                  if (!kIsWeb)
-                    ElevatedButton(
-                        onPressed: () => controller.isJoined.value
-                            ? controller.switchEffect()
-                            : null,
-                        child: Obx(
-                          () => Text(
-                              '${controller.playEffect.value ? 'Stop' : 'Play'} effect'),
-                        )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Text('RecordingVolume:'),
-                      Obx(() => Slider(
-                            value: controller.recordingVolume.value,
-                            min: 0,
-                            max: 400,
-                            divisions: 5,
-                            label: 'RecordingVolume',
-                            onChanged: controller.isJoined.value
-                                ? (double value) async {
-                                    controller.recordingVolume.value = value;
-
-                                    await controller.engine
-                                        .adjustRecordingSignalVolume(
-                                            value.toInt());
-                                  }
-                                : null,
-                          ))
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Text('PlaybackVolume:'),
-                      Obx(() => Slider(
-                            value: controller.playbackVolume.value,
-                            min: 0,
-                            max: 400,
-                            divisions: 5,
-                            label: 'PlaybackVolume',
-                            onChanged: controller.isJoined.value
-                                ? (double value) async {
-                                    controller.playbackVolume.value = value;
-
-                                    await controller.engine
-                                        .adjustPlaybackSignalVolume(
-                                            value.toInt());
-                                  }
-                                : null,
-                          ))
-                    ],
-                  ),
-                  Column(
+            Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Text('InEar Monitoring Volume:'),
-                        Switch(
-                          value: controller.enableInEarMonitoring.value,
-                          onChanged: (value) => () => controller.isJoined.value
-                              ? controller.toggleInEarMonitoring(value)
+                      ElevatedButton(
+                        onPressed: () => controller.switchMicrophone(),
+                        child: Obx(() => Text(
+                            'Microphone ${controller.openMicrophone.value ? 'on' : 'off'}')),
+                      ),
+                      ElevatedButton(
+                          onPressed: () => controller.isJoined.value
+                              ? controller.switchSpeakerphone()
                               : null,
-                          activeTrackColor: Colors.grey[350],
-                          activeColor: Colors.white,
-                        )
-                      ]),
-                      if (controller.enableInEarMonitoring.value)
-                        SizedBox(
-                            width: 300,
-                            child: Obx(() => Slider(
-                                  value: controller.inEarMonitoringVolume.value,
-                                  min: 0,
-                                  max: 100,
-                                  divisions: 5,
-                                  label:
-                                      'InEar Monitoring Volume ${controller.inEarMonitoringVolume.value}',
-                                  onChanged: (value) =>
-                                      controller.isJoined.value
+                          child: Obx(
+                            () => Text(controller.enableSpeakerphone.value
+                                ? 'Speakerphone'
+                                : 'Earpiece'),
+                          )),
+                      if (!kIsWeb)
+                        ElevatedButton(
+                            onPressed: () => controller.isJoined.value
+                                ? controller.switchEffect()
+                                : null,
+                            child: Obx(
+                              () => Text(
+                                  '${controller.playEffect.value ? 'Stop' : 'Play'} effect'),
+                            )),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Text('RecordingVolume:'),
+                          Obx(() => Slider(
+                                value: controller.recordingVolume.value,
+                                min: 0,
+                                max: 400,
+                                divisions: 5,
+                                label: 'RecordingVolume',
+                                onChanged: controller.isJoined.value
+                                    ? (double value) async {
+                                        controller.recordingVolume.value =
+                                            value;
+
+                                        await controller.engine
+                                            .adjustRecordingSignalVolume(
+                                                value.toInt());
+                                      }
+                                    : null,
+                              ))
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Text('PlaybackVolume:'),
+                          Obx(() => Slider(
+                                value: controller.playbackVolume.value,
+                                min: 0,
+                                max: 400,
+                                divisions: 5,
+                                label: 'PlaybackVolume',
+                                onChanged: controller.isJoined.value
+                                    ? (double value) async {
+                                        controller.playbackVolume.value = value;
+
+                                        await controller.engine
+                                            .adjustPlaybackSignalVolume(
+                                                value.toInt());
+                                      }
+                                    : null,
+                              ))
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(mainAxisSize: MainAxisSize.min, children: [
+                            const Text('InEar Monitoring Volume:'),
+                            Switch(
+                              value: controller.enableInEarMonitoring.value,
+                              onChanged: (value) => () =>
+                                  controller.isJoined.value
+                                      ? controller.toggleInEarMonitoring(value)
+                                      : null,
+                              activeTrackColor: Colors.grey[350],
+                              activeColor: Colors.white,
+                            )
+                          ]),
+                          if (controller.enableInEarMonitoring.value)
+                            SizedBox(
+                                width: 300,
+                                child: Obx(() => Slider(
+                                      value: controller
+                                          .inEarMonitoringVolume.value,
+                                      min: 0,
+                                      max: 100,
+                                      divisions: 5,
+                                      label:
+                                          'InEar Monitoring Volume ${controller.inEarMonitoringVolume.value}',
+                                      onChanged: (value) => controller
+                                              .isJoined.value
                                           ? controller
                                               .onChangeInEarMonitoringVolume(
                                                   controller
                                                       .inEarMonitoringVolume
                                                       .value)
                                           : null,
-                                )))
+                                    )))
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
-            ))
-      ],
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+                ))
+          ],
+        ),
+      ),
     );
   }
 }

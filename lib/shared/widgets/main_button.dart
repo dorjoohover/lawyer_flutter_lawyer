@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/shared/widgets/touchable_scale.dart';
 
 import '../../shared/index.dart';
 
@@ -17,6 +16,8 @@ class MainButton extends StatelessWidget {
       this.borderRadius = 18.0,
       this.disabled = false,
       this.shadow = true,
+      this.borderWidth = 0.0,
+      this.borderColor = Colors.black,
       this.disabledColor = secondary})
       : super(key: key);
   final Widget child;
@@ -30,7 +31,8 @@ class MainButton extends StatelessWidget {
   final double borderRadius;
   final bool disabled;
   final bool shadow;
-
+  final Color borderColor;
+  final double borderWidth;
   final Color disabledColor;
 
   @override
@@ -46,9 +48,9 @@ class MainButton extends StatelessWidget {
       width: width,
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
+          color: color,
+          borderRadius: BorderRadius.circular(borderRadius),
+          border: Border.all(width: borderWidth, color: borderColor)),
       padding: padding,
       child: Align(
         widthFactor: 1.0,

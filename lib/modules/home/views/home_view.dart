@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 
@@ -70,36 +71,17 @@ class HomeView extends StatelessWidget {
                   )
                 ],
               ), (user) {
-        print(user);
         return Scaffold(
           body: controller.getView(controller.currentIndex),
-          // body: config.appId == ""
-          //     ? const InvalidConfigWidget()
-          //     : controller.getView(controller.currentIndex),
           bottomNavigationBar: NavigationBar(
             selectedIndex: controller.currentIndex,
             onDestinationSelected: (value) => controller.changeNavIndex(value),
-            // labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
             destinations: navBarIcons.map((e) {
               NavigationDestination body;
               body = NavigationDestination(
-                icon: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color(0xffA279cf),
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    child: Text(e['label']!)),
-                selectedIcon: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color(0xff752394),
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    child: Text(e['label']!)),
-                label: e['label'] == 'Tiny' ? 'Discover' : e['label']!,
+                icon: SvgPicture.asset(e['icon']!),
+                selectedIcon: SvgPicture.asset(e['activeIcon']!),
+                label: e['label']!,
               );
               // }
               return body;

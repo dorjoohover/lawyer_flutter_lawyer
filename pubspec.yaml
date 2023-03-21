@@ -48,6 +48,7 @@ dependencies:
   http: ^0.13.5
   url_launcher: ^6.1.10
   flutter_svg: ^2.0.4
+  intl: ^0.18.0
   video_raw_data:
     git:
       url: https://github.com/AgoraIO-Extensions/RawDataPluginSample.git
@@ -79,6 +80,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/svgs/
+    - assets/svgs/navigationBar/
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

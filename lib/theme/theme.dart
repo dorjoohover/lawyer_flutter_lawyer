@@ -62,9 +62,14 @@ class MyTheme {
       elevation: 8.0,
     ),
     textTheme: const TextTheme(
-      titleMedium: mediumTitle,
-      titleLarge: largeTitle,
-    ),
+        titleMedium: mediumTitle,
+        titleLarge: largeTitle,
+        bodySmall: smallBody,
+        displaySmall: smallDisplay,
+        displayMedium: mediumDisplay,
+        labelMedium: mediumLabel,
+        labelSmall: smallLabel,
+        bodyLarge: mediumBody),
     tabBarTheme: TabBarTheme(
       labelColor: secondary,
       unselectedLabelColor: Colors.black,
@@ -94,21 +99,5 @@ class MyTheme {
         },
       ),
     ),
-    colorScheme: _flashColorScheme,
   );
 }
-
-const _flashColorScheme = ColorScheme.light(
-  primary: primary,
-  secondaryContainer: primary,
-  secondary: secondary,
-  surface: secondary,
-  background: secondary,
-  // shadow: shadow,
-  error: secondary,
-  onPrimary: primary,
-  onSecondary: secondary,
-  onSurface: secondary,
-  onBackground: secondary,
-  onError: primary,
-);
