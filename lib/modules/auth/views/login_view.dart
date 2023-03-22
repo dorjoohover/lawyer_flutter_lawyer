@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/auth/controllers/auth_controller.dart';
+import 'package:frontend/modules/auth/auth.dart';
 import 'package:frontend/modules/auth/widgets/input_label.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
@@ -83,7 +83,9 @@ class LoginView extends StatelessWidget {
                         ),
                         space16,
                         MainButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(() => RegisterView());
+                          },
                           color: Colors.transparent,
                           contentColor: primary,
                           text: 'Бүртгүүлэх',

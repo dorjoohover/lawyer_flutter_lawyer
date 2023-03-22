@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/auth/auth.dart';
 import 'package:frontend/modules/prime/prime.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
@@ -8,12 +9,16 @@ class PrimeView extends GetView<PrimeController> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PrimeController());
+    final authController = Get.put(AuthController(apiRepository: Get.find()));
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: MainAppBar(
         title: 'Нүүр',
         calendar: true,
         settings: true,
+        settingTap: () async {
+          await authController.logout();
+        },
         calendarTap: () async {
           await controller.getOrderList();
         },

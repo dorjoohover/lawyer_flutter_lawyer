@@ -17,13 +17,35 @@ class AuthController extends GetxController {
   final isVisible = true.obs;
   get isLoading => loading.value;
   set isLoading(value) => loading.value = value;
+  // login
   final phoneFocus = FocusNode();
   final passwordFocus = FocusNode();
-
-  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final phone = "".obs;
   final loginPhoneController = TextEditingController();
   final loginPasswordController = TextEditingController();
+  // register
+  final lastnameFocus = FocusNode();
+  final firstnameFocus = FocusNode();
+  final lastname = "".obs;
+  final firstname = "".obs;
+
+  final registerSymbol1 = registerSymbols[0].obs;
+  final registerSymbol2 = registerSymbols[0].obs;
+  final registerNumber = "".obs;
+
+  final registerPhoneFocus = FocusNode();
+  final registerPhone = "".obs;
+
+  final registerPasswordFocus = FocusNode();
+  final registerPasswordRepeatFocus = FocusNode();
+  final registerPasswordIsVisible = false.obs;
+  final registerPasswordRepeatIsVisible = false.obs;
+  final registerPassword = "".obs;
+  final registerPasswordRepeat = "".obs;
+  final registerPasswordController = TextEditingController();
+  final registerPasswordRepeatController = TextEditingController();
+
+  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
   final pageController = PageController();
   final currentPage = 0.obs;
@@ -42,6 +64,34 @@ class AuthController extends GetxController {
   _loginEmailListener() {
     if (loginPhoneController.text.length == 8) {
       Get.focusScope?.unfocus();
+    }
+  }
+
+  register(BuildContext context) async {
+    AppFocus.unfocus(context);
+    try {
+      loading.value = true;
+
+      final res = await apiRepository.register(registerPhone.value,
+          registerPassword.value, firstname.value, lastname.value);
+      _saveTokens(res);
+      Get.snackbar(
+        'Бүртгэл амжилттай',
+        " asdf",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: success,
+        colorText: Colors.white,
+      );
+      loading.value = false;
+    } on DioError catch (e) {
+      loading.value = false;
+      Get.snackbar(
+        e.response?.statusMessage ?? 'Login Failed',
+        e.response?.data['message'] ?? 'Something went wrong',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 

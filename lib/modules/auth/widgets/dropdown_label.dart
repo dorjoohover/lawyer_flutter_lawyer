@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:frontend/shared/constants/index.dart';
+
+class DropdownLabel extends StatelessWidget {
+  const DropdownLabel(
+      {super.key,
+      required this.value,
+      required this.onChange,
+      required this.list});
+  final String value;
+  final Function(String?) onChange;
+  final List<String> list;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(small),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          border: Border.all(color: line, width: 1)),
+      child: DropdownButton(
+        value: value,
+        iconSize: 0,
+        icon:
+            const Visibility(visible: false, child: Icon(Icons.arrow_downward)),
+        style: Theme.of(context).textTheme.displaySmall,
+        underline: Container(
+          height: 0,
+        ),
+        onChanged: onChange,
+        items: list.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}

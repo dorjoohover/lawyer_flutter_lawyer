@@ -14,7 +14,7 @@ class AudioController extends GetxController {
   final showPerformanceOverlay = false.obs;
   final ApiRepository _apiRepository = Get.find();
   final channelName = "".obs;
-  late RtcEngine engine;
+  late final RtcEngine engine;
   final channelId = "".obs;
   final channelToken = "".obs;
   final isJoined = false.obs,
@@ -43,20 +43,19 @@ class AudioController extends GetxController {
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
-    print(channelToken.value);
-    print(channelId.value);
     try {
       final status = await Permission.microphone.status;
       if (!status.isDenied) {
         await engine.joinChannel(
-            token:
-                "006a941d13a5641456b95014aa4fc703f70IADlLRiEQMbTlx4iBdA0eEdlhO+Y+6/b/KqZO+N6Y+t6n73zKVG379yDIgBysYQAvNkYZAQAAQBcpBdkAgBcpBdkAwBcpBdkBABcpBdk",
-            channelId: 'asdf',
-            uid: 1,
-            options: ChannelMediaOptions(
-              channelProfile: channelProfileType.value,
-              clientRoleType: ClientRoleType.clientRoleBroadcaster,
-            ));
+          token:
+              "006a941d13a5641456b95014aa4fc703f70IAD0lPmrXHRQoFdEkAb5gv5iGo+Pbk2CgXSo/q14k9Ocs73zKVG379yDIgC5m9YBr5scZAQAAQBPZhtkAgBPZhtkAwBPZhtkBABPZhtk",
+          channelId: 'asdf',
+          uid: 1,
+          options: ChannelMediaOptions(
+            channelProfile: channelProfileType.value,
+            clientRoleType: ClientRoleType.clientRoleBroadcaster,
+          ),
+        );
       }
     } on DioError catch (e) {
       Get.snackbar(

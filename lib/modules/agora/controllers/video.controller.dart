@@ -49,7 +49,7 @@ class VideoController extends GetxController {
         if (!cStatus.isDenied && !mStatus.isDenied) {
           await engine.joinChannel(
             token:
-                "006a941d13a5641456b95014aa4fc703f70IADlLRiEQMbTlx4iBdA0eEdlhO+Y+6/b/KqZO+N6Y+t6n73zKVG379yDIgBysYQAvNkYZAQAAQBcpBdkAgBcpBdkAwBcpBdkBABcpBdk",
+                 "006a941d13a5641456b95014aa4fc703f70IAD0lPmrXHRQoFdEkAb5gv5iGo+Pbk2CgXSo/q14k9Ocs73zKVG379yDIgC5m9YBr5scZAQAAQBPZhtkAgBPZhtkAwBPZhtkBABPZhtk",
             channelId: "asdf",
             uid: 1,
             options: ChannelMediaOptions(

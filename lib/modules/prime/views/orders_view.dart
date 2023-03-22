@@ -34,8 +34,12 @@ class OrdersView extends GetView<PrimeController> {
                   child: Container(
                     margin: const EdgeInsets.only(bottom: origin),
                     child: OrderDetailView(
-                      onTap: () async { await controller.getChannelToken(e.createdAt!, e.serviceType!);},
-                        
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Scaffold(
+                                      body: VideoView(),
+                                    ))),
                         type: e.serviceType ?? '',
                         name: e.lawyerId?.firstname ?? '',
                         status: e.serviceStatus ?? '',

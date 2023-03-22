@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
@@ -37,19 +38,17 @@ class PrimeController extends GetxController {
         audioController.channelToken.value =
             "006a941d13a5641456b95014aa4fc703f70IAB24n+WHua5t7pquMygdN3qH6n7MuoNQxpF1FNEgTNe6PhB+WG379yDIgDHfjwFt8kYZAQAAQBfmxdkAgBfmxdkAwBfmxdkBABfmxdk";
 
-        await audioController.initEngine();
-        await audioController.joinChannel();
-        Get.to(() => AudioView());
+      
       }
       if (type == 'fulfilled') {
-        videoController.channelId.value =
-            DateTime.parse(channelName).millisecondsSinceEpoch.toString();
-        videoController.channelToken.value =
-            "006a941d13a5641456b95014aa4fc703f70IAB24n+WHua5t7pquMygdN3qH6n7MuoNQxpF1FNEgTNe6PhB+WG379yDIgDHfjwFt8kYZAQAAQBfmxdkAgBfmxdkAwBfmxdkBABfmxdk";
+        // videoController.channelId.value =
+        //     DateTime.parse(channelName).millisecondsSinceEpoch.toString();
+        // videoController.channelToken.value =
+        //     "006a941d13a5641456b95014aa4fc703f70IAB24n+WHua5t7pquMygdN3qH6n7MuoNQxpF1FNEgTNe6PhB+WG379yDIgDHfjwFt8kYZAQAAQBfmxdkAgBfmxdkAwBfmxdkBABfmxdk";
 
-        await videoController.initEngine();
-        await videoController.joinChannel();
-        Get.to(() => VideoView());
+        // await videoController.initEngine();
+        // await videoController.joinChannel();
+        // Get.to(() => VideoView());
       }
 
       loading.value = false;

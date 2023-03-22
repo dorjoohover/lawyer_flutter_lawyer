@@ -33,7 +33,7 @@ class Input extends GetView<AuthController> {
       enableSuggestions: false,
       obscureText: obscureText,
       keyboardType: textInputType,
-
+      style: Theme.of(context).textTheme.displayMedium,
       decoration: InputDecoration(
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -47,7 +47,9 @@ class Input extends GetView<AuthController> {
         fillColor: Colors.white,
         // labelText: labelText,
         hintText: labelText,
-        labelStyle: const TextStyle(),
+
+        hintStyle:
+            Theme.of(context).textTheme.displayMedium!.copyWith(color: gray),
       ),
       controller: tController ?? tController,
       validator: validator ?? validator,
