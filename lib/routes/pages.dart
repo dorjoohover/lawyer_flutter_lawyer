@@ -13,19 +13,10 @@ class AppPages {
 
   static final routes = [
     GetPage(
-        name: _Paths.HOME,
-        page: () => HomeView(),
-        binding: HomeBinding(),
-        children: [
-          GetPage(
-            name: Routes.AUDIO,
-            page: () => AudioView(),
-          ),
-          GetPage(
-            name: Routes.VIDEO,
-            page: () => VideoView(),
-          ),
-        ]),
+      name: _Paths.HOME,
+      page: () => HomeView(),
+      binding: HomeBinding(),
+    ),
     GetPage(
       name: _Paths.PRIME,
       page: () => const PrimeView(),

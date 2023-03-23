@@ -123,10 +123,11 @@ class LawyerAvailableDays extends GetView<LawyerController> {
                   left: 0,
                   right: 0,
                   child: MainButton(
-                    onPressed: () {
-                      Get.to(() => FileUploadView());
+                    onPressed: () async {
+                  
+                      await controller.sendAddition();
                     },
-                    text: "Үргэлжлүүлэх",
+                    text: "Илгээх",
                     child: const SizedBox(),
                   ))
             ],
@@ -248,7 +249,8 @@ class AvailableDays extends StatelessWidget {
                             final whereTime =
                                 w.first.time?.where((t) => t == e);
                             if (whereTime!.isEmpty) {
-                              controller.selectedTime.add(e);
+                              controller.selectedTime.add(SelectedTime(
+                                  day: dayNum.toString(), time: e));
                               controller.selectedDay
                                   .where((e) => e.day == dayNum.toString())
                                   .first
@@ -256,58 +258,48 @@ class AvailableDays extends StatelessWidget {
                                   ?.add(e);
                             }
                           } else {
-                            controller.selectedTime.value = [];
                             controller.selectedDay.add(AvailableTime(
+                              date: DateTime.parse(
+                                      "${DateFormat('yyyy-MM-dd').format(DateTime(
+                                controller.selectedDate.value.year,
+                                controller.selectedDate.value.month + 1,
+                                dayNum,
+                              ))}T$e")
+                                  .toLocal()
+                                  .millisecondsSinceEpoch,
                               day: dayNum.toString(),
                               time: [e],
                             ));
-                            controller.selectedTime.add(e);
+                            controller.selectedTime.add(
+                                SelectedTime(day: dayNum.toString(), time: e));
                           }
                         },
                         child: Obx(() => Container(
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                color: controller.selectedDay
-                                            .where((e) =>
-                                                e.day == dayNum.toString())
-                                            .isNotEmpty ||
-                                        controller.selectedTime
-                                            .where((p0) => e == p0)
-                                            .isNotEmpty
-                                    ? controller.selectedDay
-                                            .where((e) =>
-                                                e.day == dayNum.toString())
-                                            .first
-                                            .time!
-                                            .where((element) => element == e)
-                                            .isNotEmpty
-                                        ? primary
-                                        : Colors.white
+                                color: controller.selectedTime
+                                        .where((t) =>
+                                            t.day == dayNum.toString() &&
+                                            t.time == e)
+                                        .isNotEmpty
+                                    ? primary
                                     : Colors.white),
-                            child: Text(
-                              e,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                      color: controller.selectedDay
-                                              .where((e) =>
-                                                  e.day == dayNum.toString())
-                                              .isNotEmpty
-                                          ? controller.selectedDay
-                                                  .where((e) =>
-                                                      e.day ==
-                                                      dayNum.toString())
-                                                  .first
-                                                  .time!
-                                                  .where(
-                                                      (element) => element == e)
+                            child: Obx(() => Text(
+                                  e,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                          color: controller.selectedTime
+                                                  .where((t) =>
+                                                      t.day ==
+                                                          dayNum.toString() &&
+                                                      t.time == e)
                                                   .isNotEmpty
                                               ? Colors.white
-                                              : primary
-                                          : primary),
-                            ))));
+                                              : primary),
+                                )))));
                   }).toList())),
         ],
       ),

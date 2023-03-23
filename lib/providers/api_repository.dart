@@ -103,10 +103,45 @@ class ApiRepository {
         "serviceType": serviceType,
         "serviceStatus": "pending",
         "channelName": "string",
-        "channelToken": "string"
+        "channelToken": "string",
+        "lawyerToken": "string",
+        "userToken": "string",
+        // here
+        "serviceId": "string"
       };
       final response = await apiProvider.post('/order/true', data: data)
           as Map<String, dynamic>;
+      return true;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<bool> updateLawyer(int experience, String bio, String profileImg,
+      List<AvailableDay> availableDay) async {
+    try {
+      final data = {
+        "bio": bio,
+        "profileImg": profileImg,
+        "experience": experience,
+        "availableDays": availableDay
+      };
+      final response = await apiProvider.patch('/user', data: data) as String;
+      return true;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<bool> setChannel(
+    String orderId,
+    String channelName,
+    String token,
+  ) async {
+    try {
+      final response = await apiProvider.get(
+        '/order/token/$orderId/$channelName/{token}?token=${token}',
+      ) as String;
       return true;
     } on Exception {
       rethrow;

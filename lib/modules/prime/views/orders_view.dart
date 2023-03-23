@@ -34,16 +34,14 @@ class OrdersView extends GetView<PrimeController> {
                   child: Container(
                     margin: const EdgeInsets.only(bottom: origin),
                     child: OrderDetailView(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Scaffold(
-                                      body: VideoView(),
-                                    ))),
+                        onTap: () async {
+                          await controller.getChannelToken(
+                              e.sId!, e.channelName!, e.serviceType!, context);
+                        },
                         type: e.serviceType ?? '',
                         name: e.lawyerId?.firstname ?? '',
                         status: e.serviceStatus ?? '',
-                        profession: 'Хуульч'),
+                        profession: '${e.channelName}'),
                   ),
                 );
               }).toList(),

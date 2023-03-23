@@ -22,8 +22,6 @@ class HomeController extends GetxController
     switch (index) {
       case 0:
         return const PrimeView();
-      case 1:
-        return VideoView();
 
       default:
         return const Center(child: Text('Something went wrong'));

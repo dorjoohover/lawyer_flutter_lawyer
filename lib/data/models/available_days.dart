@@ -50,10 +50,32 @@ class ServiceTypeTime {
 class AvailableTime {
   String? day;
   List<String>? time;
+  int? date;
 
-  AvailableTime({this.day, this.time});
+  AvailableTime({this.day, this.time, this.date});
 
   AvailableTime.fromJson(Map<String, dynamic> json) {
+    day = json['serviceType'];
+    date = json['date'];
+    time = json['time'].cast<String>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['day'] = this.day;
+    data['date'] = this.date;
+    data['time'] = this.time;
+    return data;
+  }
+}
+
+class SelectedTime {
+  String? day;
+  String? time;
+
+  SelectedTime({this.day, this.time});
+
+  SelectedTime.fromJson(Map<String, dynamic> json) {
     day = json['serviceType'];
     time = json['time'].cast<String>();
   }

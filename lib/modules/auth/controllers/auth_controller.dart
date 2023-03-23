@@ -111,7 +111,7 @@ class AuthController extends GetxController {
       // print(e.response?.data['message'].toString());
       Get.snackbar(
         e.response?.statusMessage ?? 'Login Failed',
-        e.response?.data['message'] ?? 'Something went wrong',
+        'Something went wrong',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,

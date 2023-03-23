@@ -8,7 +8,15 @@ import 'package:permission_handler/permission_handler.dart';
 /// AudioView Example
 class AudioView extends StatefulWidget {
   /// Construct the [AudioView]
-  const AudioView({Key? key}) : super(key: key);
+  const AudioView(
+      {Key? key,
+      required this.token,
+      required this.channelName,
+      required this.uid})
+      : super(key: key);
+  final String token;
+  final String channelName;
+  final int uid;
 
   @override
   State<StatefulWidget> createState() => _State();
@@ -79,6 +87,7 @@ class _State extends State<AudioView> {
       profile: AudioProfileType.audioProfileDefault,
       scenario: AudioScenarioType.audioScenarioGameStreaming,
     );
+    await _joinChannel();
   }
 
   _joinChannel() async {
@@ -87,10 +96,9 @@ class _State extends State<AudioView> {
     }
 
     await _engine.joinChannel(
-        token:
-            "006a941d13a5641456b95014aa4fc703f70IAD0lPmrXHRQoFdEkAb5gv5iGo+Pbk2CgXSo/q14k9Ocs73zKVG379yDIgC5m9YBr5scZAQAAQBPZhtkAgBPZhtkAwBPZhtkBABPZhtk",
-        channelId: "asdf",
-        uid: 1,
+        token: widget.token,
+        channelId: widget.channelName,
+        uid: widget.uid,
         options: ChannelMediaOptions(
           channelProfile: _channelProfileType,
           clientRoleType: ClientRoleType.clientRoleBroadcaster,

@@ -16,7 +16,7 @@ class LawyerController extends GetxController {
   final selectedAvailableDays = <AvailableDay>[].obs;
   final selectedDate = DateTime.now().obs;
   final selectedDay = <AvailableTime>[].obs;
-  final selectedTime = <String>[].obs;
+  final selectedTime = <SelectedTime>[].obs;
 
   final subServices = <SubService>[].obs;
   final lawyers = <Lawyer>[].obs;
@@ -32,6 +32,40 @@ class LawyerController extends GetxController {
   void onInit() async {
     await start();
     super.onInit();
+  }
+
+  sendAddition() async {
+    try {
+      loading.value = true;
+      List<ServiceTypeTime> serviceTypeTimes = [];
+      serviceTypeTimes
+          .add(ServiceTypeTime(serviceType: "online", time: selectedDay));
+      selectedAvailableDays.first.date = selectedDate.value.toString();
+      selectedAvailableDays.first.serviceTypeTime = serviceTypeTimes;
+
+      final res = await _apiRepository.updateLawyer(
+          int.parse(experience.value), bio.value, "", selectedAvailableDays);
+      if (res) {
+        Get.snackbar(
+          'Success',
+          'success',
+        );
+        Get.to(() => PrimeView());
+      } else {
+        Get.snackbar(
+          'error',
+          'error',
+        );
+        Get.to(() => PrimeView());
+      }
+      loading.value = false;
+    } on DioError catch (e) {
+      loading.value = false;
+      Get.snackbar(
+        'Error',
+        e.response?.data ?? 'Something went wrong',
+      );
+    }
   }
 
   getChannelToken(String channelName, String type) async {

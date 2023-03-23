@@ -3,12 +3,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/config/agora.config.dart' as config;
 import 'package:frontend/shared/index.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 /// MultiChannel Example
 class VideoView extends StatefulWidget {
   /// Construct the [VideoView]
-  const VideoView({Key? key}) : super(key: key);
-
+  const VideoView(
+      {Key? key,
+      required this.token,
+      required this.channelName,
+      required this.uid})
+      : super(key: key);
+  final String token;
+  final int uid;
+  final String channelName;
   @override
   State<StatefulWidget> createState() => _State();
 }
@@ -94,14 +102,20 @@ class _State extends State<VideoView> {
         bitrate: 0,
       ),
     );
+    await _engine.startPreview();
+    await _joinChannel();
   }
 
   Future<void> _joinChannel() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      await Permission.microphone.request();
+      await Permission.camera.request();
+      await Permission.audio.request();
+    }
     await _engine.joinChannel(
-      token:
-          "006a941d13a5641456b95014aa4fc703f70IACjQuV+524p2TxesFB93EzwOdC8VsvXFQwq6ObcSxjZzr3zKVENvtUaIgDpo8cBmagcZAQAAQA5cxtkAgA5cxtkAwA5cxtkBAA5cxtk",
-      channelId: "asdf",
-      uid: 2,
+      token: widget.token,
+      channelId: widget.channelName,
+      uid: widget.uid,
       options: ChannelMediaOptions(
         channelProfile: _channelProfileType,
         clientRoleType: ClientRoleType.clientRoleBroadcaster,
@@ -133,9 +147,6 @@ class _State extends State<VideoView> {
                 useFlutterTexture: _isUseFlutterTexture,
                 useAndroidSurfaceView: _isUseAndroidSurfaceView,
               ),
-              onAgoraVideoViewCreated: (viewId) {
-                _engine.startPreview();
-              },
             ),
             Align(
               alignment: Alignment.topLeft,
