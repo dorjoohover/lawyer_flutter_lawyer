@@ -17,7 +17,7 @@ class PrimeView extends GetView<PrimeController> {
         calendar: true,
         settings: true,
         settingTap: () async {
-          await authController.logout();
+          Get.to(() => LawyerRegisterView());
         },
         calendarTap: () async {
           await controller.getOrderList();

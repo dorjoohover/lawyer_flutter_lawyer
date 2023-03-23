@@ -1,3 +1,5 @@
+import 'package:frontend/data/data.dart';
+
 class Lawyer {
   String? sId;
   String? firstname;
@@ -6,7 +8,7 @@ class Lawyer {
   String? userType;
   List<Rating>? rating;
   String? userStatus;
-  List<AvailableDays>? availableDays;
+  List<AvailableDay>? availableDays;
   String? bio;
   int? experience;
   String? profileImg;
@@ -40,9 +42,9 @@ class Lawyer {
     }
     userStatus = json['userStatus'];
     if (json['availableDays'] != null) {
-      availableDays = <AvailableDays>[];
+      availableDays = <AvailableDay>[];
       json['availableDays'].map((v) {
-        availableDays!.add(AvailableDays.fromJson(v));
+        availableDays!.add(AvailableDay.fromJson(v));
       });
     }
     bio = json['bio'];
@@ -103,55 +105,6 @@ class Rating {
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     data['__v'] = iV;
-    return data;
-  }
-}
-
-class AvailableDays {
-  String? date;
-  List<ServiceTypeTime>? serviceTypeTime;
-  String? serviceId;
-
-  AvailableDays({date, serviceTypeTime, serviceId});
-
-  AvailableDays.fromJson(Map<String, dynamic> json) {
-    date = json['date'];
-    if (json['serviceTypeTime'] != null) {
-      serviceTypeTime = <ServiceTypeTime>[];
-      json['serviceTypeTime'].forEach((v) {
-        serviceTypeTime!.add(ServiceTypeTime.fromJson(v));
-      });
-    }
-    serviceId = json['serviceId'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['date'] = date;
-    if (serviceTypeTime != null) {
-      data['serviceTypeTime'] =
-          serviceTypeTime!.map((v) => v.toJson()).toList();
-    }
-    data['serviceId'] = serviceId;
-    return data;
-  }
-}
-
-class ServiceTypeTime {
-  String? serviceType;
-  List<String>? time;
-
-  ServiceTypeTime({serviceType, time});
-
-  ServiceTypeTime.fromJson(Map<String, dynamic> json) {
-    serviceType = json['serviceType'];
-    time = json['time'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['serviceType'] = serviceType;
-    data['time'] = time;
     return data;
   }
 }

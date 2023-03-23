@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
-import 'package:frontend/modules/prime/views/lawyer_days.dart';
 import 'package:get/get.dart';
 
 import '../../../shared/index.dart';
 
-class ServicesView extends GetView<PrimeController> {
-  const ServicesView({super.key, required this.title});
-  final String title;
+class LawyerRegisterServiceView extends GetView<PrimeController> {
+  const LawyerRegisterServiceView({
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     final lawyerController = Get.put(LawyerController());
     return Scaffold(
         backgroundColor: bg,
         appBar: PrimeAppBar(
-          title: title,
+          title: 'Нэмэлт мэдээлэл',
           onTap: () {
             Get.to(() => const PrimeView());
           },
@@ -27,19 +26,15 @@ class ServicesView extends GetView<PrimeController> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Column(
-              children: controller.subServices.map((e) {
+              children: controller.services.map((e) {
                 return GestureDetector(
                   onTap: () {
-                    final serviceTypeTime = <ServiceTypeTime>[];
-                    serviceTypeTime
-                        .add(ServiceTypeTime(serviceType: "", time: []));
-                    lawyerController.selectedAvailableDays.add(AvailableDay(
-                        date: "",
-                        serviceId: e.sId!,
-                        serviceTypeTime: serviceTypeTime));
-                    Get.to(() => LawyerAvailableDays());
+                    lawyerController.selectedServices.add(e.sId!);
+                    controller.getSubServices(e.sId!, e.title!);
                   },
-                  child: ServiceCard(text: e.title ?? ''),
+                  child: Container(
+                      margin: EdgeInsets.symmetric(vertical: origin),
+                      child: ServiceCard(text: e.title ?? '')),
                 );
               }).toList(),
             ),

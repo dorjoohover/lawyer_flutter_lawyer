@@ -20,7 +20,7 @@ class ApiRepository {
       "password": password,
       "firstname": firstname,
       "lastname": lastname,
-      "userType": "user"
+      "userType": "lawyer"
     };
     final res = await apiProvider.post('/auth/register', data: data);
     return LoginResponse.fromJson(res);
