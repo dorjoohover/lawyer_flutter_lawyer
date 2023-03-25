@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/widgets/order_detail.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../shared/index.dart';
 
@@ -34,14 +35,18 @@ class OrdersView extends GetView<PrimeController> {
                   child: Container(
                     margin: const EdgeInsets.only(bottom: origin),
                     child: OrderDetailView(
+                        date: DateFormat('yyyy/MM/dd').format(
+                            DateTime.fromMillisecondsSinceEpoch(e.date!)),
+                        time: DateFormat('hh:mm').format(
+                            DateTime.fromMillisecondsSinceEpoch(e.date!)),
                         onTap: () async {
                           await controller.getChannelToken(
                               e.sId!, e.channelName!, e.serviceType!, context);
                         },
                         type: e.serviceType ?? '',
-                        name: e.lawyerId?.firstname ?? '',
+                        name: e.clientId?.firstname ?? '',
                         status: e.serviceStatus ?? '',
-                        profession: '${e.channelName}'),
+                        profession: 'Үйлчлүүлэгч'),
                   ),
                 );
               }).toList(),

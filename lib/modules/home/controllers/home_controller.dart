@@ -9,13 +9,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../modules.dart';
 
 class HomeController extends GetxController
-    with StateMixin<User>, WidgetsBindingObserver {
+    with StateMixin<Lawyer>, WidgetsBindingObserver {
   final ApiRepository _apiRepository = Get.find();
   final showPerformanceOverlay = false.obs;
   int currentIndex = 0;
   final isLoading = false.obs;
-  final rxUser = Rxn<User?>();
-  User? get user => rxUser.value;
+  final rxUser = Rxn<Lawyer?>();
+  Lawyer? get user => rxUser.value;
   set user(value) => rxUser.value = value;
 
   Widget getView(int index) {

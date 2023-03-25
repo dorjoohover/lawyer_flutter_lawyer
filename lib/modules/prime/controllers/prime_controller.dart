@@ -90,7 +90,6 @@ class PrimeController extends GetxController {
     try {
       loading.value = true;
       final res = await _apiRepository.orderList();
-      print(res);
       orders.value = res;
       Get.to(() => OrdersView(title: 'Захиалгууд'));
       loading.value = false;
@@ -147,8 +146,10 @@ class PrimeController extends GetxController {
       loading.value = true;
       final res = await _apiRepository.servicesList();
       services.value = res;
-      final lRes = await _apiRepository.suggestedLawyers();
-      lawyers.value = lRes;
+
+      final ordersRes = await _apiRepository.orderList();
+      orders.value = ordersRes;
+
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;

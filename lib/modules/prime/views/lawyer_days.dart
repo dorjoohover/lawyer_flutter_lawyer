@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/data.dart';
-import 'package:frontend/modules/auth/auth.dart';
 import 'package:frontend/modules/prime/controllers/controllers.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class LawyerAvailableDays extends GetView<LawyerController> {
-  LawyerAvailableDays({Key? key}) : super(key: key);
-
+  const LawyerAvailableDays(
+      {Key? key, this.title = 'Бүртгүүлэх', required this.onPressed})
+      : super(key: key);
+  final Function() onPressed;
+  final String title;
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LawyerController());
     return Scaffold(
         appBar: PrimeAppBar(
             onTap: () {
-              Get.to(() => RegisterView());
+              Navigator.pop(context);
             },
-            title: 'Бүртгүүлэх'),
+            title: title),
         backgroundColor: bg,
         body: Container(
           padding: EdgeInsets.only(
@@ -54,10 +57,9 @@ class LawyerAvailableDays extends GetView<LawyerController> {
                                 firstDate: DateTime.now(),
                                 lastDate: DateTime(2100));
                             if (pickedDate != null) {
-                              controller.selectedAvailableDays[0].date =
-                                  pickedDate.millisecondsSinceEpoch.toString();
+                              controller.selectedAvailableDays.value?.date =
+                                  '${pickedDate.year}-${pickedDate.month}';
                               controller.selectedDate.value = pickedDate;
-                              print(controller.selectedAvailableDays[0].date);
                             }
                           },
                           icon: Icon(Icons.calendar_today)),
@@ -97,7 +99,7 @@ class LawyerAvailableDays extends GetView<LawyerController> {
                                   e));
                               return GestureDetector(
                                 onTap: () {
-                                  Get.to(() => LawyerAvailableDays());
+                                  // Get.to(() => LawyerAvailableDays());
                                 },
                                 // child: ServiceCard(text: e.title ?? ''),
                                 child: AvailableDays(
@@ -123,10 +125,7 @@ class LawyerAvailableDays extends GetView<LawyerController> {
                   left: 0,
                   right: 0,
                   child: MainButton(
-                    onPressed: () async {
-                  
-                      await controller.sendAddition();
-                    },
+                    onPressed: onPressed,
                     text: "Илгээх",
                     child: const SizedBox(),
                   ))
@@ -177,7 +176,7 @@ class AvailableDays extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: origin),
+      margin: const EdgeInsets.symmetric(vertical: origin),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

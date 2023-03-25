@@ -82,7 +82,6 @@ class Rating {
   String? sId;
   String? createdAt;
   String? updatedAt;
-  int? iV;
 
   Rating({clientId, comment, rating, sId, createdAt, updatedAt, iV});
 
@@ -93,7 +92,6 @@ class Rating {
     sId = json['_id'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    iV = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
@@ -104,7 +102,6 @@ class Rating {
     data['_id'] = sId;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
-    data['__v'] = iV;
     return data;
   }
 }

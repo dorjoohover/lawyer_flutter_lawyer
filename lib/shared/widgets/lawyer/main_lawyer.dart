@@ -8,16 +8,19 @@ class MainLawyer extends StatelessWidget {
       this.image,
       required this.profession,
       required this.rating,
+      this.bg = Colors.transparent,
       required this.experience});
   final String? image;
   final String name;
   final String profession;
   final String experience;
   final String rating;
+  final Color bg;
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.circular(16), color: bg),
       padding: const EdgeInsets.all(small),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

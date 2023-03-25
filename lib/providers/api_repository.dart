@@ -26,11 +26,11 @@ class ApiRepository {
     return LoginResponse.fromJson(res);
   }
 
-  Future<User> getUser() async {
+  Future<Lawyer> getUser() async {
     try {
       final response =
           await apiProvider.get('/user/me') as Map<String, dynamic>;
-      return User.fromJson(response);
+      return Lawyer.fromJson(response);
     } on Exception {
       rethrow;
     }
@@ -118,15 +118,33 @@ class ApiRepository {
   }
 
   Future<bool> updateLawyer(int experience, String bio, String profileImg,
-      List<AvailableDay> availableDay) async {
+      AvailableDay availableDay) async {
     try {
+      List<AvailableDay> availableDays = [];
+      availableDays.add(availableDay);
       final data = {
         "bio": bio,
         "profileImg": profileImg,
         "experience": experience,
-        "availableDays": availableDay
+        "availableDays": availableDays
       };
       final response = await apiProvider.patch('/user', data: data) as String;
+      return true;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<bool> addAvailableDays(AvailableDay availableDay) async {
+    try {
+      final data = {
+        "date": availableDay.date,
+        "serviceTypeTime": availableDay.serviceTypeTime,
+        "serviceId": availableDay.serviceId,
+      };
+
+      final response = await apiProvider.patch('/user/available', data: data);
+      print(response);
       return true;
     } on Exception {
       rethrow;

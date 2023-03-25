@@ -94,7 +94,7 @@ class _State extends State<VideoView> {
     ));
 
     await _engine.enableVideo();
-
+await _engine.startPreview();
     await _engine.setVideoEncoderConfiguration(
       const VideoEncoderConfiguration(
         dimensions: VideoDimensions(width: 640, height: 360),
@@ -102,7 +102,7 @@ class _State extends State<VideoView> {
         bitrate: 0,
       ),
     );
-    await _engine.startPreview();
+    
     await _joinChannel();
   }
 
