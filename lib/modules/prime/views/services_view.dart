@@ -15,7 +15,7 @@ class ServicesView extends GetView<PrimeController> {
         appBar: PrimeAppBar(
           title: title,
           onTap: () {
-            Get.to(() => const PrimeView());
+            Navigator.pop(context);
           },
         ),
         body: SingleChildScrollView(

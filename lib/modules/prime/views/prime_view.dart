@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/modules/auth/auth.dart';
 import 'package:frontend/modules/home/controllers/controllers.dart';
 import 'package:frontend/modules/prime/prime.dart';
@@ -37,7 +38,7 @@ class PrimeView extends GetView<PrimeController> {
             },
             child: Container(
               color: bg,
-            height: defaultHeight(context),
+              height: defaultHeight(context),
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(origin),
               child: SingleChildScrollView(
@@ -196,6 +197,20 @@ class PrimeView extends GetView<PrimeController> {
                 ),
               ),
             )),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: homeController.currentIndex,
+        onDestinationSelected: (value) => homeController.changeNavIndex(value),
+        destinations: navBarIcons.map((e) {
+          NavigationDestination body;
+          body = NavigationDestination(
+            icon: SvgPicture.asset(e['icon']!),
+            selectedIcon: SvgPicture.asset(e['activeIcon']!),
+            label: e['label']!,
+          );
+          // }
+          return body;
+        }).toList(),
       ),
     );
   }

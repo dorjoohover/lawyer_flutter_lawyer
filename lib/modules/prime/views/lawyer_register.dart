@@ -12,7 +12,7 @@ class LawyerRegisterView extends GetView<LawyerController> {
     return Scaffold(
         appBar: PrimeAppBar(
             onTap: () {
-              Get.to(() => RegisterView());
+              Navigator.of(context).pop();
             },
             title: 'Нэмэлт мэдээлэл'),
         backgroundColor: bg,

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 
 import '../../../config/agora.config.dart' as config;
-import '../../../shared/index.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
@@ -73,20 +71,6 @@ class HomeView extends StatelessWidget {
               ), (user) {
         return Scaffold(
           body: controller.getView(controller.currentIndex),
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: controller.currentIndex,
-            onDestinationSelected: (value) => controller.changeNavIndex(value),
-            destinations: navBarIcons.map((e) {
-              NavigationDestination body;
-              body = NavigationDestination(
-                icon: SvgPicture.asset(e['icon']!),
-                selectedIcon: SvgPicture.asset(e['activeIcon']!),
-                label: e['label']!,
-              );
-              // }
-              return body;
-            }).toList(),
-          ),
         );
       }),
     );

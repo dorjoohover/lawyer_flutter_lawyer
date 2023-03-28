@@ -16,7 +16,7 @@ class LawyerRegisterServiceView extends GetView<PrimeController> {
         appBar: PrimeAppBar(
           title: 'Нэмэлт мэдээлэл',
           onTap: () {
-            Get.to(() => const PrimeView());
+            Navigator.of(context).pop();
           },
         ),
         body: SingleChildScrollView(

@@ -23,11 +23,8 @@ class HomeController extends GetxController
     switch (index) {
       case 0:
         return const PrimeView();
-<<<<<<< HEAD
       case 1:
         return const OrderTrackingPage();
-=======
->>>>>>> 68bcbe4b2c4ebe07601124762adfe571c6bce041
 
       default:
         return const Center(child: Text('Something went wrong'));

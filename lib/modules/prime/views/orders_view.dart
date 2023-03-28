@@ -19,12 +19,13 @@ class OrdersView extends GetView<PrimeController> {
             Get.to(() => const PrimeView());
           },
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: large, horizontal: origin),
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+        body: Container(
+          padding:
+              const EdgeInsets.symmetric(vertical: large, horizontal: origin),
+          height: MediaQuery.of(context).size.height -
+              MediaQuery.of(context).padding.top,
+          width: MediaQuery.of(context).size.width,
+          child: SingleChildScrollView(
             child: Column(
               children: controller.orders.map((e) {
                 return GestureDetector(
