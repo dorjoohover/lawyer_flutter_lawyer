@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:frontend/data/data.dart';
+import 'package:frontend/modules/prime/views/maps.dart';
 import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/constants/enums.dart';
 import 'package:get/get.dart';
@@ -23,7 +24,7 @@ class HomeController extends GetxController
       case 0:
         return const PrimeView();
       case 1:
-        return VideoView();
+        return const OrderTrackingPage();
 
       default:
         return const Center(child: Text('Something went wrong'));

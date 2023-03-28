@@ -44,6 +44,9 @@ dependencies:
   path_provider: ^2.0.8
   shared_preferences: ^2.0.18
   connectivity_plus: ^3.0.3
+  flutter_polyline_points: ^1.0.0
+  google_maps_flutter: ^2.2.5
+  location: ^4.4.0
   dio: ^5.0.2
   http: ^0.13.5
   url_launcher: ^6.1.10
