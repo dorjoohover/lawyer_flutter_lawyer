@@ -10,21 +10,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../modules.dart';
 
 class HomeController extends GetxController
-    with StateMixin<User>, WidgetsBindingObserver {
+    with StateMixin<Lawyer>, WidgetsBindingObserver {
   final ApiRepository _apiRepository = Get.find();
   final showPerformanceOverlay = false.obs;
   int currentIndex = 0;
   final isLoading = false.obs;
-  final rxUser = Rxn<User?>();
-  User? get user => rxUser.value;
+  final rxUser = Rxn<Lawyer?>();
+  Lawyer? get user => rxUser.value;
   set user(value) => rxUser.value = value;
 
   Widget getView(int index) {
     switch (index) {
       case 0:
         return const PrimeView();
+<<<<<<< HEAD
       case 1:
         return const OrderTrackingPage();
+=======
+>>>>>>> 68bcbe4b2c4ebe07601124762adfe571c6bce041
 
       default:
         return const Center(child: Text('Something went wrong'));

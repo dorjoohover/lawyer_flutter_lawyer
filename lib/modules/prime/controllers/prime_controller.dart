@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
@@ -26,37 +26,62 @@ class PrimeController extends GetxController {
     super.onInit();
   }
 
-  getChannelToken(String channelName, String type) async {
+  getChannelToken(String orderId, String channelName, String type,
+      BuildContext context) async {
     try {
       loading.value = true;
-      // final res = await _apiRepository.getAgoraToken(
-      //     DateTime.parse(channelName).millisecondsSinceEpoch.toString(), '1');
-      if (type == 'online') {
-        audioController.channelId.value =
-            DateTime.parse(channelName).millisecondsSinceEpoch.toString();
 
-        audioController.channelToken.value =
-            "006a941d13a5641456b95014aa4fc703f70IAB24n+WHua5t7pquMygdN3qH6n7MuoNQxpF1FNEgTNe6PhB+WG379yDIgDHfjwFt8kYZAQAAQBfmxdkAgBfmxdkAwBfmxdkBABfmxdk";
-
-      
+      if (channelName == 'string') {
+        channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
-      if (type == 'fulfilled') {
-        // videoController.channelId.value =
-        //     DateTime.parse(channelName).millisecondsSinceEpoch.toString();
-        // videoController.channelToken.value =
-        //     "006a941d13a5641456b95014aa4fc703f70IAB24n+WHua5t7pquMygdN3qH6n7MuoNQxpF1FNEgTNe6PhB+WG379yDIgDHfjwFt8kYZAQAAQBfmxdkAgBfmxdkAwBfmxdkBABfmxdk";
 
-        // await videoController.initEngine();
-        // await videoController.joinChannel();
-        // Get.to(() => VideoView());
+      Agora token = await _apiRepository.getAgoraToken(channelName, '2');
+
+      if (token.rtcToken != null) {
+        bool res = await _apiRepository.setChannel(
+            orderId, channelName, token.rtcToken!);
+        if (res) {
+          if (type == 'online') {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                          body: AudioView(
+                              channelName: channelName,
+                              token: token.rtcToken!,
+                              uid: 2),
+                        )));
+          }
+          if (type == 'fulfilled') {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                          body: VideoView(
+                              channelName: channelName,
+                              token: token.rtcToken!,
+                              uid: 2),
+                        )));
+          }
+        }
       }
+
+      // videoController.channelId.value =
+      //     DateTime.parse(channelName).millisecondsSinceEpoch.toString();
+      // videoController.channelToken.value =
+      //     "006a941d13a5641456b95014aa4fc703f70IAB24n+WHua5t7pquMygdN3qH6n7MuoNQxpF1FNEgTNe6PhB+WG379yDIgDHfjwFt8kYZAQAAQBfmxdkAgBfmxdkAwBfmxdkBABfmxdk";
+
+      // await videoController.initEngine();
+      // await videoController.joinChannel();
+      // Get.to(() => VideoView());
 
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
+      print(e.response);
       Get.snackbar(
         'Error',
-        e.response?.data ?? 'Something went wrong',
+        'Something went wrong',
       );
     }
   }
@@ -65,7 +90,6 @@ class PrimeController extends GetxController {
     try {
       loading.value = true;
       final res = await _apiRepository.orderList();
-      print(res);
       orders.value = res;
       Get.to(() => OrdersView(title: 'Захиалгууд'));
       loading.value = false;
@@ -103,7 +127,7 @@ class PrimeController extends GetxController {
       loading.value = true;
       final res = await _apiRepository.subServiceList(id);
       subServices.value = res;
-      
+
       Get.to(() => ServicesView(
             title: title,
           ));
@@ -122,8 +146,10 @@ class PrimeController extends GetxController {
       loading.value = true;
       final res = await _apiRepository.servicesList();
       services.value = res;
-      final lRes = await _apiRepository.suggestedLawyers();
-      lawyers.value = lRes;
+
+      final ordersRes = await _apiRepository.orderList();
+      orders.value = ordersRes;
+
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;

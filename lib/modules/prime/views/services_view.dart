@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
-import 'package:frontend/modules/prime/views/lawyer_days.dart';
 import 'package:get/get.dart';
 
 import '../../../shared/index.dart';
@@ -30,14 +28,12 @@ class ServicesView extends GetView<PrimeController> {
               children: controller.subServices.map((e) {
                 return GestureDetector(
                   onTap: () {
-                    final serviceTypeTime = <ServiceTypeTime>[];
-                    serviceTypeTime
-                        .add(ServiceTypeTime(serviceType: "", time: []));
-                    lawyerController.selectedAvailableDays.add(AvailableDay(
-                        date: "",
-                        serviceId: e.sId!,
-                        serviceTypeTime: serviceTypeTime));
-                    Get.to(() => LawyerAvailableDays());
+                    lawyerController.selectedAvailableDays.value?.date = e.sId!;
+                    Get.to(() => LawyerAvailableDays(
+                          onPressed: () async {
+                            await lawyerController.sendAddition();
+                          },
+                        ));
                   },
                   child: ServiceCard(text: e.title ?? ''),
                 );

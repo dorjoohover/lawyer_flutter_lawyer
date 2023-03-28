@@ -66,6 +66,15 @@ class DioProvider extends GetxService {
     }
   }
 
+  Future<dynamic> patch(String path, {Map<String, dynamic>? data}) async {
+    try {
+      final response = await dio.patch(path, data: data);
+      return response.data;
+    } on Exception {
+      rethrow;
+    }
+  }
+
   Future<dynamic> delete(String path, {Map<String, dynamic>? data}) async {
     try {
       final response = await dio.delete(path, data: data);

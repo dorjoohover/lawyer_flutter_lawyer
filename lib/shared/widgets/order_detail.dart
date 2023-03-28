@@ -4,20 +4,22 @@ import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
 class OrderDetailView extends GetView<PrimeController> {
-  const OrderDetailView({
-    super.key,
-    required this.name,
-    required this.profession,
-    required this.status,
-    required this.type,
-    required this.onTap,
-  });
+  const OrderDetailView(
+      {super.key,
+      required this.name,
+      required this.profession,
+      required this.status,
+      required this.type,
+      required this.onTap,
+      required this.date,
+      required this.time});
   final String name;
   final String profession;
   final Function() onTap;
   final String status;
   final String type;
-
+  final String date;
+  final String time;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -103,6 +105,23 @@ class OrderDetailView extends GetView<PrimeController> {
                       },
                       icon: Icon(Icons.delete))
                 ],
+              )
+            ],
+          ),
+          space16,
+          Row(
+            children: [
+              Text(
+                date,
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+              space16,
+              Text(
+                time,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelMedium!
+                    .copyWith(color: primary),
               )
             ],
           ),

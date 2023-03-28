@@ -8,6 +8,7 @@ class Order {
   String? serviceType;
   String? serviceStatus;
   String? channelName;
+  String? serviceId;
   String? channelToken;
   String? createdAt;
   String? updatedAt;
@@ -24,6 +25,7 @@ class Order {
       this.channelName,
       this.channelToken,
       this.createdAt,
+      this.serviceId,
       this.updatedAt});
 
   Order.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class Order {
     serviceStatus = json['serviceStatus'];
     channelName = json['channelName'];
     channelToken = json['channelToken'];
+    serviceId = json['serviceId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
   }
@@ -61,6 +64,7 @@ class Order {
     data['serviceStatus'] = this.serviceStatus;
     data['channelName'] = this.channelName;
     data['channelToken'] = this.channelToken;
+    data['serviceId'] = this.serviceId;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
     return data;

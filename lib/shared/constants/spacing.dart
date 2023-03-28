@@ -27,3 +27,11 @@ const Spacer spacer = Spacer();
 /// Border radius constants [variants]
 const borderRadius10 = 10.0;
 const borderRadius12 = 12.0;
+
+double defaultHeight(BuildContext context) {
+  return MediaQuery.of(context).size.height -
+      76 -
+      MediaQuery.of(context).padding.top -
+      80 -
+      origin;
+}
