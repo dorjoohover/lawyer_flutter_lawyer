@@ -9,6 +9,8 @@ const gold = Color(0xffD3AC2B);
 const success = Color(0xff00CA72);
 const warning = Color(0xffFDAB3D);
 const error = Color(0xffE44258);
+const lightGray = Color(0xffd9d9d9);
+const lightError = Color(0xffE44258);
 
 
 

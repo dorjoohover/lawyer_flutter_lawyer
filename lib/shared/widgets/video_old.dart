@@ -6,22 +6,24 @@ import 'package:frontend/shared/index.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// MultiChannel Example
-class VideoView extends StatefulWidget {
-  /// Construct the [VideoView]
-  const VideoView(
+class VideoOldView extends StatefulWidget {
+  /// Construct the [VideoOldView]
+  const VideoOldView(
       {Key? key,
       required this.token,
+      required this.isLawyer,
       required this.channelName,
       required this.uid})
       : super(key: key);
   final String token;
   final int uid;
   final String channelName;
+  final bool isLawyer;
   @override
   State<StatefulWidget> createState() => _State();
 }
 
-class _State extends State<VideoView> {
+class _State extends State<VideoOldView> {
   late final RtcEngine _engine;
 
   bool isJoined = false, switchCamera = true, switchRender = true;
@@ -94,7 +96,7 @@ class _State extends State<VideoView> {
     ));
 
     await _engine.enableVideo();
-await _engine.startPreview();
+    await _engine.startPreview();
     await _engine.setVideoEncoderConfiguration(
       const VideoEncoderConfiguration(
         dimensions: VideoDimensions(width: 640, height: 360),
@@ -102,7 +104,7 @@ await _engine.startPreview();
         bitrate: 0,
       ),
     );
-    
+
     await _joinChannel();
   }
 

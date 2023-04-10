@@ -14,13 +14,13 @@ class OrderController extends GetxController {
 
   createOrder(String lawyerId, String type) async {
     try {
-      final res = await _apiRepository.createOrder(
-          selectedDate.value.millisecondsSinceEpoch, lawyerId, "60", type);
+      // final res = await _apiRepository.createOrder(
+      //     selectedDate.value.millisecondsSinceEpoch, lawyerId, "60", type);
       Get.to(() => AlertView(
           status: 'success',
           text:
               'Таны сонгосон хуульчтайгаа 2020/07/13-ны өдрийн 14:00 дуудлагаа хийнэ үү '));
-      print(res);
+      // print(res);
     } on DioError catch (e) {
       print(e);
     }

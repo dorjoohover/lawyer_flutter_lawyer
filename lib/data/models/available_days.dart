@@ -1,12 +1,10 @@
 class AvailableDay {
-  String? date;
   List<ServiceTypeTime>? serviceTypeTime;
   String? serviceId;
 
-  AvailableDay({this.date, this.serviceTypeTime, this.serviceId});
+  AvailableDay({this.serviceTypeTime, this.serviceId});
 
   AvailableDay.fromJson(Map<String, dynamic> json) {
-    date = json['date'];
     if (json['serviceTypeTime'] != null) {
       serviceTypeTime = <ServiceTypeTime>[];
       json['serviceTypeTime'].forEach((v) {
@@ -18,7 +16,7 @@ class AvailableDay {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['date'] = this.date;
+
     if (this.serviceTypeTime != null) {
       data['serviceTypeTime'] =
           this.serviceTypeTime!.map((v) => v.toJson()).toList();

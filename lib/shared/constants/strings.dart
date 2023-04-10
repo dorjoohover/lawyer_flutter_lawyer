@@ -1,5 +1,5 @@
 const landrinaSolid = 'LondrinaSolid';
-const navBarIcons = [
+const userNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
     'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
@@ -19,6 +19,51 @@ const navBarIcons = [
     'icon': 'assets/svgs/navigationBar/podcast.svg',
     'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
     'label': 'Подкаст',
+  },
+];
+const lawyerNavbar = [
+  {
+    'icon': 'assets/svgs/navigationBar/home.svg',
+    'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
+    'label': 'Нүүр',
+  },
+  {
+    'icon': 'assets/svgs/navigationBar/emergency.svg',
+    'activeIcon': 'assets/svgs/navigationBar/emergencyActive.svg',
+    'label': 'Яаралтай',
+  },
+  {
+    'icon': 'assets/svgs/navigationBar/home.svg',
+    'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
+    'label': 'Хуульч',
+  },
+  {
+    'icon': 'assets/svgs/navigationBar/notary.svg',
+    'activeIcon': 'assets/svgs/navigationBar/notaryActive.svg',
+    'label': 'Нотариат',
+  },
+  {
+    'icon': 'assets/svgs/navigationBar/podcast.svg',
+    'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
+    'label': 'Подкаст',
+  },
+];
+const serviceTypes = [
+  {
+    'id': 'online',
+    'value': 'Онлайн уулзалт',
+  },
+  {
+    'id': 'onlineEmergency',
+    'value': 'Яаралтай онлайн уулзалт',
+  },
+  {
+    'id': 'fulfilled',
+    'value': 'Биечлэн уулзалт',
+  },
+  {
+    'id': 'fulfilledEmergency',
+    'value': 'Яаралтай биечлэн уулзалт',
   },
 ];
 

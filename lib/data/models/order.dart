@@ -73,24 +73,24 @@ class Order {
 
 class ClientId {
   String? sId;
-  String? firstname;
-  String? lastname;
+  String? firstName;
+  String? lastName;
   String? phone;
 
-  ClientId({this.sId, this.firstname, this.lastname, this.phone});
+  ClientId({this.sId, this.firstName, this.lastName, this.phone});
 
   ClientId.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    firstname = json['firstname'];
-    lastname = json['lastname'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
     phone = json['phone'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.sId;
-    data['firstname'] = this.firstname;
-    data['lastname'] = this.lastname;
+    data['firstName'] = this.firstName;
+    data['lastName'] = this.lastName;
     data['phone'] = this.phone;
     return data;
   }
@@ -98,18 +98,18 @@ class ClientId {
 
 class LawyerId {
   String? sId;
-  String? firstname;
-  String? lastname;
+  String? firstName;
+  String? lastName;
   String? phone;
   String? profileImg;
 
   LawyerId(
-      {this.sId, this.firstname, this.lastname, this.phone, this.profileImg});
+      {this.sId, this.firstName, this.lastName, this.phone, this.profileImg});
 
   LawyerId.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    firstname = json['firstname'];
-    lastname = json['lastname'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
     phone = json['phone'];
     profileImg = json['profileImg'];
   }
@@ -117,8 +117,8 @@ class LawyerId {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.sId;
-    data['firstname'] = this.firstname;
-    data['lastname'] = this.lastname;
+    data['firstName'] = this.firstName;
+    data['lastName'] = this.lastName;
     data['phone'] = this.phone;
     data['profileImg'] = this.profileImg;
     return data;

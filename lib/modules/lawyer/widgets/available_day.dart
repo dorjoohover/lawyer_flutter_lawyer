@@ -1,171 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/data.dart';
-import 'package:frontend/modules/prime/controllers/controllers.dart';
+import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class LawyerAvailableDays extends GetView<LawyerController> {
-  const LawyerAvailableDays(
-      {Key? key, this.title = 'Бүртгүүлэх', required this.onPressed})
-      : super(key: key);
-  final Function() onPressed;
-  final String title;
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(LawyerController());
-    return Scaffold(
-        appBar: PrimeAppBar(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            title: title),
-        backgroundColor: bg,
-        body: Container(
-          padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top,
-              left: origin,
-              right: origin),
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  space32,
-                  Text(
-                    'Боломжит өдрүүд',
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  space32,
-                  Row(
-                    children: [
-                      IconButton(
-                          onPressed: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                                builder: (context, child) {
-                                  return Theme(
-                                    data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                            primary: primary)),
-                                    child: child!,
-                                  );
-                                },
-                                context: context,
-                                initialDate: controller.selectedDate.value,
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime(2100));
-                            if (pickedDate != null) {
-                              controller.selectedAvailableDays.value?.date =
-                                  '${pickedDate.year}-${pickedDate.month}';
-                              controller.selectedDate.value = pickedDate;
-                            }
-                          },
-                          icon: Icon(Icons.calendar_today)),
-                      Obx(() => Text(
-                          "${controller.selectedDate.value.year}-${controller.selectedDate.value.month}"))
-                    ],
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                        child: Obx(
-                      () => Column(
-                        children: List.generate(31, (e) {
-                          DateTime now = DateTime.now();
-                          int lastday = DateTime(
-                                  controller.selectedDate.value.year,
-                                  controller.selectedDate.value.month + 1,
-                                  0)
-                              .day;
-
-                          if (now.month ==
-                                  controller.selectedDate.value.month &&
-                              now.year == controller.selectedDate.value.year) {
-                            if (e + 1 >= now.day && e + 1 <= lastday) {
-                              final day =
-                                  getDay(DateTime(now.year, now.month, e));
-                              return AvailableDays(
-                                controller: controller,
-                                day: day,
-                                dayNum: e + 1,
-                              );
-                            }
-                          } else {
-                            if (e + 1 <= lastday) {
-                              final day = getDay(DateTime(
-                                  controller.selectedDate.value.year,
-                                  controller.selectedDate.value.month,
-                                  e));
-                              return GestureDetector(
-                                onTap: () {
-                                  // Get.to(() => LawyerAvailableDays());
-                                },
-                                // child: ServiceCard(text: e.title ?? ''),
-                                child: AvailableDays(
-                                  controller: controller,
-                                  day: day,
-                                  dayNum: e + 1,
-                                ),
-                              );
-                            }
-                          }
-                          return SizedBox();
-                        }).toList(),
-                      ),
-                    )),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).padding.bottom + 106,
-                  ),
-                ],
-              ),
-              Positioned(
-                  bottom: MediaQuery.of(context).padding.bottom + 50,
-                  left: 0,
-                  right: 0,
-                  child: MainButton(
-                    onPressed: onPressed,
-                    text: "Илгээх",
-                    child: const SizedBox(),
-                  ))
-            ],
-          ),
-        ));
-  }
-
-  String getDay(DateTime day) {
-    final eDay = DateFormat('EEEE').format(day);
-
-    switch (eDay) {
-      case 'Monday':
-        return "Дав";
-
-      case 'Tuesday':
-        return "Мя";
-
-      case 'Wednesday':
-        return "Лха";
-
-      case 'Thursday':
-        return "Пү";
-
-      case 'Friday':
-        return "Ба";
-
-      case 'Saturday':
-        return "Бя";
-
-      case 'Sunday':
-        return "Ня";
-      default:
-        return "";
-    }
-  }
-}
-
-class AvailableDays extends StatelessWidget {
-  const AvailableDays(
+class LawyerAvailableDay extends StatelessWidget {
+  const LawyerAvailableDay(
       {super.key,
       required this.day,
       required this.dayNum,
@@ -244,12 +85,14 @@ class AvailableDays extends StatelessWidget {
                         onTap: () {
                           final w = controller.selectedDay
                               .where((e) => e.day == dayNum.toString());
+                          print(w);
                           if (w.isNotEmpty) {
                             final whereTime =
                                 w.first.time?.where((t) => t == e);
                             if (whereTime!.isEmpty) {
                               controller.selectedTime.add(SelectedTime(
                                   day: dayNum.toString(), time: e));
+
                               controller.selectedDay
                                   .where((e) => e.day == dayNum.toString())
                                   .first

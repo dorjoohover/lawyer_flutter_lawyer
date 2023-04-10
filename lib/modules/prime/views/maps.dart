@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/modules/home/controllers/controllers.dart';
-import 'package:frontend/shared/constants/index.dart';
+import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -71,56 +70,44 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   Widget build(BuildContext context) {
     final homeController = Get.put(HomeController());
     return Scaffold(
-      body: currentLocation == null
-          ? Center(
-              child: Text('loading'),
-            )
-          : GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 13.5,
-              ),
-              polylines: {
-                Polyline(
-                    polylineId: PolylineId("route"),
-                    points: polylineCoordinates,
-                    color: primary,
-                    width: 6)
-              },
-              markers: {
-                Marker(
-                  markerId: MarkerId("currentLocation"),
-                  position: LatLng(
+        body: currentLocation == null
+            ? Center(
+                child: Text('loading'),
+              )
+            : GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
                       currentLocation!.latitude!, currentLocation!.longitude!),
+                  zoom: 13.5,
                 ),
-                const Marker(
-                  markerId: MarkerId("source"),
-                  position: sourceLocation,
-                ),
-                const Marker(
-                  markerId: MarkerId("destination"),
-                  position: destination,
-                ),
-              },
-              onMapCreated: (mapController) {
-                _controller.complete(mapController);
-              },
-            ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: homeController.currentIndex,
-        onDestinationSelected: (value) => homeController.changeNavIndex(value),
-        destinations: navBarIcons.map((e) {
-          NavigationDestination body;
-          body = NavigationDestination(
-            icon: SvgPicture.asset(e['icon']!),
-            selectedIcon: SvgPicture.asset(e['activeIcon']!),
-            label: e['label']!,
-          );
-          // }
-          return body;
-        }).toList(),
-      ),
-    );
+                polylines: {
+                  Polyline(
+                      polylineId: PolylineId("route"),
+                      points: polylineCoordinates,
+                      color: primary,
+                      width: 6)
+                },
+                markers: {
+                  Marker(
+                    markerId: MarkerId("currentLocation"),
+                    position: LatLng(currentLocation!.latitude!,
+                        currentLocation!.longitude!),
+                  ),
+                  const Marker(
+                    markerId: MarkerId("source"),
+                    position: sourceLocation,
+                  ),
+                  const Marker(
+                    markerId: MarkerId("destination"),
+                    position: destination,
+                  ),
+                },
+                onMapCreated: (mapController) {
+                  _controller.complete(mapController);
+                },
+              ),
+        bottomNavigationBar: MainNavigationBar(
+          homeController: homeController,
+        ));
   }
 }

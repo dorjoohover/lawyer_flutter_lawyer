@@ -1,26 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
 class PrimeLawyer extends GetView<PrimeController> {
-  const PrimeLawyer(
-      {super.key,
-      required this.description,
-      required this.name,
-      required this.profession,
-      required this.rating,
-      this.ratings,
-      required this.experience});
-  final String name;
-  final String profession;
-  final String experience;
-  final String rating;
-  final String description;
-  final List<Rating>? ratings;
+  const PrimeLawyer({
+    super.key,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,14 +61,16 @@ class PrimeLawyer extends GetView<PrimeController> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        name,
+                                        controller.selectedLawyer.value
+                                                ?.lastName ??
+                                            "",
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium,
                                       ),
                                       space4,
                                       Text(
-                                        profession,
+                                        'Хуульч',
                                         style: Theme.of(context)
                                             .textTheme
                                             .displaySmall,
@@ -105,7 +96,7 @@ class PrimeLawyer extends GetView<PrimeController> {
                                               ),
                                               space4,
                                               Text(
-                                                "$experience жил",
+                                                "${controller.selectedLawyer.value?.experience} жил",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleMedium,
@@ -133,7 +124,7 @@ class PrimeLawyer extends GetView<PrimeController> {
                                                   ),
                                                   space8,
                                                   Text(
-                                                    rating,
+                                                    "${controller.selectedLawyer.value?.ratingAvg ?? 0}",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .titleMedium,
@@ -149,22 +140,22 @@ class PrimeLawyer extends GetView<PrimeController> {
                                 ],
                               ),
                               space16,
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: OrderCard(
-                                        expiredTime: '1',
-                                        price: 1000000,
-                                        type: 'Онлайн зөвлөгөө'),
-                                  ),
-                                  space16,
-                                  Expanded(
-                                    child: OrderCard(
-                                        expiredTime: '1',
-                                        price: 1000000,
-                                        type: 'Биечлэн уулзах'),
-                                  )
-                                ],
+                              Container(
+                                width: double.infinity,
+                                alignment: Alignment.centerLeft,
+                                child: Wrap(
+                                    direction: Axis.horizontal,
+                                    alignment: WrapAlignment.start,
+                                    spacing: 12,
+                                    children: controller.lawyerPrice.map((e) {
+                                      return OrderCard(
+                                        expiredTime:
+                                            int.parse(e.expiredTime ?? '0'),
+                                        price:
+                                            double.parse('${e.price ?? '0'}'),
+                                        type: e.serviceType!,
+                                      );
+                                    }).toList()),
                               ),
                               space16,
                               Container(
@@ -183,7 +174,8 @@ class PrimeLawyer extends GetView<PrimeController> {
                                     ),
                                     space16,
                                     Text(
-                                      description,
+                                      controller.selectedLawyer.value?.bio ??
+                                          '',
                                       style: Theme.of(context)
                                           .textTheme
                                           .displayMedium,
@@ -201,8 +193,10 @@ class PrimeLawyer extends GetView<PrimeController> {
                                 ),
                               ),
                               space16,
-                              ratings != null
-                                  ? ClientRatingWidget(ratings: ratings!)
+                              controller.selectedLawyer.value?.rating != null
+                                  ? ClientRatingWidget(
+                                      ratings: controller
+                                          .selectedLawyer.value!.rating!)
                                   : const SizedBox(),
                               SizedBox(
                                 height:
@@ -220,9 +214,11 @@ class PrimeLawyer extends GetView<PrimeController> {
                   right: 16,
                   child: MainButton(
                     onPressed: () {
-                      Get.bottomSheet(OrderBottomSheet(
-                        title: 'Захиалгын төрөл сонгоно уу',
-                      ));
+                      Get.bottomSheet(
+                          isScrollControlled: true,
+                          OrderBottomSheet(
+                            title: 'Захиалгын төрөл сонгоно уу',
+                          ));
                     },
                     text: "Захиалга",
                     child: const SizedBox(),

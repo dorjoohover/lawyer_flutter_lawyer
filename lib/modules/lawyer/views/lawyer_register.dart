@@ -53,7 +53,7 @@ class LawyerRegisterView extends GetView<LawyerController> {
                   right: 0,
                   child: Obx(() => MainButton(
                         onPressed: () {
-                          Get.to(() => LawyerRegisterServiceView());
+                          // Get.to(() => LawyerRegisterServiceView());
                         },
                         disabled: controller.bio.value == "" ||
                             controller.experience.value == "",

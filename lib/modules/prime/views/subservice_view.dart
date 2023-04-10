@@ -20,70 +20,111 @@ class SubServiceView extends GetView<PrimeController> {
         appBar: PrimeAppBar(
           title: 'Дэлгэрэнгүй',
           onTap: () {
-            Get.to(() => const PrimeView());
+            Navigator.of(context).pop();
           },
         ),
         body: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
           child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: large, horizontal: origin),
-            height: MediaQuery.of(context).size.height - 76,
-            width: MediaQuery.of(context).size.width,
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              space32,
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              space16,
-              Text(
-                description,
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-              space32,
-              Text(
-                'Санал болгож буй хуульчид',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              space16,
-              Expanded(
-                  child: Obx(
-                () => controller.loading.value
-                    ? CircularProgressIndicator()
-                    : ListView.builder(
-                        itemCount: controller.lawyers.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Get.to(() => PrimeLawyer(
-                                      description:
-                                          controller.lawyers[index].bio ?? '',
-                                      experience: controller
-                                          .lawyers[index].experience
-                                          .toString(),
-                                      name:
-                                          controller.lawyers[index].lastname ??
+              padding: const EdgeInsets.only(
+                  bottom: origin, left: origin, right: origin),
+              height: defaultHeight(context) + 80,
+              width: MediaQuery.of(context).size.width,
+              child: Stack(
+                children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.error),
+                        space16,
+                        Text(
+                          title,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        space16,
+                        Text(
+                          description,
+                          style: Theme.of(context).textTheme.displayMedium,
+                        ),
+                        space32,
+                        Text(
+                          'Санал болгож буй хуульчид',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        space16,
+                        Flexible(
+                            child: Obx(
+                          () => controller.loading.value
+                              ? const SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator(),
+                                )
+                              : ListView.builder(
+                                  itemCount: controller.lawyers.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                        onTap: () async {
+                                          await controller
+                                              .getLawyerPrice(controller
+                                                  .lawyers[index].sId!, context);
+                                          controller.selectedLawyer.value =
+                                              controller.lawyers[index];
+                                          
+                                          controller.selectedLawyer.value =
+                                              controller.lawyers[index];
+                                          final date = controller
+                                              .lawyers[index].userServices
+                                              ?.firstWhere((ser) =>
+                                                  ser.serviceId ==
+                                                  controller
+                                                      .selectedService.value);
+
+                                          controller.selectedDate.value = DateTime
+                                              .fromMillisecondsSinceEpoch(date
+                                                      ?.serviceTypes
+                                                      ?.first
+                                                      .time
+                                                      ?.first
+                                                      .date ??
+                                                  DateTime.now()
+                                                      .millisecondsSinceEpoch);
+                                        },
+                                        child: MainLawyer(
+                                          bg: Colors.white,
+                                          experience: controller
+                                              .lawyers[index].experience
+                                              .toString(),
+                                          name: controller
+                                                  .lawyers[index].lastName ??
                                               "",
-                                      profession: 'Гэр бүлийн хуульч',
-                                      rating: controller
-                                          .lawyers[index].ratingAvg
-                                          .toString(),
-                                    ));
-                              },
-                              child: MainLawyer(
-                                experience: controller.lawyers[index].experience
-                                    .toString(),
-                                name: controller.lawyers[index].lastname ?? "",
-                                profession: 'Гэр бүлийн хуульч',
-                                rating: controller.lawyers[index].ratingAvg
-                                    .toString(),
+                                          profession: 'Гэр бүлийн хуульч',
+                                          rating: controller
+                                                  .lawyers[index].ratingAvg ??
+                                              0,
+                                        ));
+                                  },
+                                ),
+                        )),
+                        space16,
+                      ]),
+                  Positioned(
+                      bottom: MediaQuery.of(context).padding.bottom,
+                      left: 16,
+                      right: 16,
+                      child: MainButton(
+                        onPressed: () {
+                          Get.bottomSheet(
+                              isScrollControlled: true,
+                              OrderBottomSheet(
+                                title: 'Захиалгын төрөл сонгоно уу',
                               ));
                         },
-                      ),
-              ))
-            ]),
-          ),
+                        text: "Захиалга",
+                        child: const SizedBox(),
+                      ))
+                ],
+              )),
         ));
   }
 }

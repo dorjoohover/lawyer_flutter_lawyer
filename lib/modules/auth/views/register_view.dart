@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/auth.dart';
-import 'package:frontend/modules/auth/widgets/widgets.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
@@ -34,15 +33,15 @@ class RegisterView extends StatelessWidget {
                   ),
                   space32,
                   Input(
-                    focusNode: controller.firstnameFocus,
+                    focusNode: controller.firstNameFocus,
                     labelText: 'Овог',
-                    onChange: (p0) => {controller.firstname.value = p0},
+                    onChange: (p0) => {controller.firstName.value = p0},
                   ),
                   space16,
                   Input(
-                    focusNode: controller.lastnameFocus,
+                    focusNode: controller.lastNameFocus,
                     labelText: 'Нэр',
-                    onChange: (p0) => {controller.lastname.value = p0},
+                    onChange: (p0) => {controller.lastName.value = p0},
                   ),
                 ],
               ),
@@ -54,8 +53,8 @@ class RegisterView extends StatelessWidget {
                         onPressed: () {
                           Get.to(() => RegisterNumberView());
                         },
-                        disabled: controller.lastname.value == "" ||
-                            controller.firstname.value == '',
+                        disabled: controller.lastName.value == "" ||
+                            controller.firstName.value == '',
                         text: "Үргэлжлүүлэх",
                         child: const SizedBox(),
                       )))

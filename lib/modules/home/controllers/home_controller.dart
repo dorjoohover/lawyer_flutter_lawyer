@@ -10,13 +10,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../modules.dart';
 
 class HomeController extends GetxController
-    with StateMixin<Lawyer>, WidgetsBindingObserver {
+    with StateMixin<User>, WidgetsBindingObserver {
   final ApiRepository _apiRepository = Get.find();
   final showPerformanceOverlay = false.obs;
-  int currentIndex = 0;
+  final currentIndex = 0.obs;
   final isLoading = false.obs;
-  final rxUser = Rxn<Lawyer?>();
-  Lawyer? get user => rxUser.value;
+  final rxUser = Rxn<User?>();
+  User? get user => rxUser.value;
   set user(value) => rxUser.value = value;
 
   Widget getView(int index) {
@@ -25,6 +25,10 @@ class HomeController extends GetxController
         return const PrimeView();
       case 1:
         return const OrderTrackingPage();
+      case 2:
+        return user?.userType == 'lawyer'
+            ? const LawyerView()
+          : const SizedBox();
 
       default:
         return const Center(child: Text('Something went wrong'));
@@ -32,7 +36,7 @@ class HomeController extends GetxController
   }
 
   changeNavIndex(int index) {
-    currentIndex = index;
+    currentIndex.value = index;
     update();
   }
 
@@ -41,6 +45,9 @@ class HomeController extends GetxController
     try {
       user = await _apiRepository.getUser();
 
+      if (user?.userType == 'lawyer') {
+        changeNavIndex(2);
+      }
       change(user, status: RxStatus.success());
 
       isLoading.value = false;

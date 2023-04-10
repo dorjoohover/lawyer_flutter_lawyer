@@ -61,13 +61,15 @@ class OrderDetailView extends GetView<PrimeController> {
                         style: Theme.of(context).textTheme.displaySmall,
                       ),
                       space8,
-                      Text(
-                        status,
-                        style: Theme.of(context)
-                            .textTheme
-                            .displaySmall!
-                            .copyWith(color: success),
-                      ),
+                      status == 'active'
+                          ? Text(
+                              "Таны цаг бэлэн боллоо.",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(color: success),
+                            )
+                          : const SizedBox()
                     ],
                   )
                 ],
@@ -129,9 +131,54 @@ class OrderDetailView extends GetView<PrimeController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                type,
-                style: Theme.of(context).textTheme.labelMedium,
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical:
+                      type == 'onlineEmergency' || type == 'fulfilledEmergency'
+                          ? small
+                          : 0,
+                  horizontal:
+                      type == 'onlineEmergency' || type == 'fulfilledEmergency'
+                          ? origin
+                          : 0,
+                ),
+                decoration: BoxDecoration(
+                    color: type == 'onlineEmergency' ||
+                            type == 'fulfilledEmergency'
+                        ? lightError.withOpacity(0.2)
+                        : Colors.transparent,
+                    borderRadius: type == 'onlineEmergency' ||
+                            type == 'fulfilledEmergency'
+                        ? BorderRadius.circular(40)
+                        : BorderRadius.zero),
+                child: Row(
+                  children: [
+                    type == 'onlineEmergency' || type == 'fulfilledEmergency'
+                        ? Container(
+                            margin: const EdgeInsets.only(right: small),
+                            child: const Icon(
+                              Icons.error_outline,
+                              color: error,
+                            ))
+                        : const SizedBox(),
+                    Text(
+                      type == 'online'
+                          ? 'Онлайн уулзалт'
+                          : type == 'onlineEmergency'
+                              ? 'Яаралтай'
+                              : type == 'fulfilled'
+                                  ? 'Биечлэн уулзах'
+                                  : type == 'fulfilledEmergency'
+                                      ? 'Яаралтай'
+                                      : '',
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: type == 'onlineEmergency' ||
+                                  type == 'fulfilledEmergency'
+                              ? error
+                              : primary),
+                    ),
+                  ],
+                ),
               ),
               MainButton(
                 height: 40,
@@ -141,11 +188,20 @@ class OrderDetailView extends GetView<PrimeController> {
                 onPressed: onTap,
                 child: Row(
                   children: [
-                    Icon(Icons.camera),
+                    Icon(
+                        type == 'onlineEmergency'
+                            ? Icons.phone_forwarded
+                            : type == 'online'
+                                ? Icons.movie
+                                : Icons.error,
+                        size: 13),
                     space8,
                     Text(
-                      'start',
-                      style: Theme.of(context).textTheme.labelMedium,
+                      type == 'online' ? 'Дуудлага эхлүүлэх' : 'Байршил харах',
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium!
+                          .copyWith(color: Colors.white),
                     )
                   ],
                 ),

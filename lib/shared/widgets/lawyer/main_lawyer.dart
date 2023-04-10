@@ -14,7 +14,7 @@ class MainLawyer extends StatelessWidget {
   final String name;
   final String profession;
   final String experience;
-  final String rating;
+  final double rating;
   final Color bg;
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class MainLawyer extends StatelessWidget {
                     ),
                     space8,
                     Text(
-                      rating,
+                      rating.toString(),
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
                   ],

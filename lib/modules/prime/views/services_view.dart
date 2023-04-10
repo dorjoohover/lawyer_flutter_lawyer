@@ -5,11 +5,11 @@ import 'package:get/get.dart';
 import '../../../shared/index.dart';
 
 class ServicesView extends GetView<PrimeController> {
-  const ServicesView({super.key, required this.title});
+  const ServicesView({super.key, required this.title, required this.children});
   final String title;
+  final Widget children;
   @override
   Widget build(BuildContext context) {
-    final lawyerController = Get.put(LawyerController());
     return Scaffold(
         backgroundColor: bg,
         appBar: PrimeAppBar(
@@ -20,26 +20,11 @@ class ServicesView extends GetView<PrimeController> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: large, horizontal: origin),
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: controller.subServices.map((e) {
-                return GestureDetector(
-                  onTap: () {
-                    lawyerController.selectedAvailableDays.value?.date = e.sId!;
-                    Get.to(() => LawyerAvailableDays(
-                          onPressed: () async {
-                            await lawyerController.sendAddition();
-                          },
-                        ));
-                  },
-                  child: ServiceCard(text: e.title ?? ''),
-                );
-              }).toList(),
-            ),
-          ),
+              padding: const EdgeInsets.symmetric(
+                  vertical: origin, horizontal: origin),
+              height: defaultHeight(context) + 80,
+              width: MediaQuery.of(context).size.width,
+              child: children),
         ));
   }
 }

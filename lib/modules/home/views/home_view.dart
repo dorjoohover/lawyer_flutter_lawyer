@@ -70,7 +70,7 @@ class HomeView extends StatelessWidget {
                 ],
               ), (user) {
         return Scaffold(
-          body: controller.getView(controller.currentIndex),
+          body: controller.getView(controller.currentIndex.value),
         );
       }),
     );

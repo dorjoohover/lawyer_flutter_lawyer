@@ -24,10 +24,10 @@ class AuthController extends GetxController {
   final loginPhoneController = TextEditingController();
   final loginPasswordController = TextEditingController();
   // register
-  final lastnameFocus = FocusNode();
-  final firstnameFocus = FocusNode();
-  final lastname = "".obs;
-  final firstname = "".obs;
+  final lastNameFocus = FocusNode();
+  final firstNameFocus = FocusNode();
+  final lastName = "".obs;
+  final firstName = "".obs;
 
   final registerSymbol1 = registerSymbols[0].obs;
   final registerSymbol2 = registerSymbols[0].obs;
@@ -73,7 +73,7 @@ class AuthController extends GetxController {
       loading.value = true;
 
       final res = await apiRepository.register(registerPhone.value,
-          registerPassword.value, firstname.value, lastname.value);
+          registerPassword.value, firstName.value, lastName.value);
       _saveTokens(res);
       Get.snackbar(
         'Бүртгэл амжилттай',

@@ -10,24 +10,28 @@ class OrderCard extends StatelessWidget {
       required this.type});
   final String type;
   final double price;
-  final String expiredTime;
+  final int expiredTime;
 
   @override
   Widget build(BuildContext context) {
     final oCcy = NumberFormat("#,##0", "en_US");
     return Container(
+      constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width / 2 - medium),
       padding: const EdgeInsets.all(origin),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(origin), color: primary),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            type,
-            style: Theme.of(context)
-                .textTheme
-                .labelSmall!
-                .copyWith(color: Colors.white),
+          FittedBox(
+            child: Text(
+              serviceTypes.firstWhere((t) => t['id'] == type)['value'] ?? "",
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                    color: Colors.white,
+                  ),
+            ),
+            fit: BoxFit.contain,
           ),
           space4,
           Text(
@@ -46,7 +50,7 @@ class OrderCard extends StatelessWidget {
               ),
               space8,
               Text(
-                '$expiredTime цаг',
+                '${expiredTime >= 60 ? expiredTime ~/ 60 : expiredTime} ${expiredTime >= 60 ? 'цаг' : 'мин'}',
                 style: Theme.of(context)
                     .textTheme
                     .labelSmall!

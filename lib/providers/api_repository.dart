@@ -14,23 +14,23 @@ class ApiRepository {
   }
 
   Future<LoginResponse> register(
-      String phone, String password, String firstname, String lastname) async {
+      String phone, String password, String firstName, String lastName) async {
     final data = {
       "phone": phone,
       "password": password,
-      "firstname": firstname,
-      "lastname": lastname,
+      "firstName": firstName,
+      "lastName": lastName,
       "userType": "lawyer"
     };
     final res = await apiProvider.post('/auth/register', data: data);
     return LoginResponse.fromJson(res);
   }
 
-  Future<Lawyer> getUser() async {
+  Future<User> getUser() async {
     try {
       final response =
           await apiProvider.get('/user/me') as Map<String, dynamic>;
-      return Lawyer.fromJson(response);
+      return User.fromJson(response);
     } on Exception {
       rethrow;
     }
@@ -58,23 +58,37 @@ class ApiRepository {
     }
   }
 
-  Future<List<Lawyer>> suggestedLawyers() async {
+  Future<List<User>> suggestedLawyers() async {
     try {
       final response = await apiProvider.get('/user/suggest/lawyer');
-      final lawyers =
-          (response as List).map((e) => Lawyer.fromJson(e)).toList();
+      final lawyers = (response as List).map((e) => User.fromJson(e)).toList();
       return lawyers;
     } on Exception {
       rethrow;
     }
   }
 
-  Future<List<Lawyer>> suggestedLawyersByCategory(String id) async {
+
+
+  Future<List<User>> suggestedLawyersByCategory(String id) async {
     try {
       final response = await apiProvider.get('/user/suggest/lawyer/$id');
-      final lawyers =
-          (response as List).map((e) => Lawyer.fromJson(e)).toList();
+      final lawyers = (response as List).map((e) => User.fromJson(e)).toList();
       return lawyers;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<List<ServicePrice>> getPrice(
+      String lawyerId, String service, String serviceId) async {
+    try {
+      final response =
+          await apiProvider.get('/price/$serviceId/$service/$lawyerId');
+      print('/price/$serviceId/$service/$lawyerId');
+      final prices =
+          (response as List).map((e) => ServicePrice.fromJson(e)).toList();
+      return prices;
     } on Exception {
       rethrow;
     }
@@ -91,26 +105,28 @@ class ApiRepository {
     }
   }
 
-  Future<bool> createOrder(
-      int date, String lawyerId, String expiredTime, String serviceType) async {
+  Future<bool> createOrder(int date, String lawyerId, String expiredTime,
+      int price, String serviceType, String serviceId, String userId) async {
     try {
       final data = {
         "date": date,
-        "clientId": "string",
+        "clientId": userId,
         "lawyerId": lawyerId,
+        "serviceId": serviceId,
         "location": "string",
         "expiredTime": expiredTime,
         "serviceType": serviceType,
         "serviceStatus": "pending",
         "channelName": "string",
         "channelToken": "string",
+        "price": "$price",
         "lawyerToken": "string",
         "userToken": "string",
         // here
-        "serviceId": "string"
+        
       };
-      final response = await apiProvider.post('/order/true', data: data)
-          as Map<String, dynamic>;
+      final response =
+          await apiProvider.post('/order', data: data) as Map<String, dynamic>;
       return true;
     } on Exception {
       rethrow;
@@ -138,8 +154,7 @@ class ApiRepository {
   Future<bool> addAvailableDays(AvailableDay availableDay) async {
     try {
       final data = {
-        "date": availableDay.date,
-        "serviceTypeTime": availableDay.serviceTypeTime,
+        "serviceTypes": availableDay.serviceTypeTime,
         "serviceId": availableDay.serviceId,
       };
 

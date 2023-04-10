@@ -6,15 +6,27 @@ import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 
 import '../../../providers/providers.dart';
+import '../../../shared/index.dart';
 
 class PrimeController extends GetxController {
   final _apiRepository = Get.find<ApiRepository>();
+  final homeController = Get.put(HomeController());
   final services = <Service>[].obs;
   final subServices = <SubService>[].obs;
-  final lawyers = <Lawyer>[].obs;
+  final lawyers = <User>[].obs;
   final loading = false.obs;
   final selectedService = "".obs;
   final selectedServiceType = "".obs;
+  final selectedExpiredTime = "".obs;
+// order select date
+  final selectedLawyer = Rxn<User?>();
+  final selectedDate = DateTime.now().obs;
+  final selectedDay = Rxn<AvailableTime>();
+  final selectedTime = Rxn<SelectedTime>();
+  final serviceTypeTimes = <ServiceTypeTime>[].obs;
+  final lawyerPrice = <ServicePrice>[].obs;
+  final selectedAvailableDays =
+      AvailableDay(serviceId: "", serviceTypeTime: []).obs;
   final orders = <Order>[].obs;
   final audioController =
       Get.put<AudioController>(AudioController(), permanent: true);
@@ -24,6 +36,65 @@ class PrimeController extends GetxController {
   void onInit() async {
     await start();
     super.onInit();
+  }
+
+  getLawyerPrice(String lawyerId, BuildContext context) async {
+    try {
+      loading.value = true;
+      final res =
+          await _apiRepository.getPrice(lawyerId, 'any', selectedService.value);
+      lawyerPrice.value = res;
+
+      if (res.isNotEmpty) {
+        Get.to(() => const PrimeLawyer());
+      } else {
+        Get.snackbar('Уучлаарай', "Таны сонгосон хуульч үнэ оруулаагүй байна");
+      }
+      loading.value = false;
+    } on DioError catch (e) {
+      loading.value = false;
+      print(e.response);
+      Get.snackbar('Уучлаарай', "Таны сонгосон хуульч үнэ оруулаагүй байна");
+    }
+  }
+
+  sendOrder(BuildContext context) async {
+    try {
+      loading.value = true;
+      DateTime date = DateTime(
+          selectedDate.value.year,
+          selectedDate.value.month,
+          int.parse(selectedDay.value!.day!),
+          int.parse(selectedDay.value!.time![0].substring(0, 2)));
+      final prices = await _apiRepository.getPrice(
+        selectedLawyer.value!.sId!,
+        selectedServiceType.value,
+        selectedService.value,
+      );
+      final price = prices
+          .firstWhereOrNull((p) => p.serviceType == selectedServiceType.value);
+
+      final res = await _apiRepository.createOrder(
+          date.millisecondsSinceEpoch,
+          selectedLawyer.value!.sId!,
+          price!.expiredTime!,
+          price.price!,
+          selectedServiceType.value,
+          selectedService.value,
+          homeController.user!.sId!);
+      Navigator.of(context).push(createRoute(AlertView(
+          status: 'success',
+          text:
+              'Таны сонгосон хуульчтайгаа ${date.year / date.month / date.day}-ны өдрийн ${date.hour}:00 дуудлагаа хийнэ үү ')));
+      loading.value = false;
+    } on DioError catch (e) {
+      loading.value = false;
+      print(e.response);
+      Get.snackbar(
+        'Error',
+        'Something went wrong',
+      );
+    }
   }
 
   getChannelToken(String orderId, String channelName, String type,
@@ -42,26 +113,26 @@ class PrimeController extends GetxController {
             orderId, channelName, token.rtcToken!);
         if (res) {
           if (type == 'online') {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                          body: AudioView(
-                              channelName: channelName,
-                              token: token.rtcToken!,
-                              uid: 2),
-                        )));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => Scaffold(
+            //               body: AudioView(
+            //                   channelName: channelName,
+            //                   token: token.rtcToken!,
+            //                   uid: 2),
+            //             )));
           }
           if (type == 'fulfilled') {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                          body: VideoView(
-                              channelName: channelName,
-                              token: token.rtcToken!,
-                              uid: 2),
-                        )));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => Scaffold(
+            //               body: VideoView(
+            //                   channelName: channelName,
+            //                   token: token.rtcToken!,
+            //                   uid: 2),
+            //             )));
           }
         }
       }
@@ -86,12 +157,12 @@ class PrimeController extends GetxController {
     }
   }
 
-  getOrderList() async {
+  getOrderList(bool isLawyer) async {
     try {
       loading.value = true;
       final res = await _apiRepository.orderList();
       orders.value = res;
-      Get.to(() => OrdersView(title: 'Захиалгууд'));
+      Get.to(() => OrdersView(title: 'Захиалгууд', isLawyer: isLawyer,));
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
@@ -102,16 +173,18 @@ class PrimeController extends GetxController {
     }
   }
 
-  getSuggestLawyer(String title, String description, String sId) async {
+  getSuggestLawyer(String title, String description, String sId,
+      BuildContext context) async {
     try {
       loading.value = true;
+      Navigator.of(context).push(createRoute(SubServiceView(
+        title: title,
+        description: description,
+      )));
       selectedService.value = sId;
       final lRes = await _apiRepository.suggestedLawyersByCategory(sId);
       lawyers.value = lRes;
-      Get.to(() => SubServiceView(
-            title: title,
-            description: description,
-          ));
+
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
@@ -122,22 +195,22 @@ class PrimeController extends GetxController {
     }
   }
 
-  getSubServices(String id, String title) async {
+  Future<bool> getSubServices(String id) async {
     try {
       loading.value = true;
+
       final res = await _apiRepository.subServiceList(id);
       subServices.value = res;
 
-      Get.to(() => ServicesView(
-            title: title,
-          ));
       loading.value = false;
+      return true;
     } on DioError catch (e) {
       loading.value = false;
       Get.snackbar(
         'Error',
         e.response?.data ?? 'Something went wrong',
       );
+      return false;
     }
   }
 

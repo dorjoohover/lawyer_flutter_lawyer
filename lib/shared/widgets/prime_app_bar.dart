@@ -23,7 +23,7 @@ class PrimeAppBar extends StatelessWidget with PreferredSizeWidget {
   final MainAxisAlignment mainAxisAlignment;
   final Function() onTap;
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(76);
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +37,16 @@ class PrimeAppBar extends StatelessWidget with PreferredSizeWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-                onPressed: onTap,
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: primary,
-                )),
+            GestureDetector(
+              onTap: onTap,
+              child: Container(
+                  width: 50,
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.arrow_back_ios,
+                    color: primary,
+                  )),
+            ),
             Text(
               title,
               textAlign: TextAlign.center,
