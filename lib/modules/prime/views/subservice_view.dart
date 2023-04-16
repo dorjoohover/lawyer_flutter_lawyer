@@ -65,12 +65,12 @@ class SubServiceView extends GetView<PrimeController> {
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
                                         onTap: () async {
-                                          await controller
-                                              .getLawyerPrice(controller
-                                                  .lawyers[index].sId!, context);
+                                          await controller.getLawyerPrice(
+                                              controller.lawyers[index].sId!,
+                                              context);
                                           controller.selectedLawyer.value =
                                               controller.lawyers[index];
-                                          
+
                                           controller.selectedLawyer.value =
                                               controller.lawyers[index];
                                           final date = controller
@@ -91,18 +91,8 @@ class SubServiceView extends GetView<PrimeController> {
                                                       .millisecondsSinceEpoch);
                                         },
                                         child: MainLawyer(
-                                          bg: Colors.white,
-                                          experience: controller
-                                              .lawyers[index].experience
-                                              .toString(),
-                                          name: controller
-                                                  .lawyers[index].lastName ??
-                                              "",
-                                          profession: 'Гэр бүлийн хуульч',
-                                          rating: controller
-                                                  .lawyers[index].ratingAvg ??
-                                              0,
-                                        ));
+                                            bg: Colors.white,
+                                            user: controller.lawyers[index]));
                                   },
                                 ),
                         )),

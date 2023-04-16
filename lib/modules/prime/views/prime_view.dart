@@ -5,6 +5,7 @@ import 'package:frontend/modules/prime/prime.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:skeletons/skeletons.dart';
 
 class PrimeView extends GetView<PrimeController> {
   const PrimeView({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class PrimeView extends GetView<PrimeController> {
             // Get.to(() => LawyerRegisterView());
           },
           calendarTap: () async {
-            await controller.getOrderList(false);
+            await controller.getOrderList(false, context);
           },
         ),
         body: SafeArea(
@@ -87,7 +88,7 @@ class PrimeView extends GetView<PrimeController> {
                                             Colors.white)),
                                 onPressed: () {},
                                 child: Text(
-                                  'Click here to listen',
+                                  'Хуульч болох',
                                   style:
                                       Theme.of(context).textTheme.displaySmall,
                                 ))
@@ -102,7 +103,10 @@ class PrimeView extends GetView<PrimeController> {
                       space16,
                       Obx(
                         () => controller.loading.value
-                            ? const CircularProgressIndicator()
+                            ? SizedBox(
+                                height: 200,
+                                child: SkeletonListView(),
+                              )
                             : GridView.count(
                                 physics: const NeverScrollableScrollPhysics(),
                                 crossAxisCount: 2,
@@ -257,16 +261,7 @@ class PrimeView extends GetView<PrimeController> {
                                             createRoute(const PrimeLawyer()));
                                       },
                                       child: MainLawyer(
-                                          experience: controller
-                                              .lawyers[index].experience
-                                              .toString(),
-                                          name: controller
-                                                  .lawyers[index].lastName ??
-                                              "",
-                                          profession: "Хуульч",
-                                          rating: controller
-                                                  .lawyers[index].ratingAvg ??
-                                              0),
+                                          user: controller.lawyers[index]),
                                     )),
                                   ),
                           )),

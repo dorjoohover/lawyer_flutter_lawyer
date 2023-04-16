@@ -27,7 +27,7 @@ class UserServices {
 class ServiceTypes {
   String? serviceType;
   List<Time>? time;
-  Price? price;
+  int? price;
 
   ServiceTypes({this.serviceType, this.time, this.price});
 
@@ -39,18 +39,18 @@ class ServiceTypes {
         time!.add(Time.fromJson(v));
       });
     }
-    price = json['price'] != null ? Price.fromJson(json['price']) : null;
+    price = json['price'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['serviceType'] = this.serviceType;
+    data['serviceType'] = serviceType;
     if (time != null) {
       data['time'] = time!.map((v) => v.toJson()).toList();
     }
-    if (price != null) {
-      data['price'] = price!.toJson();
-    }
+
+    data['price'] = price;
+
     return data;
   }
 }
@@ -77,35 +77,6 @@ class Time {
   }
 }
 
-class Price {
-  String? sId;
-  String? serviceId;
-  List<ServicePrice>? servicePrice;
-
-  Price({this.sId, this.serviceId, this.servicePrice});
-
-  Price.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    serviceId = json['serviceId'];
-    if (json['servicePrice'] != null) {
-      servicePrice = <ServicePrice>[];
-      json['servicePrice'].forEach((v) {
-        servicePrice!.add(new ServicePrice.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['serviceId'] = this.serviceId;
-    if (this.servicePrice != null) {
-      data['servicePrice'] = this.servicePrice!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
 class ServicePrice {
   String? serviceType;
   int? price;
@@ -120,10 +91,10 @@ class ServicePrice {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['serviceType'] = this.serviceType;
-    data['price'] = this.price;
-    data['expiredTime'] = this.expiredTime;
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    data['serviceType'] = serviceType;
+    data['price'] = price;
+    data['expiredTime'] = expiredTime;
     return data;
   }
 }

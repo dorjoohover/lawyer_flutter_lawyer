@@ -5,7 +5,7 @@ class User {
   String? firstName;
   String? lastName;
   String? phone;
-  String? password;
+
   String? userType;
   double? ratingAvg;
   List<Experiences>? experiences;

@@ -16,6 +16,7 @@ class PrimeController extends GetxController {
   final lawyers = <User>[].obs;
   final loading = false.obs;
   final selectedService = "".obs;
+  final selectedSubService = "".obs;
   final selectedServiceType = "".obs;
   final selectedExpiredTime = "".obs;
 // order select date
@@ -108,43 +109,10 @@ class PrimeController extends GetxController {
 
       Agora token = await _apiRepository.getAgoraToken(channelName, '2');
 
-      if (token.rtcToken != null) {
-        bool res = await _apiRepository.setChannel(
-            orderId, channelName, token.rtcToken!);
-        if (res) {
-          if (type == 'online') {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => Scaffold(
-            //               body: AudioView(
-            //                   channelName: channelName,
-            //                   token: token.rtcToken!,
-            //                   uid: 2),
-            //             )));
-          }
-          if (type == 'fulfilled') {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => Scaffold(
-            //               body: VideoView(
-            //                   channelName: channelName,
-            //                   token: token.rtcToken!,
-            //                   uid: 2),
-            //             )));
-          }
-        }
-      }
-
-      // videoController.channelId.value =
-      //     DateTime.parse(channelName).millisecondsSinceEpoch.toString();
-      // videoController.channelToken.value =
-      //     "006a941d13a5641456b95014aa4fc703f70IAB24n+WHua5t7pquMygdN3qH6n7MuoNQxpF1FNEgTNe6PhB+WG379yDIgDHfjwFt8kYZAQAAQBfmxdkAgBfmxdkAwBfmxdkBABfmxdk";
-
-      // await videoController.initEngine();
-      // await videoController.joinChannel();
-      // Get.to(() => VideoView());
+      // if (token.rtcToken != null) {
+      //   bool res = await _apiRepository.setChannel(
+      //       orderId, channelName, token.rtcToken!);
+      // }
 
       loading.value = false;
     } on DioError catch (e) {
@@ -157,12 +125,15 @@ class PrimeController extends GetxController {
     }
   }
 
-  getOrderList(bool isLawyer) async {
+  getOrderList(bool isLawyer, BuildContext context) async {
     try {
       loading.value = true;
       final res = await _apiRepository.orderList();
       orders.value = res;
-      Get.to(() => OrdersView(title: 'Захиалгууд', isLawyer: isLawyer,));
+      Navigator.of(context).push(createRoute(OrdersView(
+        title: 'Захиалгууд',
+        isLawyer: isLawyer,
+      )));
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
@@ -181,8 +152,9 @@ class PrimeController extends GetxController {
         title: title,
         description: description,
       )));
-      selectedService.value = sId;
-      final lRes = await _apiRepository.suggestedLawyersByCategory(sId);
+      selectedSubService.value = sId;
+      final lRes = await _apiRepository.suggestedLawyersByCategory(
+          selectedService.value, sId);
       lawyers.value = lRes;
 
       loading.value = false;
@@ -198,7 +170,7 @@ class PrimeController extends GetxController {
   Future<bool> getSubServices(String id) async {
     try {
       loading.value = true;
-
+      selectedService.value = id;
       final res = await _apiRepository.subServiceList(id);
       subServices.value = res;
 
@@ -219,7 +191,9 @@ class PrimeController extends GetxController {
       loading.value = true;
       final res = await _apiRepository.servicesList();
       services.value = res;
-
+      final lRes = await _apiRepository.suggestedLawyers();
+      print(lRes);
+      lawyers.value = lRes;
       final ordersRes = await _apiRepository.orderList();
       orders.value = ordersRes;
 

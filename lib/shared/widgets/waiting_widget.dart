@@ -12,6 +12,7 @@ class WaitingChannelWidget extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           alignment: Alignment.center,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.timelapse, size: 80),
               space64,

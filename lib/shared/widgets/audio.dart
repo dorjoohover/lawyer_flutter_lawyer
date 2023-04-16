@@ -4,6 +4,7 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:frontend/config/agora.config.dart' as config;
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
@@ -80,6 +81,9 @@ class _State extends State<AudioView> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () async {
+      await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    });
     startTimer();
     _controller = TextEditingController(text: channelId);
     _initEngine();

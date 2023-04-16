@@ -17,7 +17,7 @@ class OrdersView extends GetView<PrimeController> {
         appBar: PrimeAppBar(
           title: title,
           onTap: () {
-            Get.to(() => const PrimeView());
+            Navigator.of(context).pop();
           },
         ),
         body: Container(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:agora_uikit/agora_uikit.dart';
 import 'package:agora_uikit/controllers/rtc_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:frontend/config/agora.config.dart' as config;
 import 'package:frontend/shared/constants/index.dart';
 import 'package:get/get.dart';
@@ -68,6 +69,9 @@ class _VideoViewState extends State<VideoView> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () async {
+      await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    });
     startTimer();
     client = AgoraClient(
       agoraConnectionData: AgoraConnectionData(

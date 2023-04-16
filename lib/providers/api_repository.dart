@@ -68,11 +68,11 @@ class ApiRepository {
     }
   }
 
-
-
-  Future<List<User>> suggestedLawyersByCategory(String id) async {
+  Future<List<User>> suggestedLawyersByCategory(
+      String id, String cateId) async {
     try {
-      final response = await apiProvider.get('/user/suggest/lawyer/$id');
+      final response =
+          await apiProvider.get('/user/suggest/lawyer/$id/$cateId');
       final lawyers = (response as List).map((e) => User.fromJson(e)).toList();
       return lawyers;
     } on Exception {
@@ -123,7 +123,6 @@ class ApiRepository {
         "lawyerToken": "string",
         "userToken": "string",
         // here
-        
       };
       final response =
           await apiProvider.post('/order', data: data) as Map<String, dynamic>;
@@ -167,13 +166,14 @@ class ApiRepository {
   }
 
   Future<bool> setChannel(
+    String url,
     String orderId,
     String channelName,
     String token,
   ) async {
     try {
       final response = await apiProvider.get(
-        '/order/token/$orderId/$channelName/{token}?token=${token}',
+        '/order/$url/token/$orderId/$channelName/{token}?token=${token}',
       ) as String;
       return true;
     } on Exception {

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,13 +23,18 @@ class LawyerController extends GetxController {
   final selectedDay = <AvailableTime>[].obs;
   final selectedTime = <SelectedTime>[].obs;
   final serviceTypeTimes = <ServiceTypeTime>[].obs;
+  final CarouselController carouselController = CarouselController();
+  final currentOrder = 0.obs;
   final selectedAvailableDays =
       Rxn<AvailableDay>(AvailableDay(serviceId: "", serviceTypeTime: []));
-
+  final fade = true.obs;
   final loading = false.obs;
 
   @override
   void onInit() async {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      fade.value = false;
+    });
     await start();
     super.onInit();
   }
@@ -56,7 +64,7 @@ class LawyerController extends GetxController {
           await _apiRepository.getAgoraToken(channelName, isLawyer ? '2' : '1');
 
       if (token.rtcToken != null) {
-        bool res = await _apiRepository.setChannel(
+        bool res = await _apiRepository.setChannel(isLawyer ? 'lawyer' : 'user',
             orderId, channelName, token.rtcToken!);
         if (res) {
           if (type == 'online') {
