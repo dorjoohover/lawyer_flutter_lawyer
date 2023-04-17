@@ -37,16 +37,12 @@ class PrimeAppBar extends StatelessWidget with PreferredSizeWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GestureDetector(
-              onTap: onTap,
-              child: Container(
-                  width: 50,
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.arrow_back_ios,
-                    color: primary,
-                  )),
-            ),
+            IconButton(
+                onPressed: onTap,
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: primary,
+                )),
             Text(
               title,
               textAlign: TextAlign.center,

@@ -2,10 +2,15 @@ import 'dart:async';
 
 import 'package:agora_uikit/agora_uikit.dart';
 import 'package:agora_uikit/controllers/rtc_buttons.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:frontend/config/agora.config.dart' as config;
+import 'package:frontend/data/data.dart';
+import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/constants/index.dart';
+import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
 class VideoView extends StatefulWidget {
@@ -15,6 +20,7 @@ class VideoView extends StatefulWidget {
       required this.channelName,
       required this.name,
       required this.isLawyer,
+      required this.order,
       required this.uid})
       : super(key: key);
   final String token;
@@ -22,6 +28,7 @@ class VideoView extends StatefulWidget {
   final int uid;
   final String name;
   final bool isLawyer;
+  final Order order;
   @override
   State<VideoView> createState() => _VideoViewState();
 }
@@ -30,10 +37,13 @@ class _VideoViewState extends State<VideoView> {
   late final AgoraClient client;
   bool isSwitchCamera = false;
   bool isMuted = false;
+  bool isSpeaker = false;
   bool isCamera = true;
   Timer? countdownTimer;
+  late Order order;
   Duration myDuration = Duration(minutes: 6);
-  Duration startDuration = Duration(seconds: 0);
+  final _apiRepository = Get.find<ApiRepository>();
+  // Duration startDuration = Duration(seconds: 0);
 
   void startTimer() {
     countdownTimer =
@@ -50,8 +60,7 @@ class _VideoViewState extends State<VideoView> {
     }
     if (myDuration.inSeconds < 1) {
       Get.snackbar('Анхааруулга', "Цаг дууслаа");
-      Navigator.pop(context);
-
+      Navigator.of(context).pop();
       await client.release();
     }
     final reduceSecondsBy = 1;
@@ -61,14 +70,27 @@ class _VideoViewState extends State<VideoView> {
         countdownTimer!.cancel();
       } else {
         myDuration = Duration(seconds: seconds);
-        startDuration = Duration(seconds: 360 - seconds);
       }
     });
+    // if (order.lawyerToken == 'string' &&
+    //     order.userToken == 'string' &&
+    //     myDuration.inSeconds % 5 == 0) {
+    //   Order getOrder = await _apiRepository.getChannel(order.sId!);
+    //   setState(() {
+    //     if (order.lawyerToken != 'string' && order.userToken != 'string') {
+    //       order = getOrder;
+    //       myDuration = Duration(seconds: getOrder.expiredTime! * 60);
+    //     }
+    //   });
+    // }
   }
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      order = widget.order;
+    });
     Future.delayed(Duration.zero, () async {
       await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     });
@@ -78,26 +100,31 @@ class _VideoViewState extends State<VideoView> {
           appId: config.appId,
           channelName: widget.channelName,
           tempToken: widget.token,
-          uid: widget.uid),
+          uid: widget.uid == 0 ? 1 : widget.uid),
     );
     initAgora();
   }
 
   void initAgora() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      await Permission.microphone.request();
+      await Permission.camera.request();
+    }
+
     await client.initialize();
   }
 
   Future<void> _onCallEnd(BuildContext context) async {
     Navigator.pop(context);
 
-    await client.release();
+    client.release();
   }
 
   @override
   Widget build(BuildContext context) {
     String strDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = strDigits(startDuration.inMinutes.remainder(60));
-    final seconds = strDigits(startDuration.inSeconds.remainder(60));
+    final minutes = strDigits(myDuration.inMinutes.remainder(60));
+    final seconds = strDigits(myDuration.inSeconds.remainder(60));
 
     return Scaffold(
       body: SafeArea(
@@ -136,6 +163,7 @@ class _VideoViewState extends State<VideoView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RawMaterialButton(
+                    constraints: BoxConstraints(minWidth: 70),
                     onPressed: () {
                       setState(() {
                         isMuted = !isMuted;
@@ -144,10 +172,9 @@ class _VideoViewState extends State<VideoView> {
                         sessionController: client.sessionController,
                       );
                     },
-                    child: Icon(
-                      !isMuted ? Icons.mic_off : Icons.mic,
-                      color: isMuted ? Colors.white : primary,
-                      size: 20.0,
+                    child: SvgPicture.asset(
+                      !isMuted ? svgMicrophone : svgMicrophoneDisable,
+                      width: 14,
                     ),
                     shape: CircleBorder(),
                     elevation: 2.0,
@@ -155,7 +182,30 @@ class _VideoViewState extends State<VideoView> {
                     padding: const EdgeInsets.all(origin),
                   ),
                   RawMaterialButton(
-                    onPressed: () => _onCallEnd(context),
+                    constraints: BoxConstraints(minWidth: 70),
+                    onPressed: () {
+                      setState(() {
+                        isSpeaker = !isSpeaker;
+                      });
+                      toggleMute(
+                        sessionController: client.sessionController,
+                      );
+                    },
+                    child: SvgPicture.asset(
+                      !isSpeaker ? svgVolume : svgVolumeDisable,
+                      width: 20,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: isSpeaker ? primary : Colors.white,
+                    padding: const EdgeInsets.all(origin),
+                  ),
+                  RawMaterialButton(
+                    constraints: BoxConstraints(minWidth: 70),
+                    onPressed: () {
+                      stopTimer();
+                      _onCallEnd(context);
+                    },
                     child: Icon(Icons.call_end, color: Colors.white, size: 35),
                     shape: CircleBorder(),
                     elevation: 2.0,
@@ -163,6 +213,7 @@ class _VideoViewState extends State<VideoView> {
                     padding: const EdgeInsets.all(origin),
                   ),
                   RawMaterialButton(
+                    constraints: BoxConstraints(minWidth: 60),
                     shape: CircleBorder(),
                     elevation: 2.0,
                     fillColor: isSwitchCamera ? primary : Colors.white,
@@ -182,17 +233,18 @@ class _VideoViewState extends State<VideoView> {
                     ),
                   ),
                   RawMaterialButton(
+                    constraints: BoxConstraints(minWidth: 70),
                     onPressed: () => toggleCamera(
                       sessionController: client.sessionController,
                     ),
                     child: Icon(
                       !isCamera ? Icons.videocam_off : Icons.videocam,
-                      color: isCamera ? Colors.white : primary,
+                      color: !isCamera ? Colors.white : primary,
                       size: 20.0,
                     ),
                     shape: CircleBorder(),
                     elevation: 2.0,
-                    fillColor: isCamera ? primary : Colors.white,
+                    fillColor: !isCamera ? primary : Colors.white,
                     padding: const EdgeInsets.all(origin),
                   )
                 ],

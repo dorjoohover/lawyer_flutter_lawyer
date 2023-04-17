@@ -4,12 +4,14 @@ class Order {
   ClientId? clientId;
   LawyerId? lawyerId;
   String? location;
-  String? expiredTime;
+  int? expiredTime;
   String? serviceType;
   String? serviceStatus;
   String? channelName;
   String? serviceId;
-  String? channelToken;
+  String? userToken;
+  String? lawyerToken;
+  String? price;
   String? createdAt;
   String? updatedAt;
 
@@ -23,7 +25,9 @@ class Order {
       this.serviceType,
       this.serviceStatus,
       this.channelName,
-      this.channelToken,
+      this.lawyerToken,
+      this.userToken,
+      this.price,
       this.createdAt,
       this.serviceId,
       this.updatedAt});
@@ -42,7 +46,9 @@ class Order {
     serviceType = json['serviceType'];
     serviceStatus = json['serviceStatus'];
     channelName = json['channelName'];
-    channelToken = json['channelToken'];
+    userToken = json['userToken'];
+    lawyerToken = json['lawyerToken'];
+    price = json['price'];
     serviceId = json['serviceId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -63,7 +69,9 @@ class Order {
     data['serviceType'] = this.serviceType;
     data['serviceStatus'] = this.serviceStatus;
     data['channelName'] = this.channelName;
-    data['channelToken'] = this.channelToken;
+    data['lawyerToken'] = this.lawyerToken;
+    data['userToken'] = this.userToken;
+    data['price'] = this.price;
     data['serviceId'] = this.serviceId;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;

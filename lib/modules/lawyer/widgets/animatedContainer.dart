@@ -6,17 +6,29 @@ class LawyerAnimationContainer extends StatelessWidget {
   const LawyerAnimationContainer(
       {super.key,
       required this.child,
-      this.duration = const Duration(seconds: 1)});
+      this.opacity = -1,
+      this.duration = const Duration(milliseconds: 375)});
 
   final Duration duration;
+  final double? opacity;
   final Widget child;
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerController());
-    return Obx(() => AnimatedOpacity(
-          opacity: controller.fade.value ? 0 : 1,
+    return Obx(() => AnimatedPadding(
+          padding: EdgeInsets.symmetric(
+            vertical: controller.fade.value ? 32 : 0,
+          ),
           duration: duration,
-          child: child,
+          child: AnimatedOpacity(
+            opacity: opacity == -1
+                ? controller.fade.value
+                    ? 0
+                    : 1
+                : opacity!,
+            duration: duration,
+            child: child,
+          ),
         ));
   }
 }

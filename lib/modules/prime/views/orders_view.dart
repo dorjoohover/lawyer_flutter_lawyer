@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -22,32 +23,27 @@ class OrdersView extends GetView<PrimeController> {
         ),
         body: Container(
           padding:
-              const EdgeInsets.symmetric(vertical: large, horizontal: origin),
+              const EdgeInsets.only(bottom: large, right: origin, left: origin),
           height: MediaQuery.of(context).size.height -
               MediaQuery.of(context).padding.top,
           width: MediaQuery.of(context).size.width,
           child: SingleChildScrollView(
-            child: Column(
-              children: controller.orders.map((e) {
-                return GestureDetector(
-                  onTap: () {
-                    // controller.getSuggestLawyer(
-                    //     e.title!, e.description!, e.sId!);
-                  },
-                  child: Container(
+            child: AnimationLimiter(
+                child: Column(
+              children: AnimationConfiguration.toStaggeredList(
+                duration: const Duration(milliseconds: 1000),
+                childAnimationBuilder: (p0) => SlideAnimation(
+                    verticalOffset: 50,
+                    child: FadeInAnimation(
+                      child: p0,
+                    )),
+                children: controller.orders.map((e) {
+                  return Container(
                       margin: const EdgeInsets.only(bottom: origin),
                       child: OrderDetailView(
                           onTap: () async {
                             lawyerController.getChannelToken(
-                                e.sId!,
-                                e.channelName!,
-                                e.serviceType!,
-                                context,
-                                isLawyer,
-                                isLawyer
-                                    ? e.clientId?.lastName ?? ""
-                                    : e.lawyerId?.lastName ?? "",
-                                '');
+                                e, context, isLawyer, '');
                           },
                           date: DateFormat('yyyy/MM/dd').format(
                               DateTime.fromMillisecondsSinceEpoch(e.date!)),
@@ -57,11 +53,12 @@ class OrdersView extends GetView<PrimeController> {
                           name: isLawyer
                               ? e.clientId?.lastName ?? ""
                               : e.lawyerId?.lastName ?? "",
+                          image: !isLawyer ? e.lawyerId?.profileImg ?? "" : "",
                           status: e.serviceStatus ?? "",
-                          profession: isLawyer ? 'Үйлчлүүлэгч' : "Хуульч")),
-                );
-              }).toList(),
-            ),
+                          profession: isLawyer ? 'Үйлчлүүлэгч' : "Хуульч"));
+                }).toList(),
+              ),
+            )),
           ),
         ));
   }

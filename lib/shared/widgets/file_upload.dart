@@ -48,10 +48,7 @@ class FileUploadView extends GetView<OrderController> {
                   SizedBox(
                     width: double.infinity,
                     child: MainButton(
-                      onPressed: () {
-                        controller.createOrder("6414981cf5e1943905b42cc5",
-                            primeController.selectedServiceType.value);
-                      },
+                      onPressed: () {},
                       text: "Алгасах",
                       child: const SizedBox(),
                     ),

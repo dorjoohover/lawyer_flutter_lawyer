@@ -1,4 +1,3 @@
-const landrinaSolid = 'LondrinaSolid';
 const userNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
@@ -6,32 +5,27 @@ const userNavbar = [
     'label': 'Нүүр',
   },
   {
-    'icon': 'assets/svgs/navigationBar/emergency.svg',
-    'activeIcon': 'assets/svgs/navigationBar/emergencyActive.svg',
-    'label': 'Яаралтай',
-  },
-  {
     'icon': 'assets/svgs/navigationBar/notary.svg',
     'activeIcon': 'assets/svgs/navigationBar/notaryActive.svg',
     'label': 'Нотариат',
+  },
+  {
+    'icon': 'assets/svgs/navigationBar/emergency.svg',
+    'activeIcon': 'assets/svgs/navigationBar/emergencyActive.svg',
+    'label': 'Яаралтай',
   },
   {
     'icon': 'assets/svgs/navigationBar/podcast.svg',
     'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
     'label': 'Подкаст',
   },
-];
-const lawyerNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
     'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
-    'label': 'Нүүр',
+    'label': 'Гарах',
   },
-  {
-    'icon': 'assets/svgs/navigationBar/emergency.svg',
-    'activeIcon': 'assets/svgs/navigationBar/emergencyActive.svg',
-    'label': 'Яаралтай',
-  },
+];
+const lawyerNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
     'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
@@ -43,9 +37,19 @@ const lawyerNavbar = [
     'label': 'Нотариат',
   },
   {
+    'icon': 'assets/svgs/navigationBar/emergency.svg',
+    'activeIcon': 'assets/svgs/navigationBar/emergencyActive.svg',
+    'label': 'Яаралтай',
+  },
+  {
     'icon': 'assets/svgs/navigationBar/podcast.svg',
     'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
     'label': 'Подкаст',
+  },
+  {
+    'icon': 'assets/svgs/navigationBar/home.svg',
+    'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
+    'label': 'Гарах',
   },
 ];
 const serviceTypes = [

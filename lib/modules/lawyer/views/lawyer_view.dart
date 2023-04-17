@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
@@ -23,237 +25,286 @@ class LawyerView extends GetView<LawyerController> {
           calendar: true,
           settings: true,
           settingTap: () async {
-            Get.to(() => LawyerRegisterView());
+            if (homeController.currentUserType.value == 'user') {
+              homeController.currentUserType.value = 'lawyer';
+            } else {
+              homeController.currentUserType.value = 'user';
+            }
+            homeController.getView(homeController.currentIndex.value);
           },
           calendarTap: () async {
-            await authController.logout();
+            Get.to(() => LawyerRegisterView());
           },
         ),
         body: SafeArea(
-          child: RefreshIndicator(
-              onRefresh: () async {
-                await controller.start();
-              },
-              child: SingleChildScrollView(
+            child: RefreshIndicator(
+                onRefresh: () async {
+                  await controller.start();
+                },
                 child: Container(
                   color: bg,
-                  height: defaultHeight(context),
                   width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(origin),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      LawyerAnimationContainer(
-                        child: MainLawyer(
-                          bg: Colors.white,
-                          user: homeController.user ?? User(),
-                        ),
-                      ),
-                      space16,
-                      Row(
-                        children: [
-                          Expanded(
-                            child: LawyerAnimationContainer(
-                                child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(origin)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Энэ сарын орлого'),
-                                  Text(
-                                    oCcy.format(50000),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(color: success),
-                                  )
-                                ],
-                              ),
-                            )),
-                          ),
-                          space8,
-                          Expanded(
-                              child: LawyerAnimationContainer(
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(origin)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Энэ сарын орлого'),
-                                  Text(
-                                    '${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(color: primary),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ))
-                        ],
-                      ),
-                      space16,
-                      LawyerAnimationContainer(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Захиалгууд',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              primeController.getOrderList(true, context);
-                            },
-                            child: Text(
-                              "Бүх захиалгууд",
-                              style: Theme.of(context).textTheme.displaySmall,
-                            ),
-                          )
-                        ],
-                      )),
-                      space16,
-                      Obx(() => primeController.orders.isNotEmpty &&
-                              !primeController.loading.value
-                          ? SizedBox(
-                              height: 216,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: CarouselSlider(
-                                      carouselController:
-                                          controller.carouselController,
-                                      options: CarouselOptions(
-                                          enableInfiniteScroll: false,
-                                          height: 200.0,
-                                          viewportFraction: 0.95,
-                                          onPageChanged: (index, reason) =>
-                                              controller.currentOrder.value =
-                                                  index,
-                                          padEnds: false),
-                                      items: primeController.orders.map((i) {
-                                        return Builder(
-                                          builder: (BuildContext context) {
-                                            return Container(
-                                              margin: const EdgeInsets.only(
-                                                  right: small),
-                                              child: LawyerAnimationContainer(
-                                                child: OrderDetailView(
-                                                    onTap: () async {
-                                                      controller
-                                                          .getChannelToken(
-                                                              i.sId!,
-                                                              i.channelName!,
-                                                              i.serviceType!,
-                                                              context,
-                                                              true,
-                                                              i.clientId!
-                                                                  .lastName!,
-                                                              '');
-                                                    },
-                                                    date: DateFormat(
-                                                            'yyyy/MM/dd')
-                                                        .format(DateTime
-                                                            .fromMillisecondsSinceEpoch(
-                                                                i.date!)),
-                                                    time: DateFormat(
-                                                            'hh:mm')
-                                                        .format(DateTime
-                                                            .fromMillisecondsSinceEpoch(
-                                                                i.date!)),
-                                                    type: i.serviceType ?? "",
-                                                    name:
-                                                        i.clientId?.lastName ??
-                                                            "",
-                                                    status:
-                                                        i.serviceStatus ?? "",
-                                                    profession: 'Үйлчлүүлэгч'),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      }).toList(),
+                  padding: const EdgeInsets.only(
+                      left: origin, top: origin, right: origin),
+                  child: SingleChildScrollView(
+                      child: LawyerAnimationContainer(
+                    child: AnimationLimiter(
+                      child: Column(
+                          children: AnimationConfiguration.toStaggeredList(
+                              duration: const Duration(milliseconds: 375),
+                              childAnimationBuilder: (widget) => SlideAnimation(
+                                    verticalOffset: 50.0,
+                                    child: FadeInAnimation(
+                                      child: widget,
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: primeController.orders.map((e) {
-                                      final i =
-                                          primeController.orders.indexOf(e);
-                                      return GestureDetector(
-                                          onTap: () => controller
-                                              .carouselController
-                                              .animateToPage(i),
-                                          child: Container(
-                                            width: 8.0,
-                                            height: 8.0,
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 8.0, horizontal: 4.0),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: controller
-                                                          .currentOrder.value ==
-                                                      i
-                                                  ? gold
-                                                  : line,
+                              children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                MainLawyer(
+                                  bg: Colors.white,
+                                  user: homeController.user ?? User(),
+                                ),
+                                space16,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(origin)),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Энэ сарын орлого'),
+                                            Text(
+                                              oCcy.format(50000),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge!
+                                                  .copyWith(color: success),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    space8,
+                                    Expanded(
+                                        child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(origin)),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Энэ сарын орлого'),
+                                          Text(
+                                            '${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge!
+                                                .copyWith(color: primary),
+                                          )
+                                        ],
+                                      ),
+                                    ))
+                                  ],
+                                ),
+                                space16,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Захиалгууд',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        primeController.getOrderList(
+                                            true, context);
+                                      },
+                                      child: Text(
+                                        "Бүх захиалгууд",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displaySmall,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                space16,
+                                Obx(() => primeController.orders.isNotEmpty &&
+                                        !primeController.loading.value
+                                    ? SizedBox(
+                                        height: 216,
+                                        child: AnimationLimiter(
+                                          child: Column(
+                                              children: AnimationConfiguration
+                                                  .toStaggeredList(
+                                            duration: const Duration(
+                                                milliseconds: 375),
+                                            childAnimationBuilder: (widget) =>
+                                                SlideAnimation(
+                                              horizontalOffset: 50.0,
+                                              child: FadeInAnimation(
+                                                child: widget,
+                                              ),
                                             ),
-                                          ));
-                                    }).toList(),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : SizedBox(
-                              height: 200,
-                              child: SkeletonListView(),
-                            )),
-                      space32,
-                      homeController.user!.rating!.isNotEmpty
-                          ? ClientRatingWidget(
-                              ratings: homeController.user!.rating!)
-                          : const SizedBox(),
-                      space16,
-                      LawyerAnimationContainer(
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(context,
-                                    createRoute(const LawyerRegisterService()));
-                              },
-                              child: const CardContainer(
-                                value: 'Үйлчилгээний боломжит цаг тохируулах',
-                                title: Icon(Icons.timelapse),
-                              ),
-                            )),
-                            space16,
-                            Expanded(
-                                child: GestureDetector(
-                              onTap: () {
-                                homeController.currentIndex(0);
-                              },
-                              child: const CardContainer(
-                                value: 'Хэрэглэгч цэс рүү буцах',
-                                title: Icon(Icons.lock_clock),
-                              ),
-                            )),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )),
-        ),
+                                            children: [
+                                              CarouselSlider(
+                                                carouselController: controller
+                                                    .carouselController,
+                                                options: CarouselOptions(
+                                                    enableInfiniteScroll: false,
+                                                    height: 185.0,
+                                                    viewportFraction: 0.95,
+                                                    onPageChanged:
+                                                        (index, reason) =>
+                                                            controller
+                                                                .currentOrder
+                                                                .value = index,
+                                                    padEnds: false),
+                                                items: primeController.orders
+                                                    .map((i) {
+                                                  return Builder(
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return Container(
+                                                        margin: const EdgeInsets
+                                                            .only(right: small),
+                                                        child: OrderDetailView(
+                                                            onTap: () async {
+                                                              controller
+                                                                  .getChannelToken(
+                                                                      i,
+                                                                      context,
+                                                                      true,
+                                                                      '');
+                                                            },
+                                                            date: DateFormat(
+                                                                    'yyyy/MM/dd')
+                                                                .format(DateTime
+                                                                    .fromMillisecondsSinceEpoch(i
+                                                                        .date!)),
+                                                            time: DateFormat(
+                                                                    'hh:mm')
+                                                                .format(DateTime
+                                                                    .fromMillisecondsSinceEpoch(i
+                                                                        .date!)),
+                                                            type:
+                                                                i.serviceType ??
+                                                                    "",
+                                                            name: i.clientId
+                                                                    ?.lastName ??
+                                                                "",
+                                                            image: '',
+                                                            status:
+                                                                i.serviceStatus ??
+                                                                    "",
+                                                            profession:
+                                                                'Үйлчлүүлэгч'),
+                                                      );
+                                                    },
+                                                  );
+                                                }).toList(),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: primeController.orders
+                                                    .map((e) {
+                                                  final i = primeController
+                                                      .orders
+                                                      .indexOf(e);
+                                                  return GestureDetector(
+                                                      onTap: () => controller
+                                                          .carouselController
+                                                          .animateToPage(i),
+                                                      child: Container(
+                                                        width: 8.0,
+                                                        height: 8.0,
+                                                        margin: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 8.0,
+                                                                horizontal:
+                                                                    4.0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color: controller
+                                                                      .currentOrder
+                                                                      .value ==
+                                                                  i
+                                                              ? gold
+                                                              : line,
+                                                        ),
+                                                      ));
+                                                }).toList(),
+                                              ),
+                                            ],
+                                          )),
+                                        ),
+                                      )
+                                    : SizedBox(
+                                        height: 200,
+                                        child: SkeletonListView(),
+                                      )),
+                                homeController.user!.rating!.isNotEmpty
+                                    ? space32
+                                    : const SizedBox(),
+                                homeController.user!.rating!.isNotEmpty
+                                    ? ClientRatingWidget(
+                                        ratings: homeController.user!.rating!)
+                                    : const SizedBox(),
+                                space16,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            createRoute(
+                                                const LawyerRegisterService()));
+                                      },
+                                      child: CardContainer(
+                                        value:
+                                            'Үйлчилгээний боломжит цаг тохируулах',
+                                        title: SvgPicture.asset(svgClock),
+                                      ),
+                                    )),
+                                    space16,
+                                    Expanded(
+                                        child: GestureDetector(
+                                      onTap: () {
+                                        homeController.currentIndex(0);
+                                      },
+                                      child: CardContainer(
+                                        value: 'Хэрэглэгч цэс рүү буцах',
+                                        title: SvgPicture.asset(svgRefresh),
+                                      ),
+                                    )),
+                                  ],
+                                ),
+                                space16
+                              ],
+                            ),
+                          ])),
+                    ),
+                  )),
+                ))),
         bottomNavigationBar: MainNavigationBar(
           homeController: homeController,
         ));

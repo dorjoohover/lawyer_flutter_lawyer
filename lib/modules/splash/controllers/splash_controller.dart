@@ -38,7 +38,6 @@ class SplashController extends GetxController {
         );
       } else {
         if (isCurrent) {
-          /// Current version app is running
           _checkAuthStatus();
         } else {
           _showUpdateDialog();
@@ -107,25 +106,25 @@ class SplashController extends GetxController {
   // }
 
   _showUpdateDialog() {
-    Get.defaultDialog(
-      barrierDismissible: false,
-      title: 'Update Available',
-      middleText: 'Please update the app to continue',
-      textConfirm: 'Update',
-      confirmTextColor: Colors.white,
-      onConfirm: () async {
-        const url = 'https://testflight.apple.com/join/krCWIXJr';
-        if (await launchUrl(Uri.parse(url))) {
-          canLaunchUrl(Uri.parse(url));
-        } else {
-          throw 'Cannot load url';
-        }
-        // StoreLauncher().open(
-        //   androidAppBundleId: 'com.eve_flashcards',
-        //   appStoreId: 'id1520000000',
-        // );
-      },
-    );
+    // Get.defaultDialog(
+    //   barrierDismissible: false,
+    //   title: 'Update Available',
+    //   middleText: 'Please update the app to continue',
+    //   textConfirm: 'Update',
+    //   confirmTextColor: Colors.white,
+    //   onConfirm: () async {
+    //     const url = 'https://testflight.apple.com/join/krCWIXJr';
+    //     if (await launchUrl(Uri.parse(url))) {
+    //       canLaunchUrl(Uri.parse(url));
+    //     } else {
+    //       throw 'Cannot load url';
+    //     }
+    //     // StoreLauncher().open(
+    //     //   androidAppBundleId: 'com.eve_flashcards',
+    //     //   appStoreId: 'id1520000000',
+    //     // );
+    //   },
+    // );
   }
 
   @override

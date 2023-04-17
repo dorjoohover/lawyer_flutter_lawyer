@@ -49,6 +49,8 @@ class User {
       json['rating'].forEach((v) {
         rating!.add(Rating.fromJson(v));
       });
+    } else {
+      rating = <Rating>[];
     }
     userStatus = json['userStatus'];
     if (json['userServices'] != null) {

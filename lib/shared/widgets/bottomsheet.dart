@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/data.dart';
+import 'package:frontend/data/models/available_days.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
@@ -30,22 +32,14 @@ class OrderBottomSheet extends GetView<PrimeController> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      icon: Icon(Icons.cancel))
+                      icon: const Icon(Icons.cancel))
                 ],
               ),
               controller.selectedLawyer.value?.userServices?.firstWhereOrNull(
-                              (ser) =>
-                                  ser.serviceId ==
-                                  controller.selectedService.value) !=
-                          null &&
-                      controller.selectedLawyer.value?.userServices
-                              ?.firstWhereOrNull((ser) =>
-                                  ser.serviceId ==
-                                  controller.selectedService.value)
-                              ?.serviceTypes
-                              ?.firstWhereOrNull(
-                                  (type) => type.serviceType == 'fulfilled') !=
-                          null
+                          (ser) =>
+                              ser.serviceId ==
+                              controller.selectedService.value) ==
+                      null
                   ? Padding(
                       padding: const EdgeInsets.symmetric(vertical: 24),
                       child: Row(
@@ -53,7 +47,7 @@ class OrderBottomSheet extends GetView<PrimeController> {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.person),
+                                const Icon(Icons.person),
                                 space16,
                                 Text(
                                   'Биечлэн уулзах',
@@ -65,23 +59,17 @@ class OrderBottomSheet extends GetView<PrimeController> {
                             IconButton(
                                 onPressed: () {
                                   controller.selectedServiceType.value =
-                                      "fulfilled";
-
-                                  if (controller.selectedLawyer.value != null) {
-                                    Navigator.of(context)
-                                        .push(createRoute(const OrderView()));
-                                  }
+                                      ServiceTypes(serviceType: 'online');
+                                  controller.getSuggestLawyer(
+                                      '',
+                                      '',
+                                      controller.selectedService.value,
+                                      context);
                                 },
                                 icon: const Icon(Icons.arrow_forward_ios)),
                           ]),
                     )
-                  : space24,
-              controller.selectedLawyer.value?.userServices?.firstWhereOrNull(
-                              (ser) =>
-                                  ser.serviceId ==
-                                  controller.selectedService.value) !=
-                          null &&
-                      controller.selectedLawyer.value?.userServices
+                  : controller.selectedLawyer.value?.userServices
                               ?.firstWhereOrNull((ser) =>
                                   ser.serviceId ==
                                   controller.selectedService.value)
@@ -89,12 +77,57 @@ class OrderBottomSheet extends GetView<PrimeController> {
                               ?.firstWhereOrNull(
                                   (type) => type.serviceType == 'online') !=
                           null
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.person),
+                                    space16,
+                                    Text(
+                                      'Биечлэн уулзах',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayMedium,
+                                    )
+                                  ],
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      if (controller.selectedLawyer.value !=
+                                          null) {
+                                        controller.selectedServiceType.value =
+                                            controller.selectedLawyer.value
+                                                ?.userServices!
+                                                .firstWhere((ser) =>
+                                                    ser.serviceId ==
+                                                    controller
+                                                        .selectedService.value)
+                                                .serviceTypes!
+                                                .firstWhere((type) =>
+                                                    type.serviceType ==
+                                                    'online');
+                                        Navigator.of(context).push(
+                                            createRoute(const OrderView()));
+                                      }
+                                    },
+                                    icon: const Icon(Icons.arrow_forward_ios)),
+                              ]),
+                        )
+                      : space24,
+              controller.selectedLawyer.value?.userServices?.firstWhereOrNull(
+                          (ser) =>
+                              ser.serviceId ==
+                              controller.selectedService.value) ==
+                      null
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.camera),
+                            const Icon(Icons.camera),
                             space16,
                             Text(
                               'Онлайн зөвлөгөө авах',
@@ -104,17 +137,55 @@ class OrderBottomSheet extends GetView<PrimeController> {
                         ),
                         IconButton(
                             onPressed: () {
-                              controller.selectedServiceType.value = "online";
-
-                              if (controller.selectedLawyer != null) {
-                                Navigator.of(context)
-                                    .push(createRoute(const OrderView()));
-                              }
+                              controller.selectedServiceType.value =
+                                  ServiceTypes(serviceType: 'onlineEmergency');
+                              controller.getSuggestLawyer('', '',
+                                  controller.selectedService.value, context);
                             },
                             icon: const Icon(Icons.arrow_forward_ios))
                       ],
                     )
-                  : SizedBox(),
+                  : controller.selectedLawyer.value?.userServices
+                              ?.firstWhereOrNull((ser) =>
+                                  ser.serviceId ==
+                                  controller.selectedService.value)
+                              ?.serviceTypes
+                              ?.firstWhereOrNull((type) =>
+                                  type.serviceType == 'onlineEmergency') !=
+                          null
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.camera),
+                                space16,
+                                Text(
+                                  'Онлайн зөвлөгөө авах',
+                                  style:
+                                      Theme.of(context).textTheme.displayMedium,
+                                )
+                              ],
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  controller.selectedServiceType.value =
+                                      controller
+                                          .selectedLawyer.value?.userServices!
+                                          .firstWhere((ser) =>
+                                              ser.serviceId ==
+                                              controller.selectedService.value)
+                                          .serviceTypes!
+                                          .firstWhere((type) =>
+                                              type.serviceType ==
+                                              'onlineEmergency');
+                                  Navigator.of(context)
+                                      .push(createRoute(const OrderView()));
+                                },
+                                icon: const Icon(Icons.arrow_forward_ios))
+                          ],
+                        )
+                      : const SizedBox(),
               space24
             ],
           ),

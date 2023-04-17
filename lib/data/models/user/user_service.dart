@@ -28,6 +28,7 @@ class ServiceTypes {
   String? serviceType;
   List<Time>? time;
   int? price;
+  int? expiredTime;
 
   ServiceTypes({this.serviceType, this.time, this.price});
 
@@ -40,6 +41,7 @@ class ServiceTypes {
       });
     }
     price = json['price'];
+    expiredTime = json['expiredTime'];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +52,7 @@ class ServiceTypes {
     }
 
     data['price'] = price;
+    data['expiredTime'] = expiredTime;
 
     return data;
   }
@@ -91,7 +94,7 @@ class ServicePrice {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  <String, dynamic>{};
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['serviceType'] = serviceType;
     data['price'] = price;
     data['expiredTime'] = expiredTime;

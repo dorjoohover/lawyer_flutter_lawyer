@@ -16,7 +16,9 @@ class MainNavigationBar extends StatelessWidget {
           ? lawyerNavbar.map((e) {
               NavigationDestination body;
               body = NavigationDestination(
-                icon: SvgPicture.asset(e['icon']!),
+                icon: SvgPicture.asset(
+                  e['icon']!,
+                ),
                 selectedIcon: SvgPicture.asset(e['activeIcon']!),
                 label: e['label']!,
               );

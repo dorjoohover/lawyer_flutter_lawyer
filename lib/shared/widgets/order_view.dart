@@ -22,7 +22,8 @@ class OrderView extends GetView<PrimeController> {
                 (ser) => ser.serviceId == controller.selectedService.value)
             .serviceTypes
             ?.firstWhere((type) =>
-                type.serviceType == controller.selectedServiceType.value)
+                type.serviceType ==
+                controller.selectedServiceType.value?.serviceType)
             .time
             ?.where((t) =>
                 (t.date ?? 0) >=
@@ -209,7 +210,6 @@ class OrderView extends GetView<PrimeController> {
           ),
         ));
   }
-
 }
 
 class AvailableDays extends StatelessWidget {

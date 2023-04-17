@@ -32,61 +32,72 @@ class LawyerController extends GetxController {
 
   @override
   void onInit() async {
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       fade.value = false;
     });
     await start();
     super.onInit();
   }
 
-  getChannelToken(
-      String orderId,
-      String channelName,
-      String type,
-      BuildContext context,
-      bool isLawyer,
-      String name,
+  getOrderDetail(String id) async {
+    try {
+      Order order = await _apiRepository.getChannel(id);
+      return order;
+    } on DioError catch (e) {
+      Get.snackbar(e.message ?? '', 'error');
+    }
+  }
+
+  getChannelToken(Order order, BuildContext context, bool isLawyer,
       String? profileImg) async {
     try {
       loading.value = true;
-      if (type == 'online') {
-        Navigator.of(context).push(createRoute(Scaffold(
-          body: WaitingChannelWidget(
-            isLawyer: isLawyer,
-          ),
-        )));
-      }
-      if (channelName == 'string') {
-        channelName = DateTime.now().millisecondsSinceEpoch.toString();
+      Order getOrder = await _apiRepository.getChannel(order.sId!);
+      Navigator.of(context).push(createRoute(Scaffold(
+        body: WaitingChannelWidget(
+          isLawyer: isLawyer,
+        ),
+      )));
+
+      if (getOrder.channelName == 'string') {
+        getOrder.channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
 
-      Agora token =
-          await _apiRepository.getAgoraToken(channelName, isLawyer ? '2' : '1');
+      Agora token = await _apiRepository.getAgoraToken(
+          getOrder.channelName!, isLawyer ? '2' : '1');
 
       if (token.rtcToken != null) {
-        bool res = await _apiRepository.setChannel(isLawyer ? 'lawyer' : 'user',
-            orderId, channelName, token.rtcToken!);
-        if (res) {
-          if (type == 'online') {
-            Navigator.of(context).push(createRoute(Scaffold(
-              body: AudioView(
+        Order res = await _apiRepository.setChannel(
+            isLawyer ? 'lawyer' : 'user',
+            order.sId!,
+            order.channelName!,
+            token.rtcToken!);
+        if (res != null) {
+          if (order.serviceType == 'onlineEmergency') {
+            Get.to(
+              () => AudioView(
+                  order: res,
                   isLawyer: isLawyer,
-                  channelName: channelName,
+                  channelName: order.channelName!,
                   token: token.rtcToken!,
-                  name: name,
+                  name: isLawyer
+                      ? order.clientId!.lastName!
+                      : order.lawyerId!.lastName!,
                   uid: isLawyer ? 2 : 1),
-            )));
+            );
           }
-          if (type == 'fulfilled') {
-            print(token.rtcToken!);
-            Navigator.of(context).push(createRoute(Scaffold(
-              body: VideoView(
+          if (order.serviceType == 'online') {
+            Get.to(
+              () => VideoView(
+                  order: res,
                   isLawyer: isLawyer,
-                  channelName: channelName,
+                  channelName: order.channelName!,
                   token: token.rtcToken!,
-                  name: name,
+                  name: isLawyer
+                      ? order.clientId!.lastName!
+                      : order.lawyerId!.lastName!,
                   uid: isLawyer ? 2 : 1),
-            )));
+            );
           }
         }
       }

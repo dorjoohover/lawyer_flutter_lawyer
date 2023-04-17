@@ -80,20 +80,6 @@ class ApiRepository {
     }
   }
 
-  Future<List<ServicePrice>> getPrice(
-      String lawyerId, String service, String serviceId) async {
-    try {
-      final response =
-          await apiProvider.get('/price/$serviceId/$service/$lawyerId');
-      print('/price/$serviceId/$service/$lawyerId');
-      final prices =
-          (response as List).map((e) => ServicePrice.fromJson(e)).toList();
-      return prices;
-    } on Exception {
-      rethrow;
-    }
-  }
-
   Future<Agora> getAgoraToken(String channelName, String uid) async {
     try {
       final response = await Dio().get(
@@ -105,14 +91,22 @@ class ApiRepository {
     }
   }
 
-  Future<bool> createOrder(int date, String lawyerId, String expiredTime,
-      int price, String serviceType, String serviceId, String userId) async {
+  Future<bool> createOrder(
+      int date,
+      String lawyerId,
+      int expiredTime,
+      int price,
+      String serviceType,
+      String serviceId,
+      String subServiceId,
+      String userId) async {
     try {
       final data = {
         "date": date,
         "clientId": userId,
         "lawyerId": lawyerId,
         "serviceId": serviceId,
+        "subServiceId": subServiceId,
         "location": "string",
         "expiredTime": expiredTime,
         "serviceType": serviceType,
@@ -165,17 +159,31 @@ class ApiRepository {
     }
   }
 
-  Future<bool> setChannel(
+  Future<Order> setChannel(
     String url,
     String orderId,
     String channelName,
     String token,
   ) async {
     try {
+      print('/order/$url/token/$orderId/$channelName/{token}?token=${token}');
       final response = await apiProvider.get(
         '/order/$url/token/$orderId/$channelName/{token}?token=${token}',
-      ) as String;
-      return true;
+      ) as Map<String, dynamic>;
+
+      return Order.fromJson(response);
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<Order> getChannel(String id) async {
+    try {
+      final response = await apiProvider.get(
+        '/order/user/$id',
+      ) as Map<String, dynamic>;
+
+      return Order.fromJson(response);
     } on Exception {
       rethrow;
     }

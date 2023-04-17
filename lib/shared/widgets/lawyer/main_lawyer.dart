@@ -6,7 +6,7 @@ class MainLawyer extends StatelessWidget {
   const MainLawyer({
     super.key,
     required this.user,
-    this.bg = Colors.transparent,
+    this.bg = Colors.white,
   });
 
   final Color bg;
@@ -17,6 +17,7 @@ class MainLawyer extends StatelessWidget {
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(16), color: bg),
       padding: const EdgeInsets.all(small),
+      margin: const EdgeInsets.symmetric(vertical: small),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -25,9 +26,7 @@ class MainLawyer extends StatelessWidget {
             child: Container(
               height: 94,
               decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(12),
-                      topLeft: Radius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
                   image: DecorationImage(
                       image: NetworkImage(
                         user.profileImg ??

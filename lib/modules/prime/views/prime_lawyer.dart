@@ -25,15 +25,17 @@ class PrimeLawyer extends GetView<PrimeController> {
                     child: Container(
                         alignment: Alignment.topLeft,
                         width: double.infinity,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                             image: DecorationImage(
                           image: NetworkImage(
-                            "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+                            controller.selectedLawyer.value?.profileImg ??
+                                "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
                           ),
                           fit: BoxFit.cover,
                         )),
                         child: Padding(
-                          padding: EdgeInsets.only(top: large, left: origin),
+                          padding:
+                              const EdgeInsets.only(top: large, left: origin),
                           child: IconButton(
                             icon: const Icon(
                               Icons.arrow_back_ios,
@@ -194,14 +196,13 @@ class PrimeLawyer extends GetView<PrimeController> {
                               ),
                               space16,
                               controller.selectedLawyer.value?.rating != null
-                                  ? ClientRatingWidget(
-                                      ratings: controller
-                                          .selectedLawyer.value!.rating!)
+                                  ? controller.selectedLawyer.value!.rating!
+                                          .isNotEmpty
+                                      ? ClientRatingWidget(
+                                          ratings: controller
+                                              .selectedLawyer.value!.rating!)
+                                      : const SizedBox()
                                   : const SizedBox(),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).padding.bottom + 126,
-                              )
                             ],
                           ),
                         ),
@@ -214,11 +215,45 @@ class PrimeLawyer extends GetView<PrimeController> {
                   right: 16,
                   child: MainButton(
                     onPressed: () {
-                      Get.bottomSheet(
-                          isScrollControlled: true,
-                          OrderBottomSheet(
-                            title: 'Захиалгын төрөл сонгоно уу',
-                          ));
+                      if (controller.selectedServiceType.value?.price != null) {
+                        Get.bottomSheet(
+                            isScrollControlled: true,
+                            OrderBottomSheet(
+                              title: 'Захиалгын төрөл сонгоно уу',
+                            ));
+                      } else {
+                        if (controller.selectedLawyer.value?.userServices!
+                                    .firstWhereOrNull((ser) =>
+                                        ser.serviceId ==
+                                        controller.selectedService.value)
+                                    ?.serviceTypes !=
+                                null &&
+                            controller.selectedLawyer.value?.userServices!
+                                    .firstWhereOrNull((ser) =>
+                                        ser.serviceId ==
+                                        controller.selectedService.value)
+                                    ?.serviceTypes
+                                    ?.firstWhereOrNull((type) =>
+                                        type.serviceType ==
+                                        controller.selectedServiceType.value
+                                            ?.serviceType) !=
+                                null) {
+                          controller.selectedServiceType.value = controller
+                              .selectedLawyer.value?.userServices!
+                              .firstWhereOrNull((ser) =>
+                                  ser.serviceId ==
+                                  controller.selectedService.value)
+                              ?.serviceTypes
+                              ?.firstWhereOrNull((type) =>
+                                  type.serviceType ==
+                                  controller
+                                      .selectedServiceType.value?.serviceType);
+                          Navigator.of(context)
+                              .push(createRoute(const OrderView()));
+                        } else {
+                          Get.snackbar('error', 'error');
+                        }
+                      }
                     },
                     text: "Захиалга",
                     child: const SizedBox(),

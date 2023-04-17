@@ -4,53 +4,53 @@ import 'package:flutter/material.dart';
 
 import './text_theme.dart';
 import '../shared/index.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyTheme {
-  static ThemeData dark = ThemeData.dark().copyWith(
-    useMaterial3: true,
-    switchTheme: SwitchThemeData(
-      trackColor: MaterialStateProperty.all(secondary),
-      thumbColor: MaterialStateProperty.all(primary),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(primary),
-        foregroundColor: MaterialStateProperty.all(secondary),
-      ),
-    ),
-    navigationBarTheme: const NavigationBarThemeData(
-      indicatorColor: primary,
-    ),
-    radioTheme: RadioThemeData(
-      fillColor: MaterialStateProperty.resolveWith<Color?>(
-        (Set<MaterialState> states) {
-          return null; // Use the component's default.
-        },
-      ),
-    ),
-    primaryColor: primary,
-    textTheme: const TextTheme(
-      titleMedium: mediumTitle,
-      titleLarge: largeTitle,
-    ),
-    colorScheme: const ColorScheme.dark(
-      primary: primary,
-      secondaryContainer: primary,
-      secondary: secondary,
-      surface: secondary,
-      background: secondary,
-      // shadow: shadow,
-      error: secondary,
-      onPrimary: primary,
-      onSecondary: secondary,
-      onSurface: secondary,
-      onBackground: secondary,
-      onError: primary,
-    ),
-  );
+  // static ThemeData dark = ThemeData.dark().copyWith(
+  //   useMaterial3: true,
+  //   switchTheme: SwitchThemeData(
+  //     trackColor: MaterialStateProperty.all(secondary),
+  //     thumbColor: MaterialStateProperty.all(primary),
+  //   ),
+  //   elevatedButtonTheme: ElevatedButtonThemeData(
+  //     style: ButtonStyle(
+  //       backgroundColor: MaterialStateProperty.all(primary),
+  //       foregroundColor: MaterialStateProperty.all(secondary),
+  //     ),
+  //   ),
+  //   navigationBarTheme: const NavigationBarThemeData(
+  //     indicatorColor: primary,
+  //   ),
+  //   radioTheme: RadioThemeData(
+  //     fillColor: MaterialStateProperty.resolveWith<Color?>(
+  //       (Set<MaterialState> states) {
+  //         return null; // Use the component's default.
+  //       },
+  //     ),
+  //   ),
+  //   primaryColor: primary,
+  //   textTheme: const TextTheme(
+  //     titleMedium: mediumTitle,
+  //     titleLarge: largeTitle,
+  //   ),
+  //   colorScheme: const ColorScheme.dark(
+  //     primary: primary,
+  //     secondaryContainer: primary,
+  //     secondary: secondary,
+  //     surface: secondary,
+  //     background: secondary,
+  //     // shadow: shadow,
+  //     error: secondary,
+  //     onPrimary: primary,
+  //     onSecondary: secondary,
+  //     onSurface: secondary,
+  //     onBackground: secondary,
+  //     onError: primary,
+  //   ),
+  // );
 
   static ThemeData light = ThemeData(
-    fontFamily: landrinaSolid,
     primaryColor: primary,
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: secondary,
@@ -61,15 +61,17 @@ class MyTheme {
       backgroundColor: Colors.white,
       elevation: 8.0,
     ),
-    textTheme: const TextTheme(
-        titleMedium: mediumTitle,
-        titleLarge: largeTitle,
-        bodySmall: smallBody,
-        displaySmall: smallDisplay,
-        displayMedium: mediumDisplay,
-        labelMedium: mediumLabel,
-        labelSmall: smallLabel,
-        bodyLarge: mediumBody),
+    textTheme: GoogleFonts.nunitoSansTextTheme(
+      const TextTheme(
+          titleMedium: mediumTitle,
+          titleLarge: largeTitle,
+          bodySmall: smallBody,
+          displaySmall: smallDisplay,
+          displayMedium: mediumDisplay,
+          labelMedium: mediumLabel,
+          labelSmall: smallLabel,
+          bodyLarge: mediumBody),
+    ),
     tabBarTheme: TabBarTheme(
       labelColor: secondary,
       unselectedLabelColor: Colors.black,

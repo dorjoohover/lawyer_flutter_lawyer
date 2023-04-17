@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
+import 'package:skeletons/skeletons.dart';
 
 import '../../../shared/index.dart';
 
 class SubServiceView extends GetView<PrimeController> {
   const SubServiceView({
     super.key,
-    required this.title,
-    required this.description,
+    this.title,
+    this.description,
   });
-  final String title;
-  final String description;
+  final String? title;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +36,22 @@ class SubServiceView extends GetView<PrimeController> {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.error),
-                        space16,
-                        Text(
-                          title,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        space16,
-                        Text(
-                          description,
-                          style: Theme.of(context).textTheme.displayMedium,
-                        ),
+                        // Icon(Icons.error),
+                        title != '' ? space16 : const SizedBox(),
+                        title != ''
+                            ? Text(
+                                title!,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              )
+                            : const SizedBox(),
+                        description != '' ? space16 : const SizedBox(),
+                        description != ''
+                            ? Text(
+                                description!,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
+                              )
+                            : const SizedBox(),
                         space32,
                         Text(
                           'Санал болгож буй хуульчид',
@@ -55,19 +61,16 @@ class SubServiceView extends GetView<PrimeController> {
                         Flexible(
                             child: Obx(
                           () => controller.loading.value
-                              ? const SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator(),
+                              ? SizedBox(
+                                  height: 200,
+                                  child: SkeletonListView(),
                                 )
                               : ListView.builder(
                                   itemCount: controller.lawyers.length,
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
                                         onTap: () async {
-                                          await controller.getLawyerPrice(
-                                              controller.lawyers[index].sId!,
-                                              context);
+                                          Navigator.of(context).push(createRoute(const PrimeLawyer()));
                                           controller.selectedLawyer.value =
                                               controller.lawyers[index];
 
@@ -98,21 +101,23 @@ class SubServiceView extends GetView<PrimeController> {
                         )),
                         space16,
                       ]),
-                  Positioned(
-                      bottom: MediaQuery.of(context).padding.bottom,
-                      left: 16,
-                      right: 16,
-                      child: MainButton(
-                        onPressed: () {
-                          Get.bottomSheet(
-                              isScrollControlled: true,
-                              OrderBottomSheet(
-                                title: 'Захиалгын төрөл сонгоно уу',
-                              ));
-                        },
-                        text: "Захиалга",
-                        child: const SizedBox(),
-                      ))
+                  title != ''
+                      ? Positioned(
+                          bottom: MediaQuery.of(context).padding.bottom,
+                          left: 16,
+                          right: 16,
+                          child: MainButton(
+                            onPressed: () {
+                              Get.bottomSheet(
+                                  isScrollControlled: true,
+                                  OrderBottomSheet(
+                                    title: 'Захиалгын төрөл сонгоно уу',
+                                  ));
+                            },
+                            text: "Захиалга",
+                            child: const SizedBox(),
+                          ))
+                      : const SizedBox()
                 ],
               )),
         ));

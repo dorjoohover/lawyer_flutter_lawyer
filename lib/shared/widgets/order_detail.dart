@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ class OrderDetailView extends GetView<PrimeController> {
       required this.type,
       required this.onTap,
       required this.date,
+      required this.image,
       required this.time});
   final String name;
   final String profession;
@@ -20,6 +22,7 @@ class OrderDetailView extends GetView<PrimeController> {
   final String type;
   final String date;
   final String time;
+  final String image;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,9 +42,11 @@ class OrderDetailView extends GetView<PrimeController> {
                       height: 66,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          image: const DecorationImage(
+                          image: DecorationImage(
                             image: NetworkImage(
-                              "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+                              image != ""
+                                  ? image
+                                  : "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
                             ),
                             fit: BoxFit.cover,
                           )),
@@ -188,16 +193,18 @@ class OrderDetailView extends GetView<PrimeController> {
                 onPressed: onTap,
                 child: Row(
                   children: [
-                    Icon(
+                    SvgPicture.asset(
                         type == 'onlineEmergency'
-                            ? Icons.phone_forwarded
+                            ? svgPhone
                             : type == 'online'
-                                ? Icons.movie
-                                : Icons.error,
-                        size: 13),
+                                ? svgCamera
+                                : svgLocation,
+                        width: 13),
                     space8,
                     Text(
-                      type == 'online' ? 'Дуудлага эхлүүлэх' : 'Байршил харах',
+                      type == 'online' || type == 'onlineEmergency'
+                          ? 'Дуудлага эхлүүлэх'
+                          : 'Байршил харах',
                       style: Theme.of(context)
                           .textTheme
                           .labelMedium!
