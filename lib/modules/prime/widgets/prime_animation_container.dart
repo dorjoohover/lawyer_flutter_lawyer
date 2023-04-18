@@ -7,14 +7,14 @@ class PrimeAnimationContainer extends StatelessWidget {
       {super.key,
       required this.child,
       this.opacity = -1,
-      this.duration = const Duration(milliseconds: 375)});
+      this.duration = const Duration(seconds: 1)});
 
   final Duration duration;
   final double? opacity;
   final Widget child;
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(LawyerController());
+    final controller = Get.put(PrimeController());
     return Obx(() => AnimatedPadding(
           padding: EdgeInsets.symmetric(
             vertical: controller.fade.value ? 32 : 0,
