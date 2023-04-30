@@ -805,15 +805,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  video_raw_data:
-    dependency: "direct main"
-    description:
-      path: "frameworks/flutter/video_raw_data"
-      ref: "8a7a90e78fb1192dc2ef1154bff57f670d462e96"
-      resolved-ref: "8a7a90e78fb1192dc2ef1154bff57f670d462e96"
-      url: "https://github.com/AgoraIO-Extensions/RawDataPluginSample.git"
-    source: git
-    version: "0.0.1"
   win32:
     dependency: transitive
     description:

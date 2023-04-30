@@ -4,12 +4,12 @@ import 'package:agora_uikit/agora_uikit.dart';
 import 'package:agora_uikit/controllers/rtc_buttons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:frontend/config/agora.config.dart' as config;
 import 'package:frontend/data/data.dart';
+import 'package:frontend/modules/modules.dart';
 import 'package:frontend/providers/api_repository.dart';
-import 'package:frontend/shared/constants/index.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
@@ -97,10 +97,12 @@ class _VideoViewState extends State<VideoView> {
     startTimer();
     client = AgoraClient(
       agoraConnectionData: AgoraConnectionData(
-          appId: config.appId,
-          channelName: widget.channelName,
-          tempToken: widget.token,
-          uid: widget.uid == 0 ? 1 : widget.uid),
+        appId: config.appId,
+        channelName: widget.channelName,
+        username: widget.name,
+        tempToken: widget.token,
+        uid: widget.uid,
+      ),
     );
     initAgora();
   }
@@ -111,13 +113,31 @@ class _VideoViewState extends State<VideoView> {
       await Permission.camera.request();
     }
 
-    await client.initialize();
+    try {
+      await client.initialize();
+    } catch (e) {
+      Get.snackbar('', '');
+    }
   }
 
   Future<void> _onCallEnd(BuildContext context) async {
-    Navigator.pop(context);
+    setState(() {
+      if (countdownTimer != null) {
+        countdownTimer!.cancel();
+      }
+    });
 
-    client.release();
+    if (!widget.isLawyer) {
+      Navigator.of(context).push(createRoute(PrimeView()));
+    } else {
+      Navigator.of(context).push(createRoute(LawyerView()));
+    }
+
+    try {
+      await client.release();
+    } catch (error) {
+      Get.snackbar(error.toString(), 'error');
+    }
   }
 
   @override
@@ -155,6 +175,24 @@ class _VideoViewState extends State<VideoView> {
                     ),
                   ),
                 )),
+            // AgoraVideoButtons(
+            //   onDisconnect: () {
+            //     setState(() {
+            //       if (countdownTimer != null) {
+            //         countdownTimer!.cancel();
+            //       }
+            //     });
+            //     Navigator.pop(context);
+            //   },
+            //   addScreenSharing: false,
+            //   client: client,
+            //   // muteButtonChild: SvgPicture.asset(
+            //   //   client.sessionController.value.isLocalUserMuted
+            //   //       ? svgMicrophone
+            //   //       : svgMicrophoneDisable,
+            //   //   width: 14,
+            //   // ),
+            // ),
             Positioned(
               left: 0,
               right: 0,
@@ -202,10 +240,7 @@ class _VideoViewState extends State<VideoView> {
                   ),
                   RawMaterialButton(
                     constraints: BoxConstraints(minWidth: 70),
-                    onPressed: () {
-                      stopTimer();
-                      _onCallEnd(context);
-                    },
+                    onPressed: () => _onCallEnd(context),
                     child: Icon(Icons.call_end, color: Colors.white, size: 35),
                     shape: CircleBorder(),
                     elevation: 2.0,

@@ -58,22 +58,22 @@ class LawyerController extends GetxController {
           isLawyer: isLawyer,
         ),
       )));
-
+      String channelName = getOrder.channelName!;
       if (getOrder.channelName == 'string') {
-        getOrder.channelName = DateTime.now().millisecondsSinceEpoch.toString();
+        channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
 
-      Agora token = await _apiRepository.getAgoraToken(
-          getOrder.channelName!, isLawyer ? '2' : '1');
+      Agora token =
+          await _apiRepository.getAgoraToken(channelName, isLawyer ? '2' : '1');
 
-      if (token.rtcToken != null) {
+      if (token.rtcToken != null && channelName != 'string') {
         Order res = await _apiRepository.setChannel(
             isLawyer ? 'lawyer' : 'user',
             order.sId!,
-            order.channelName!,
+            channelName!,
             token.rtcToken!);
         if (res != null) {
-          if (order.serviceType == 'onlineEmergency') {
+          if (res.serviceType == 'onlineEmergency') {
             Get.to(
               () => AudioView(
                   order: res,

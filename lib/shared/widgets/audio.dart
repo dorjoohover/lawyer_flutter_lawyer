@@ -110,7 +110,7 @@ class _State extends State<AudioView> {
 
   Future<void> _dispose() async {
     await _engine.leaveChannel();
-    setState(() => countdownTimer!.cancel());
+    countdownTimer!.cancel();
     await _engine.release();
   }
 

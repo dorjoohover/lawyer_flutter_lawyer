@@ -2,7 +2,6 @@ export './action_widget.dart';
 export './log_sink.dart';
 export 'alert.dart';
 export 'alert_view.dart';
-
 export 'audio.dart';
 export 'bottomsheet.dart';
 export 'card_container.dart';
@@ -18,5 +17,4 @@ export 'prime_app_bar.dart';
 export 'services/services.dart';
 export 'touchable_scale.dart';
 export 'video.dart';
-export 'video_old.dart';
 export 'waiting_widget.dart';

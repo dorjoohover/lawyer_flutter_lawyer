@@ -23,15 +23,15 @@ class LawyerView extends GetView<LawyerController> {
         appBar: MainAppBar(
           title: 'Хуульч',
           calendar: true,
-          settings: true,
-          settingTap: () async {
-            if (homeController.currentUserType.value == 'user') {
-              homeController.currentUserType.value = 'lawyer';
-            } else {
-              homeController.currentUserType.value = 'user';
-            }
-            homeController.getView(homeController.currentIndex.value);
-          },
+          settings: false,
+          // settingTap: () async {
+          //   if (homeController.currentUserType.value == 'user') {
+          //     homeController.currentUserType.value = 'lawyer';
+          //   } else {
+          //     homeController.currentUserType.value = 'user';
+          //   }
+          //   homeController.getView(homeController.currentIndex.value);
+          // },
           calendarTap: () async {
             Get.to(() => LawyerRegisterView());
           },
@@ -289,7 +289,17 @@ class LawyerView extends GetView<LawyerController> {
                                     Expanded(
                                         child: GestureDetector(
                                       onTap: () {
-                                        homeController.currentIndex(0);
+                                        if (homeController
+                                                .currentUserType.value ==
+                                            'user') {
+                                          homeController.currentUserType.value =
+                                              'lawyer';
+                                        } else {
+                                          homeController.currentUserType.value =
+                                              'user';
+                                        }
+                                        homeController.getView(
+                                            homeController.currentIndex.value);
                                       },
                                       child: CardContainer(
                                         value: 'Хэрэглэгч цэс рүү буцах',
