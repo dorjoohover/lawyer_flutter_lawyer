@@ -14,9 +14,12 @@ class PrimeController extends GetxController {
 
   final fade = true.obs;
 
+  final order = Rxn<Order>();
   final services = <Service>[].obs;
   final subServices = <SubService>[].obs;
   final lawyers = <User>[].obs;
+  final times = <Time>[].obs;
+
   final loading = false.obs;
   final selectedService = "".obs;
   final selectedSubService = "".obs;
@@ -24,18 +27,15 @@ class PrimeController extends GetxController {
   final selectedExpiredTime = "".obs;
 // order select date
   final selectedLawyer = Rxn<User?>();
-  final selectedDate = DateTime.now().obs;
+  final selectedDate = DateTime.now().millisecondsSinceEpoch.obs;
   final selectedDay = Rxn<AvailableTime>();
   final selectedTime = Rxn<SelectedTime>();
-  final selectedServiceType = Rxn<ServiceTypes>();
-  final lawyerPrice = <ServicePrice>[].obs;
+  // final selectedServiceType = Rxn<ServiceTypes>();
+  // final lawyerPrice = <ServicePrice>[].obs;
   final selectedAvailableDays =
       AvailableDay(serviceId: "", serviceTypeTime: []).obs;
   final orders = <Order>[].obs;
-  final audioController =
-      Get.put<AudioController>(AudioController(), permanent: true);
-  final videoController =
-      Get.put<VideoController>(VideoController(), permanent: true);
+
   @override
   void onInit() async {
     await start();
@@ -45,11 +45,21 @@ class PrimeController extends GetxController {
     super.onInit();
   }
 
-  getLawyerPrice(String lawyerId, BuildContext context) async {
+  getTimeLawyer(BuildContext context) async {
     try {
       loading.value = true;
 
-      Navigator.of(context).push(createRoute(const PrimeLawyer()));
+      final res =
+          await _apiRepository.getTimeLawyer(selectedLawyer.value!.sId!);
+      selectedDate.value = res.timeDetail!.first.time!;
+      res.timeDetail?.forEach((d) {
+        if (selectedDate > d.time!) {
+          selectedDate.value = d.time!;
+        }
+      });
+      Navigator.of(context).push(createRoute(const OrderTimeView()));
+      times.value = [res];
+      loading.value = false;
 
       loading.value = false;
     } on DioError catch (e) {
@@ -59,29 +69,53 @@ class PrimeController extends GetxController {
     }
   }
 
+  getTimeService(BuildContext context) async {
+    try {
+      loading.value = true;
+      final res = await _apiRepository.getTimeService(
+          order.value!.serviceId!, order.value!.serviceType!);
+      times.value = res;
+      selectedDate.value = res.first.timeDetail!.first.time!;
+      for (var t in res) {
+        t.timeDetail?.forEach((d) {
+          if (selectedDate > d.time!) {
+            selectedDate.value = d.time!;
+          }
+        });
+      }
+      Navigator.of(context).push(createRoute(const OrderTimeView()));
+
+      loading.value = false;
+    } on DioError catch (e) {
+      loading.value = false;
+      print(e.response);
+      Get.snackbar('Уучлаарай', "Цаг олдсонгүй.");
+    }
+  }
+
   sendOrder(BuildContext context) async {
     try {
       loading.value = true;
-      DateTime date = DateTime(
-          selectedDate.value.year,
-          selectedDate.value.month,
-          int.parse(selectedDay.value!.day!),
-          int.parse(selectedDay.value!.time![0].substring(0, 2)));
+      // DateTime date = DateTime(
+      //     selectedDate.value.year,
+      //     selectedDate.value.month,
+      //     int.parse(selectedDay.value!.day!),
+      //     int.parse(selectedDay.value!.time![0].substring(0, 2)));
 
-      final res = await _apiRepository.createOrder(
-          date.millisecondsSinceEpoch,
-          selectedLawyer.value!.sId!,
-          selectedServiceType.value!.expiredTime!,
-          selectedServiceType.value!.price!,
-          selectedServiceType.value!.serviceType!,
-          selectedService.value,
-          selectedSubService.value,
-          homeController.user!.sId!);
-      print(res);
-      Navigator.of(context).push(createRoute(AlertView(
-          status: 'success',
-          text:
-              'Таны сонгосон хуульчтайгаа ${date.year} / ${date.month} / ${date.day}-ны өдрийн ${date.hour}:00 дуудлагаа хийнэ үү ')));
+      // final res = await _apiRepository.createOrder(
+      //     date.millisecondsSinceEpoch,
+      //     selectedLawyer.value!.sId!,
+      //     selectedServiceType.value!.expiredTime!,
+      //     selectedServiceType.value!.price!,
+      //     selectedServiceType.value!.serviceType!,
+      //     selectedService.value,
+      //     selectedSubService.value,
+      //     homeController.user!.sId!);
+      // print(res);
+      // Navigator.of(context).push(createRoute(AlertView(
+      //     status: 'success',
+      //     text:
+      //         'Таны сонгосон хуульчтайгаа ${date.year} / ${date.month} / ${date.day}-ны өдрийн ${date.hour}:00 дуудлагаа хийнэ үү ')));
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
@@ -148,9 +182,9 @@ class PrimeController extends GetxController {
         description: description,
       )));
       selectedSubService.value = sId;
-      final lRes = await _apiRepository.suggestedLawyersByCategory(
-          selectedService.value, sId);
-      lawyers.value = lRes;
+      // final lRes = await _apiRepository.suggestedLawyersByCategory(
+      //     selectedService.value, sId);
+      // lawyers.value = lRes;
 
       loading.value = false;
     } on DioError catch (e) {
@@ -165,7 +199,7 @@ class PrimeController extends GetxController {
   Future<bool> getSubServices(String id) async {
     try {
       loading.value = true;
-      selectedService.value = id;
+      order.value?.serviceId = id;
       final res = await _apiRepository.subServiceList(id);
       subServices.value = res;
 

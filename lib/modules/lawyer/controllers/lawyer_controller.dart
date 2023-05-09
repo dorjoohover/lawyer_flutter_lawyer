@@ -15,14 +15,7 @@ class LawyerController extends GetxController {
   final _apiRepository = Get.find<ApiRepository>();
   final homeController = Get.put(HomeController());
   //addition register
-  final bio = "".obs;
-  final experience = "".obs;
-  final selectedService = "".obs;
-  final selectedSubServices = <String>[].obs;
-  final selectedDate = DateTime.now().obs;
-  final selectedDay = <AvailableTime>[].obs;
-  final selectedTime = <SelectedTime>[].obs;
-  final serviceTypeTimes = <ServiceTypeTime>[].obs;
+
   final CarouselController carouselController = CarouselController();
   final currentOrder = 0.obs;
   final selectedAvailableDays =
@@ -118,76 +111,6 @@ class LawyerController extends GetxController {
       Get.snackbar(
         'Error',
         'Something went wrong',
-      );
-    }
-  }
-
-  Future<bool> addAvailableDays() async {
-    try {
-      loading.value = true;
-
-      for (var type in serviceTypeTimes) {
-        type.time = selectedDay;
-      }
-      selectedAvailableDays.value?.serviceId = selectedSubServices.first;
-      selectedAvailableDays.value?.serviceTypeTime = serviceTypeTimes;
-
-      final res =
-          await _apiRepository.addAvailableDays(selectedAvailableDays.value!);
-      bio.value = "";
-      experience.value = "";
-      selectedService.value = "";
-      selectedSubServices.value = <String>[];
-      selectedDate.value = DateTime.now();
-      selectedDay.value = <AvailableTime>[];
-      selectedTime.value = <SelectedTime>[];
-      serviceTypeTimes.value = <ServiceTypeTime>[];
-      selectedAvailableDays.value =
-          AvailableDay(serviceId: "", serviceTypeTime: []);
-      loading.value = false;
-      if (res) {
-        return true;
-      } else {
-        return false;
-      }
-    } on DioError catch (e) {
-      loading.value = false;
-      Get.snackbar(
-        'Error',
-        'Something went wrong',
-      );
-      return false;
-    }
-  }
-
-  sendAddition() async {
-    try {
-      loading.value = true;
-      serviceTypeTimes.map((type) => type.time = selectedDay);
-      selectedAvailableDays.value?.serviceId = selectedService.value;
-      selectedAvailableDays.value?.serviceTypeTime = serviceTypeTimes;
-
-      final res = await _apiRepository.updateLawyer(int.parse(experience.value),
-          bio.value, "", selectedAvailableDays.value!);
-      if (res) {
-        Get.snackbar(
-          'Success',
-          'success',
-        );
-        Get.to(() => PrimeView());
-      } else {
-        Get.snackbar(
-          'error',
-          'error',
-        );
-        Get.to(() => PrimeView());
-      }
-      loading.value = false;
-    } on DioError catch (e) {
-      loading.value = false;
-      Get.snackbar(
-        'Error',
-        e.response?.data ?? 'Something went wrong',
       );
     }
   }

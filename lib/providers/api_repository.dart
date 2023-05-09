@@ -30,6 +30,7 @@ class ApiRepository {
     try {
       final response =
           await apiProvider.get('/user/me') as Map<String, dynamic>;
+      print(response);
       return User.fromJson(response);
     } on Exception {
       rethrow;
@@ -126,18 +127,29 @@ class ApiRepository {
     }
   }
 
-  Future<bool> updateLawyer(int experience, String bio, String profileImg,
-      AvailableDay availableDay) async {
+  Future<bool> updateLawyer(User user) async {
     try {
-      List<AvailableDay> availableDays = [];
-      availableDays.add(availableDay);
       final data = {
-        "bio": bio,
-        "profileImg": profileImg,
-        "experience": experience,
-        "availableDays": availableDays
+        'experience': user.experience,
+        'education': user.education,
+        'degree': user.degree,
+        'account': user.account,
+        'licenseNumber': user.licenseNumber,
+        'location': user.location,
+        'certificate': user.certificate,
+        'taxNumber': user.taxNumber,
+        'workLocation': user.workLocation,
+        'officeLocation': user.officeLocation,
+        'experiences': user.experiences,
+        'registerNumber': user.registerNumber,
+        'profileImg': user.profileImg,
+        'userServices': user.userServices,
+        'email': user.email,
+        'phoneNumbers': user.phoneNumbers,
+        'profileImg': user.profileImg ?? '',
       };
-      final response = await apiProvider.patch('/user', data: data) as String;
+      final res = await apiProvider.patch('/user', data: data) as String;
+      print(res);
       return true;
     } on Exception {
       rethrow;
@@ -194,6 +206,28 @@ class ApiRepository {
       final response = await apiProvider.get('/order/user');
       final orders = (response as List).map((e) => Order.fromJson(e)).toList();
       return orders;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<Time> getTimeLawyer(String id) async {
+    try {
+      final response = await apiProvider.get(
+        '/time/lawyer/$id',
+      ) as Map<String, dynamic>;
+
+      return Time.fromJson(response);
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<List<Time>> getTimeService(String service, String type) async {
+    try {
+      final response = await apiProvider.get('/time/service/$service/$type');
+      final times = (response as List).map((e) => Time.fromJson(e)).toList();
+      return times;
     } on Exception {
       rethrow;
     }

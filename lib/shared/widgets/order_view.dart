@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/prime/controllers/controllers.dart';
@@ -17,17 +16,18 @@ class OrderView extends GetView<PrimeController> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PrimeController());
-    final times = controller.selectedLawyer.value?.userServices
-            ?.firstWhere(
-                (ser) => ser.serviceId == controller.selectedService.value)
-            .serviceTypes
-            ?.firstWhere((type) =>
-                type.serviceType ==
-                controller.selectedServiceType.value?.serviceType)
-            .time
-            ?.where((t) =>
-                (t.date ?? 0) >=
-                controller.selectedDate.value.millisecondsSinceEpoch) ??
+    final times =
+        // controller.selectedLawyer.value?.userServices
+        //         ?.firstWhere(
+        //             (ser) => ser.serviceId == controller.selectedService.value)
+        //         .serviceTypes
+        //         ?.firstWhere((type) =>
+        //             type.serviceType ==
+        //             controller.selectedServiceType.value?.serviceType)
+        //         .time
+        //         ?.where((t) =>
+        //             (t.date ?? 0) >=
+        //             controller.selectedDate.value.millisecondsSinceEpoch) ??
         [];
     return Scaffold(
         appBar: PrimeAppBar(

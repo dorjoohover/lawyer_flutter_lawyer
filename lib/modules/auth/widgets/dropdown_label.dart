@@ -6,8 +6,10 @@ class DropdownLabel extends StatelessWidget {
       {super.key,
       required this.value,
       required this.onChange,
+      this.expanded = false,
       required this.list});
   final String value;
+  final bool expanded;
   final Function(String?) onChange;
   final List<String> list;
   @override
@@ -20,6 +22,7 @@ class DropdownLabel extends StatelessWidget {
           color: Colors.white,
           border: Border.all(color: line, width: 1)),
       child: DropdownButton(
+        isExpanded: expanded,
         value: value,
         iconSize: 0,
         icon:

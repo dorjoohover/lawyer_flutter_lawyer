@@ -70,44 +70,42 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   Widget build(BuildContext context) {
     final homeController = Get.put(HomeController());
     return Scaffold(
-        body: currentLocation == null
-            ? Center(
-                child: Text('loading'),
-              )
-            : GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                      currentLocation!.latitude!, currentLocation!.longitude!),
-                  zoom: 13.5,
-                ),
-                polylines: {
-                  Polyline(
-                      polylineId: PolylineId("route"),
-                      points: polylineCoordinates,
-                      color: primary,
-                      width: 6)
-                },
-                markers: {
-                  Marker(
-                    markerId: MarkerId("currentLocation"),
-                    position: LatLng(currentLocation!.latitude!,
-                        currentLocation!.longitude!),
-                  ),
-                  const Marker(
-                    markerId: MarkerId("source"),
-                    position: sourceLocation,
-                  ),
-                  const Marker(
-                    markerId: MarkerId("destination"),
-                    position: destination,
-                  ),
-                },
-                onMapCreated: (mapController) {
-                  _controller.complete(mapController);
-                },
+      body: currentLocation == null
+          ? Center(
+              child: Text('loading'),
+            )
+          : GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                    currentLocation!.latitude!, currentLocation!.longitude!),
+                zoom: 13.5,
               ),
-        bottomNavigationBar: MainNavigationBar(
-          homeController: homeController,
-        ));
+              polylines: {
+                Polyline(
+                    polylineId: PolylineId("route"),
+                    points: polylineCoordinates,
+                    color: primary,
+                    width: 6)
+              },
+              markers: {
+                Marker(
+                  markerId: MarkerId("currentLocation"),
+                  position: LatLng(
+                      currentLocation!.latitude!, currentLocation!.longitude!),
+                ),
+                const Marker(
+                  markerId: MarkerId("source"),
+                  position: sourceLocation,
+                ),
+                const Marker(
+                  markerId: MarkerId("destination"),
+                  position: destination,
+                ),
+              },
+              onMapCreated: (mapController) {
+                _controller.complete(mapController);
+              },
+            ),
+    );
   }
 }

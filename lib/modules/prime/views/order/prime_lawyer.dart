@@ -5,8 +5,8 @@ import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
-class PrimeLawyer extends GetView<PrimeController> {
-  const PrimeLawyer({
+class OrderLawyerView extends GetView<PrimeController> {
+  const OrderLawyerView({
     super.key,
   });
 
@@ -145,19 +145,19 @@ class PrimeLawyer extends GetView<PrimeController> {
                               Container(
                                 width: double.infinity,
                                 alignment: Alignment.centerLeft,
-                                child: Wrap(
-                                    direction: Axis.horizontal,
-                                    alignment: WrapAlignment.start,
-                                    spacing: 12,
-                                    children: controller.lawyerPrice.map((e) {
-                                      return OrderCard(
-                                        expiredTime:
-                                            int.parse(e.expiredTime ?? '0'),
-                                        price:
-                                            double.parse('${e.price ?? '0'}'),
-                                        type: e.serviceType!,
-                                      );
-                                    }).toList()),
+                                // child: Wrap(
+                                //     direction: Axis.horizontal,
+                                //     alignment: WrapAlignment.start,
+                                //     spacing: 12,
+                                //     children: controller.lawyerPrice.map((e) {
+                                //       return OrderCard(
+                                //         expiredTime:
+                                //             int.parse(e.expiredTime ?? '0'),
+                                //         price:
+                                //             double.parse('${e.price ?? '0'}'),
+                                //         type: e.serviceType!,
+                                //       );
+                                //     }).toList()),
                               ),
                               space16,
                               Container(
@@ -175,13 +175,13 @@ class PrimeLawyer extends GetView<PrimeController> {
                                           .titleMedium,
                                     ),
                                     space16,
-                                    Text(
-                                      controller.selectedLawyer.value?.bio ??
-                                          '',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayMedium,
-                                    ),
+                                    // Text(
+                                    //   controller.selectedLawyer.value?.bio ??
+                                    //       '',
+                                    //   style: Theme.of(context)
+                                    //       .textTheme
+                                    //       .displayMedium,
+                                    // ),
                                     space8,
                                     Align(
                                         child: Transform.rotate(
@@ -215,45 +215,45 @@ class PrimeLawyer extends GetView<PrimeController> {
                   right: 16,
                   child: MainButton(
                     onPressed: () {
-                      if (controller.selectedServiceType.value?.price != null) {
-                        Get.bottomSheet(
-                            isScrollControlled: true,
-                            OrderBottomSheet(
-                              title: 'Захиалгын төрөл сонгоно уу',
-                            ));
-                      } else {
-                        if (controller.selectedLawyer.value?.userServices!
-                                    .firstWhereOrNull((ser) =>
-                                        ser.serviceId ==
-                                        controller.selectedService.value)
-                                    ?.serviceTypes !=
-                                null &&
-                            controller.selectedLawyer.value?.userServices!
-                                    .firstWhereOrNull((ser) =>
-                                        ser.serviceId ==
-                                        controller.selectedService.value)
-                                    ?.serviceTypes
-                                    ?.firstWhereOrNull((type) =>
-                                        type.serviceType ==
-                                        controller.selectedServiceType.value
-                                            ?.serviceType) !=
-                                null) {
-                          controller.selectedServiceType.value = controller
-                              .selectedLawyer.value?.userServices!
-                              .firstWhereOrNull((ser) =>
-                                  ser.serviceId ==
-                                  controller.selectedService.value)
-                              ?.serviceTypes
-                              ?.firstWhereOrNull((type) =>
-                                  type.serviceType ==
-                                  controller
-                                      .selectedServiceType.value?.serviceType);
-                          Navigator.of(context)
-                              .push(createRoute(const OrderView()));
-                        } else {
-                          Get.snackbar('error', 'error');
-                        }
-                      }
+                      // if (controller.selectedServiceType.value?.price != null) {
+                      //   Get.bottomSheet(
+                      //       isScrollControlled: true,
+                      //       OrderBottomSheet(
+                      //         title: 'Захиалгын төрөл сонгоно уу',
+                      //       ));
+                      // } else {
+                      //   if (controller.selectedLawyer.value?.userServices!
+                      //               .firstWhereOrNull((ser) =>
+                      //                   ser.serviceId ==
+                      //                   controller.selectedService.value)
+                      //               ?.serviceTypes !=
+                      //           null &&
+                      //       controller.selectedLawyer.value?.userServices!
+                      //               .firstWhereOrNull((ser) =>
+                      //                   ser.serviceId ==
+                      //                   controller.selectedService.value)
+                      //               ?.serviceTypes
+                      //               ?.firstWhereOrNull((type) =>
+                      //                   type.serviceType ==
+                      //                   controller.selectedServiceType.value
+                      //                       ?.serviceType) !=
+                      //           null) {
+                      //     controller.selectedServiceType.value = controller
+                      //         .selectedLawyer.value?.userServices!
+                      //         .firstWhereOrNull((ser) =>
+                      //             ser.serviceId ==
+                      //             controller.selectedService.value)
+                      //         ?.serviceTypes
+                      //         ?.firstWhereOrNull((type) =>
+                      //             type.serviceType ==
+                      //             controller
+                      //                 .selectedServiceType.value?.serviceType);
+                      //     Navigator.of(context)
+                      //         .push(createRoute(const OrderView()));
+                      //   } else {
+                      //     Get.snackbar('error', 'error');
+                      //   }
+                      // }
                     },
                     text: "Захиалга",
                     child: const SizedBox(),

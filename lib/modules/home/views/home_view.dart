@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/modules.dart';
+import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
 import '../../../config/agora.config.dart' as config;
@@ -70,8 +71,8 @@ class HomeView extends StatelessWidget {
                 ],
               ), (user) {
         return Scaffold(
-          body: Obx(() => controller.getView(controller.currentIndex.value)),
-        );
+            body: Obx(() => controller.getView(controller.currentIndex.value)),
+            bottomNavigationBar: const MainNavigationBar());
       }),
     );
   }

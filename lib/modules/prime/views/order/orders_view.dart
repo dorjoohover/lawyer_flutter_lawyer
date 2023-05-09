@@ -4,7 +4,7 @@ import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../shared/index.dart';
+import '../../../../shared/index.dart';
 
 class OrdersView extends GetView<PrimeController> {
   const OrdersView({super.key, required this.title, required this.isLawyer});

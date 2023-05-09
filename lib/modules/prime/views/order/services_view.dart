@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 
-import '../../../shared/index.dart';
+import '../../../../shared/index.dart';
 
 class ServicesView extends GetView<PrimeController> {
   const ServicesView({super.key, required this.title, required this.children});

@@ -39,7 +39,7 @@ class PrimeAppBar extends StatelessWidget with PreferredSizeWidget {
           children: [
             IconButton(
                 onPressed: onTap,
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back_ios,
                   color: primary,
                 )),

@@ -92,7 +92,8 @@ class _VideoViewState extends State<VideoView> {
       order = widget.order;
     });
     Future.delayed(Duration.zero, () async {
-      await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+      await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE)
+          .then((value) => print(value));
     });
     startTimer();
     client = AgoraClient(

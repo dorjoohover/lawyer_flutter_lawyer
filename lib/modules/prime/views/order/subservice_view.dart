@@ -3,7 +3,7 @@ import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 
-import '../../../shared/index.dart';
+import '../../../../shared/index.dart';
 
 class SubServiceView extends GetView<PrimeController> {
   const SubServiceView({
@@ -70,28 +70,29 @@ class SubServiceView extends GetView<PrimeController> {
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
                                         onTap: () async {
-                                          Navigator.of(context).push(createRoute(const PrimeLawyer()));
+                                          Navigator.of(context).push(
+                                              createRoute(const OrderLawyerView()));
                                           controller.selectedLawyer.value =
                                               controller.lawyers[index];
 
                                           controller.selectedLawyer.value =
                                               controller.lawyers[index];
-                                          final date = controller
-                                              .lawyers[index].userServices
-                                              ?.firstWhere((ser) =>
-                                                  ser.serviceId ==
-                                                  controller
-                                                      .selectedService.value);
+                                          // final date = controller
+                                          //     .lawyers[index].userServices
+                                          //     ?.firstWhere((ser) =>
+                                          //         ser.serviceId ==
+                                          //         controller
+                                          //             .selectedService.value);
 
-                                          controller.selectedDate.value = DateTime
-                                              .fromMillisecondsSinceEpoch(date
-                                                      ?.serviceTypes
-                                                      ?.first
-                                                      .time
-                                                      ?.first
-                                                      .date ??
-                                                  DateTime.now()
-                                                      .millisecondsSinceEpoch);
+                                          // controller.selectedDate.value = DateTime
+                                          //     .fromMillisecondsSinceEpoch(date
+                                          //             ?.serviceTypes
+                                          //             ?.first
+                                          //             .time
+                                          //             ?.first
+                                          //             .date ??
+                                          //         DateTime.now()
+                                          //             .millisecondsSinceEpoch);
                                         },
                                         child: MainLawyer(
                                             bg: Colors.white,

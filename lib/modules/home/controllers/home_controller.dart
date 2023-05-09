@@ -24,13 +24,12 @@ class HomeController extends GetxController
   Widget getView(int index) {
     switch (index) {
       case 0:
-        
         return currentUserType.value == 'lawyer'
             ? const LawyerView()
             : const PrimeView();
 
       case 1:
-        return const OrderTrackingPage();
+        return const EmergencyHomeView();
       case 2:
         return const OrderTrackingPage();
       case 4:

@@ -5,14 +5,14 @@ const userNavbar = [
     'label': 'Нүүр',
   },
   {
-    'icon': 'assets/svgs/navigationBar/notary.svg',
-    'activeIcon': 'assets/svgs/navigationBar/notaryActive.svg',
-    'label': 'Нотариат',
-  },
-  {
     'icon': 'assets/svgs/navigationBar/emergency.svg',
     'activeIcon': 'assets/svgs/navigationBar/emergencyActive.svg',
     'label': 'Яаралтай',
+  },
+  {
+    'icon': 'assets/svgs/navigationBar/notary.svg',
+    'activeIcon': 'assets/svgs/navigationBar/notaryActive.svg',
+    'label': 'Нотариат',
   },
   {
     'icon': 'assets/svgs/navigationBar/podcast.svg',
@@ -25,6 +25,7 @@ const userNavbar = [
     'label': 'Гарах',
   },
 ];
+const googleMap = "AIzaSyBfIRFXoIgr-h4EDa-MK0S1rs1BViwMP_Y";
 const lawyerNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
@@ -37,11 +38,6 @@ const lawyerNavbar = [
     'label': 'Нотариат',
   },
   {
-    'icon': 'assets/svgs/navigationBar/emergency.svg',
-    'activeIcon': 'assets/svgs/navigationBar/emergencyActive.svg',
-    'label': 'Яаралтай',
-  },
-  {
     'icon': 'assets/svgs/navigationBar/podcast.svg',
     'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
     'label': 'Подкаст',
@@ -51,6 +47,17 @@ const lawyerNavbar = [
     'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
     'label': 'Гарах',
   },
+];
+const onlineDirection = [
+  'Тулгамдсан асуудлын талаар бичиж оруулах',
+  'Төлбөр төлөх',
+  'Төлбөр төлөгдсний дараа шууд хуульчтай холбогдоно'
+];
+const fulfilledDirection = [
+  'Уулзах шалтгаан бичиж оруулах',
+  'Байршлын хаяг оруулах',
+  'Төлбөр төлөх',
+  'Таны оруулсан байршил дээр очино'
 ];
 const serviceTypes = [
   {
