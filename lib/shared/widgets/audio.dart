@@ -4,8 +4,11 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:frontend/config/agora.config.dart' as config;
+import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
+import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,6 +22,7 @@ class AudioView extends StatefulWidget {
       required this.channelName,
       required this.name,
       required this.isLawyer,
+      required this.order,
       required this.uid})
       : super(key: key);
   final String token;
@@ -26,6 +30,7 @@ class AudioView extends StatefulWidget {
   final int uid;
   final String name;
   final bool isLawyer;
+  final Order order;
   @override
   State<StatefulWidget> createState() => _State();
 }
@@ -46,8 +51,9 @@ class _State extends State<AudioView> {
       ChannelProfileType.channelProfileLiveBroadcasting;
   Timer? countdownTimer;
   Duration myDuration = Duration(minutes: 6);
-  Duration startDuration = Duration(seconds: 0);
-
+  late Order order;
+  // Duration startDuration = Duration(seconds: 0);
+  final _apiRepository = Get.find<ApiRepository>();
   void startTimer() {
     countdownTimer =
         Timer.periodic(Duration(seconds: 1), (_) => setCountDown());
@@ -72,7 +78,8 @@ class _State extends State<AudioView> {
         countdownTimer!.cancel();
       } else {
         myDuration = Duration(seconds: seconds);
-        startDuration = Duration(seconds: 360 - seconds);
+
+        // startDuration = Duration(seconds: 360 - seconds);
       }
     });
   }
@@ -80,6 +87,12 @@ class _State extends State<AudioView> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      myDuration = Duration(seconds: widget.order.expiredTime! * 60);
+    });
+    Future.delayed(Duration.zero, () async {
+      await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    });
     startTimer();
     _controller = TextEditingController(text: channelId);
     _initEngine();
@@ -97,7 +110,7 @@ class _State extends State<AudioView> {
 
   Future<void> _dispose() async {
     await _engine.leaveChannel();
-    stopTimer();
+    countdownTimer!.cancel();
     await _engine.release();
   }
 
@@ -145,7 +158,7 @@ class _State extends State<AudioView> {
     await _engine.joinChannel(
         token: widget.token,
         channelId: widget.channelName,
-        uid: widget.uid,
+        uid: widget.uid == 0 ? 1 : widget.uid,
         options: ChannelMediaOptions(
           channelProfile: _channelProfileType,
           clientRoleType: ClientRoleType.clientRoleBroadcaster,
@@ -154,7 +167,7 @@ class _State extends State<AudioView> {
 
   _leaveChannel() async {
     await _engine.leaveChannel();
-    stopTimer();
+    setState(() => countdownTimer!.cancel());
     setState(() {
       isJoined = false;
       openMicrophone = true;
@@ -234,8 +247,8 @@ class _State extends State<AudioView> {
     ];
     String strDigits(int n) => n.toString().padLeft(2, '0');
 
-    final minutes = strDigits(startDuration.inMinutes.remainder(60));
-    final seconds = strDigits(startDuration.inSeconds.remainder(60));
+    final minutes = strDigits(myDuration.inMinutes.remainder(60));
+    final seconds = strDigits(myDuration.inSeconds.remainder(60));
     final items = channelProfileType
         .map((e) => DropdownMenuItem(
               child: Text(
@@ -245,107 +258,111 @@ class _State extends State<AudioView> {
             ))
         .toList();
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: huge),
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          space4,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  width: 122,
-                  height: 122,
-                  decoration: BoxDecoration(
-                      color: const Color(0xffc4c4c4),
-                      borderRadius: BorderRadius.circular(12)),
-                  alignment: Alignment.center,
-                  child: SvgPicture.asset(
-                    svgUser,
-                    width: 57,
-                    height: 54,
-                  )),
-              space16,
-              Text(
-                widget.name,
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 69),
-            child: Column(
+    return Scaffold(
+      body: Container(
+        padding: const EdgeInsets.symmetric(vertical: huge),
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            space4,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                Container(
+                    width: 122,
+                    height: 122,
+                    decoration: BoxDecoration(
+                        color: const Color(0xffc4c4c4),
+                        borderRadius: BorderRadius.circular(12)),
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(
+                      svgUser,
+                      width: 57,
+                      height: 54,
+                    )),
+                space16,
                 Text(
-                  '$minutes:$seconds',
+                  widget.name,
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
-                SizedBox(
-                  height: 40,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: _switchMicrophone,
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: openMicrophone ? primary : lightGray,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Icon(
-                          Icons.mic,
-                          color: !openMicrophone ? primary : Colors.white,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 36,
-                    ),
-                    GestureDetector(
-                      onTap: _leaveChannel,
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: error,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Icon(
-                          Icons.phone_disabled,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 36,
-                    ),
-                    GestureDetector(
-                      onTap: isJoined ? _switchSpeakerphone : null,
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: enableSpeakerphone ? primary : lightGray,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Icon(
-                          Icons.phone_bluetooth_speaker,
-                          color: !enableSpeakerphone ? primary : Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 69),
+              child: Column(
+                children: [
+                  Text(
+                    '$minutes:$seconds',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: _switchMicrophone,
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: !openMicrophone ? primary : lightGray,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: SvgPicture.asset(
+                            openMicrophone
+                                ? svgMicrophone
+                                : svgMicrophoneDisable,
+                            width: 14,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 36,
+                      ),
+                      GestureDetector(
+                        onTap: _leaveChannel,
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: error,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: Icon(
+                            Icons.call_end,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 36,
+                      ),
+                      GestureDetector(
+                        onTap: isJoined ? _switchSpeakerphone : null,
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: !enableSpeakerphone ? primary : lightGray,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: SvgPicture.asset(
+                            enableSpeakerphone ? svgVolume : svgVolumeDisable,
+                            width: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

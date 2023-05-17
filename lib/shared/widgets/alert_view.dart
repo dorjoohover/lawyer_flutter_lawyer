@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +12,7 @@ class AlertView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HomeController());
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -23,10 +25,9 @@ class AlertView extends StatelessWidget {
             space32,
             Column(
               children: [
-                Icon(
-                  Icons.check_box,
-                  size: 120,
-                  color: success,
+                SvgPicture.asset(
+                  svgSuccess,
+                  width: 96,
                 ),
                 space32,
                 space16,
@@ -49,7 +50,8 @@ class AlertView extends StatelessWidget {
               width: double.infinity,
               child: MainButton(
                 onPressed: () {
-                  Get.to(() => PrimeView());
+                  controller.currentIndex.value = 0;
+                  Navigator.of(context).push(createRoute(PrimeView()));
                 },
                 text: "Үндсэн цэс рүү буцах",
                 child: const SizedBox(),

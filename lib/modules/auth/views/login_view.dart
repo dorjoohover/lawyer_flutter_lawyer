@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/auth.dart';
-import 'package:frontend/modules/auth/widgets/input_label.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
@@ -84,7 +83,8 @@ class LoginView extends StatelessWidget {
                         space16,
                         MainButton(
                           onPressed: () {
-                            Get.to(() => RegisterView());
+                            Navigator.of(context)
+                                .push(createRoute(RegisterView()));
                           },
                           color: Colors.transparent,
                           contentColor: primary,

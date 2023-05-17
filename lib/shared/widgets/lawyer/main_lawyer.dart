@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/data.dart';
 import 'package:frontend/shared/constants/index.dart';
 
 class MainLawyer extends StatelessWidget {
-  const MainLawyer(
-      {super.key,
-      required this.name,
-      this.image,
-      required this.profession,
-      required this.rating,
-      this.bg = Colors.transparent,
-      required this.experience});
-  final String? image;
-  final String name;
-  final String profession;
-  final String experience;
-  final double rating;
+  const MainLawyer({
+    super.key,
+    required this.user,
+    this.bg = Colors.white,
+  });
+
   final Color bg;
+  final User user;
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(16), color: bg),
       padding: const EdgeInsets.all(small),
+      margin: const EdgeInsets.symmetric(vertical: small),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -29,16 +25,14 @@ class MainLawyer extends StatelessWidget {
             flex: 3,
             child: Container(
               height: 94,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(12),
-                      topLeft: Radius.circular(12)),
-                  image: DecorationImage(
-                      image: NetworkImage(
-                        image ??
-                            'https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
-                      ),
-                      fit: BoxFit.cover)),
+              // decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(12),
+              //     image: DecorationImage(
+              //         image: NetworkImage(
+              //           'user.profileImg ??
+              //               'https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80','
+              //         ),
+              //         fit: BoxFit.cover)),
             ),
           ),
           space16,
@@ -50,7 +44,7 @@ class MainLawyer extends StatelessWidget {
                 space8,
                 space4,
                 Text(
-                  name,
+                  user.lastName ?? '',
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16,
@@ -58,12 +52,12 @@ class MainLawyer extends StatelessWidget {
                 ),
                 space4,
                 Text(
-                  profession,
+                  'Хуульч',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
                 space8,
                 Text(
-                  "Ажлын туршлага: $experience жил",
+                  "Ажлын туршлага: ${user.experience ?? 0} жил",
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ],
@@ -83,7 +77,7 @@ class MainLawyer extends StatelessWidget {
                     ),
                     space8,
                     Text(
-                      rating.toString(),
+                      '${user.ratingAvg ?? 0}',
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
                   ],

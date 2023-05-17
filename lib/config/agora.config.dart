@@ -11,7 +11,6 @@ String get token {
   return const String.fromEnvironment('TEST_TOKEN',
       defaultValue:
           '006a941d13a5641456b95014aa4fc703f70IAD0imMvuXmlF+krEceX5nDJJZ1u8H9pEGg85J1jProiQr3zKVG379yDIgBlr8AE9YcUZAQAAQCFRBNkAgCFRBNkAwCFRBNkBACFRBNk');
-          
 }
 
 /// Your channel ID

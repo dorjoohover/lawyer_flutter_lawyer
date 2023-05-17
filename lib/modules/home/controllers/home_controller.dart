@@ -12,24 +12,29 @@ import '../../modules.dart';
 class HomeController extends GetxController
     with StateMixin<User>, WidgetsBindingObserver {
   final ApiRepository _apiRepository = Get.find();
+  final authController = Get.put(AuthController(apiRepository: Get.find()));
   final showPerformanceOverlay = false.obs;
   final currentIndex = 0.obs;
   final isLoading = false.obs;
   final rxUser = Rxn<User?>();
+  final currentUserType = 'user'.obs;
   User? get user => rxUser.value;
   set user(value) => rxUser.value = value;
 
   Widget getView(int index) {
     switch (index) {
       case 0:
-        return const PrimeView();
-      case 1:
-        return const OrderTrackingPage();
-      case 2:
-        return user?.userType == 'lawyer'
+        return currentUserType.value == 'lawyer'
             ? const LawyerView()
-          : const SizedBox();
+            : const PrimeView();
 
+      case 1:
+        return const EmergencyHomeView();
+      case 2:
+        return const OrderTrackingPage();
+      case 3:
+        authController.logout();
+        return const SizedBox();
       default:
         return const Center(child: Text('Something went wrong'));
     }
@@ -44,12 +49,10 @@ class HomeController extends GetxController
     isLoading.value = true;
     try {
       user = await _apiRepository.getUser();
-
-      if (user?.userType == 'lawyer') {
-        changeNavIndex(2);
-      }
       change(user, status: RxStatus.success());
-
+      if (user?.userType == 'lawyer') {
+        currentUserType.value = 'lawyer';
+      }
       isLoading.value = false;
     } on DioError catch (e) {
       isLoading.value = false;

@@ -1,15 +1,19 @@
+import './models.dart';
+
 class Order {
   String? sId;
   int? date;
   ClientId? clientId;
   LawyerId? lawyerId;
-  String? location;
-  String? expiredTime;
+  Location? location;
+  int? expiredTime;
   String? serviceType;
   String? serviceStatus;
   String? channelName;
   String? serviceId;
-  String? channelToken;
+  String? userToken;
+  String? lawyerToken;
+  String? price;
   String? createdAt;
   String? updatedAt;
 
@@ -23,7 +27,9 @@ class Order {
       this.serviceType,
       this.serviceStatus,
       this.channelName,
-      this.channelToken,
+      this.lawyerToken,
+      this.userToken,
+      this.price,
       this.createdAt,
       this.serviceId,
       this.updatedAt});
@@ -31,42 +37,49 @@ class Order {
   Order.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     date = json['date'];
-    clientId = json['clientId'] != null
-        ? new ClientId.fromJson(json['clientId'])
-        : null;
-    lawyerId = json['lawyerId'] != null
-        ? new LawyerId.fromJson(json['lawyerId'])
-        : null;
-    location = json['location'];
+    clientId =
+        json['clientId'] != null ? ClientId.fromJson(json['clientId']) : null;
+    lawyerId =
+        json['lawyerId'] != null ? LawyerId.fromJson(json['lawyerId']) : null;
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
+
     expiredTime = json['expiredTime'];
     serviceType = json['serviceType'];
     serviceStatus = json['serviceStatus'];
     channelName = json['channelName'];
-    channelToken = json['channelToken'];
+    userToken = json['userToken'];
+    lawyerToken = json['lawyerToken'];
+    price = json['price'];
     serviceId = json['serviceId'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['date'] = this.date;
-    if (this.clientId != null) {
-      data['clientId'] = this.clientId!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = sId;
+    data['date'] = date;
+    if (clientId != null) {
+      data['clientId'] = clientId!.toJson();
     }
-    if (this.lawyerId != null) {
-      data['lawyerId'] = this.lawyerId!.toJson();
+    if (lawyerId != null) {
+      data['lawyerId'] = lawyerId!.toJson();
     }
-    data['location'] = this.location;
-    data['expiredTime'] = this.expiredTime;
-    data['serviceType'] = this.serviceType;
-    data['serviceStatus'] = this.serviceStatus;
-    data['channelName'] = this.channelName;
-    data['channelToken'] = this.channelToken;
-    data['serviceId'] = this.serviceId;
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
+    if (location != null) {
+      data['location'] = location!.toJson();
+    }
+
+    data['expiredTime'] = expiredTime;
+    data['serviceType'] = serviceType;
+    data['serviceStatus'] = serviceStatus;
+    data['channelName'] = channelName;
+    data['lawyerToken'] = lawyerToken;
+    data['userToken'] = userToken;
+    data['price'] = price;
+    data['serviceId'] = serviceId;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
     return data;
   }
 }

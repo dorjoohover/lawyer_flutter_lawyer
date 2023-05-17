@@ -1,4 +1,3 @@
-const landrinaSolid = 'LondrinaSolid';
 const userNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
@@ -20,18 +19,14 @@ const userNavbar = [
     'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
     'label': 'Подкаст',
   },
-];
-const lawyerNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
     'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
-    'label': 'Нүүр',
+    'label': 'Гарах',
   },
-  {
-    'icon': 'assets/svgs/navigationBar/emergency.svg',
-    'activeIcon': 'assets/svgs/navigationBar/emergencyActive.svg',
-    'label': 'Яаралтай',
-  },
+];
+const googleMap = "AIzaSyBfIRFXoIgr-h4EDa-MK0S1rs1BViwMP_Y";
+const lawyerNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
     'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
@@ -47,6 +42,22 @@ const lawyerNavbar = [
     'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
     'label': 'Подкаст',
   },
+  {
+    'icon': 'assets/svgs/navigationBar/home.svg',
+    'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
+    'label': 'Гарах',
+  },
+];
+const onlineDirection = [
+  'Тулгамдсан асуудлын талаар бичиж оруулах',
+  'Төлбөр төлөх',
+  'Төлбөр төлөгдсний дараа шууд хуульчтай холбогдоно'
+];
+const fulfilledDirection = [
+  'Уулзах шалтгаан бичиж оруулах',
+  'Байршлын хаяг оруулах',
+  'Төлбөр төлөх',
+  'Таны оруулсан байршил дээр очино'
 ];
 const serviceTypes = [
   {

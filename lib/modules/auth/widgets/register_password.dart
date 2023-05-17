@@ -11,7 +11,7 @@ class RegisterPasswordView extends StatelessWidget {
     return Scaffold(
         appBar: PrimeAppBar(
             onTap: () {
-              Get.to(() => RegisterPhoneView());
+              Navigator.pop(context);
             },
             title: 'Бүртгүүлэх'),
         backgroundColor: bg,

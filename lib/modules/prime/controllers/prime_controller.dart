@@ -11,82 +11,171 @@ import '../../../shared/index.dart';
 class PrimeController extends GetxController {
   final _apiRepository = Get.find<ApiRepository>();
   final homeController = Get.put(HomeController());
+
+  final fade = true.obs;
+
+  final order = Rxn<Order>(Order(location: Location(lng: 0, lat: 0)));
   final services = <Service>[].obs;
   final subServices = <SubService>[].obs;
   final lawyers = <User>[].obs;
+  final times = <SortedTime>[SortedTime(day: 0, time: [])].obs;
+
   final loading = false.obs;
   final selectedService = "".obs;
-  final selectedServiceType = "".obs;
+  final selectedSubService = "".obs;
+
   final selectedExpiredTime = "".obs;
 // order select date
   final selectedLawyer = Rxn<User?>();
   final selectedDate = DateTime.now().obs;
-  final selectedDay = Rxn<AvailableTime>();
-  final selectedTime = Rxn<SelectedTime>();
-  final serviceTypeTimes = <ServiceTypeTime>[].obs;
-  final lawyerPrice = <ServicePrice>[].obs;
+
+  // final selectedServiceType = Rxn<ServiceTypes>();
+  // final lawyerPrice = <ServicePrice>[].obs;
   final selectedAvailableDays =
       AvailableDay(serviceId: "", serviceTypeTime: []).obs;
   final orders = <Order>[].obs;
-  final audioController =
-      Get.put<AudioController>(AudioController(), permanent: true);
-  final videoController =
-      Get.put<VideoController>(VideoController(), permanent: true);
+
   @override
   void onInit() async {
     await start();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      fade.value = false;
+    });
     super.onInit();
   }
 
-  getLawyerPrice(String lawyerId, BuildContext context) async {
+  Future<bool> getTimeLawyer() async {
     try {
       loading.value = true;
-      final res =
-          await _apiRepository.getPrice(lawyerId, 'any', selectedService.value);
-      lawyerPrice.value = res;
+      List<int> primaryTimes = [];
+      List<Time> res = (await _apiRepository
+          .getTimeLawyer(selectedLawyer.value!.sId!)) as List<Time>;
+      selectedDate.value = DateTime(2023, 5, 14);
 
-      if (res.isNotEmpty) {
-        Get.to(() => const PrimeLawyer());
-      } else {
-        Get.snackbar('Уучлаарай', "Таны сонгосон хуульч үнэ оруулаагүй байна");
+      res.forEach((time) {
+        for (var element in time.timeDetail!) {
+          if (!primaryTimes.contains(element.time!)) {
+            primaryTimes.add(element.time!);
+          }
+        }
+      });
+      primaryTimes.sort();
+      for (int time in primaryTimes) {
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
+        int day =
+            DateTime(date.year, date.month, date.day).millisecondsSinceEpoch;
+        int nextDay = DateTime(date.year, date.month, date.day + 1)
+            .millisecondsSinceEpoch;
+        SortedTime sortedTime = times.firstWhere((t) => t.day == day,
+            orElse: () => SortedTime(day: 0, time: []));
+        if (sortedTime.day == 0) {
+          sortedTime.day = day;
+          sortedTime.time?.add(time);
+        } else {
+          sortedTime.time?.add(time);
+        }
+
+        if (times
+                .firstWhere((element) => element.day == day,
+                    orElse: () => SortedTime(day: 0, time: []))
+                .day ==
+            0) {
+          times.add(sortedTime);
+        }
       }
       loading.value = false;
+
+      return true;
     } on DioError catch (e) {
       loading.value = false;
+
       print(e.response);
       Get.snackbar('Уучлаарай', "Таны сонгосон хуульч үнэ оруулаагүй байна");
+      return false;
     }
   }
 
-  sendOrder(BuildContext context) async {
+  Future<bool> getTimeService(String type) async {
     try {
       loading.value = true;
-      DateTime date = DateTime(
-          selectedDate.value.year,
-          selectedDate.value.month,
-          int.parse(selectedDay.value!.day!),
-          int.parse(selectedDay.value!.time![0].substring(0, 2)));
-      final prices = await _apiRepository.getPrice(
-        selectedLawyer.value!.sId!,
-        selectedServiceType.value,
-        selectedService.value,
-      );
-      final price = prices
-          .firstWhereOrNull((p) => p.serviceType == selectedServiceType.value);
+      List<int> primaryTimes = [];
+      final res =
+          await _apiRepository.getTimeService(order.value!.serviceId!, type);
+      res.forEach((time) {
+        for (var element in time.timeDetail!) {
+          if (!primaryTimes.contains(element.time!)) {
+            primaryTimes.add(element.time!);
+          }
+        }
+      });
+      primaryTimes.sort();
+      for (int time in primaryTimes) {
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
+        int day =
+            DateTime(date.year, date.month, date.day).millisecondsSinceEpoch;
+        int nextDay = DateTime(date.year, date.month, date.day + 1)
+            .millisecondsSinceEpoch;
+        SortedTime sortedTime = times.firstWhere((t) => t.day == day,
+            orElse: () => SortedTime(day: 0, time: []));
+        if (sortedTime.day == 0) {
+          sortedTime.day = day;
+          sortedTime.time?.add(time);
+        } else {
+          sortedTime.time?.add(time);
+        }
 
-      final res = await _apiRepository.createOrder(
-          date.millisecondsSinceEpoch,
-          selectedLawyer.value!.sId!,
-          price!.expiredTime!,
-          price.price!,
-          selectedServiceType.value,
-          selectedService.value,
-          homeController.user!.sId!);
-      Navigator.of(context).push(createRoute(AlertView(
-          status: 'success',
-          text:
-              'Таны сонгосон хуульчтайгаа ${date.year / date.month / date.day}-ны өдрийн ${date.hour}:00 дуудлагаа хийнэ үү ')));
+        if (times
+                .firstWhere((element) => element.day == day,
+                    orElse: () => SortedTime(day: 0, time: []))
+                .day ==
+            0) {
+          times.add(sortedTime);
+        }
+      }
+      selectedDate.value = DateTime(2023, 5, 14);
+
       loading.value = false;
+      return true;
+    } on DioError catch (e) {
+      loading.value = false;
+      print(e.response);
+      Get.snackbar('Уучлаарай', "Цаг олдсонгүй.");
+      return false;
+    }
+  }
+
+  Future<bool> sendOrder() async {
+    try {
+      loading.value = true;
+      String lawyerId = selectedLawyer.value?.sId ?? '';
+      int price = 0;
+      int expiredTime = 0;
+      if (lawyerId == '') {
+        final lawyer = await _apiRepository.activeLawyer(
+            order.value!.serviceId!,
+            order.value!.serviceType!,
+            selectedDate.value.millisecondsSinceEpoch,
+            false);
+
+        lawyerId = lawyer.first.lawyer!;
+        price = lawyer.first.serviceType!
+            .firstWhere((element) => element.type == order.value!.serviceType!)
+            .price!;
+        expiredTime = lawyer.first.serviceType!
+            .firstWhere((element) => element.type == order.value!.serviceType!)
+            .expiredTime!;
+      }
+      await _apiRepository.createOrder(
+          selectedDate.value.millisecondsSinceEpoch,
+          lawyerId,
+          expiredTime,
+          price,
+          order.value!.serviceType!,
+          order.value!.serviceId!,
+          selectedSubService.value,
+          order.value!.location!);
+      loading.value = false;
+      return true;
     } on DioError catch (e) {
       loading.value = false;
       print(e.response);
@@ -94,6 +183,7 @@ class PrimeController extends GetxController {
         'Error',
         'Something went wrong',
       );
+      return false;
     }
   }
 
@@ -108,43 +198,10 @@ class PrimeController extends GetxController {
 
       Agora token = await _apiRepository.getAgoraToken(channelName, '2');
 
-      if (token.rtcToken != null) {
-        bool res = await _apiRepository.setChannel(
-            orderId, channelName, token.rtcToken!);
-        if (res) {
-          if (type == 'online') {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => Scaffold(
-            //               body: AudioView(
-            //                   channelName: channelName,
-            //                   token: token.rtcToken!,
-            //                   uid: 2),
-            //             )));
-          }
-          if (type == 'fulfilled') {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => Scaffold(
-            //               body: VideoView(
-            //                   channelName: channelName,
-            //                   token: token.rtcToken!,
-            //                   uid: 2),
-            //             )));
-          }
-        }
-      }
-
-      // videoController.channelId.value =
-      //     DateTime.parse(channelName).millisecondsSinceEpoch.toString();
-      // videoController.channelToken.value =
-      //     "006a941d13a5641456b95014aa4fc703f70IAB24n+WHua5t7pquMygdN3qH6n7MuoNQxpF1FNEgTNe6PhB+WG379yDIgDHfjwFt8kYZAQAAQBfmxdkAgBfmxdkAwBfmxdkBABfmxdk";
-
-      // await videoController.initEngine();
-      // await videoController.joinChannel();
-      // Get.to(() => VideoView());
+      // if (token.rtcToken != null) {
+      //   bool res = await _apiRepository.setChannel(
+      //       orderId, channelName, token.rtcToken!);
+      // }
 
       loading.value = false;
     } on DioError catch (e) {
@@ -157,12 +214,15 @@ class PrimeController extends GetxController {
     }
   }
 
-  getOrderList(bool isLawyer) async {
+  getOrderList(bool isLawyer, BuildContext context) async {
     try {
       loading.value = true;
       final res = await _apiRepository.orderList();
       orders.value = res;
-      Get.to(() => OrdersView(title: 'Захиалгууд', isLawyer: isLawyer,));
+      Navigator.of(context).push(createRoute(OrdersView(
+        title: 'Захиалгууд',
+        isLawyer: isLawyer,
+      )));
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
@@ -173,7 +233,7 @@ class PrimeController extends GetxController {
     }
   }
 
-  getSuggestLawyer(String title, String description, String sId,
+  getSuggestLawyer(String? title, String? description, String sId,
       BuildContext context) async {
     try {
       loading.value = true;
@@ -181,9 +241,10 @@ class PrimeController extends GetxController {
         title: title,
         description: description,
       )));
-      selectedService.value = sId;
-      final lRes = await _apiRepository.suggestedLawyersByCategory(sId);
-      lawyers.value = lRes;
+      selectedSubService.value = sId;
+      // final lRes = await _apiRepository.suggestedLawyersByCategory(
+      //     selectedService.value, sId);
+      // lawyers.value = lRes;
 
       loading.value = false;
     } on DioError catch (e) {
@@ -198,7 +259,7 @@ class PrimeController extends GetxController {
   Future<bool> getSubServices(String id) async {
     try {
       loading.value = true;
-
+      order.value?.serviceId = id;
       final res = await _apiRepository.subServiceList(id);
       subServices.value = res;
 
@@ -219,7 +280,8 @@ class PrimeController extends GetxController {
       loading.value = true;
       final res = await _apiRepository.servicesList();
       services.value = res;
-
+      final lRes = await _apiRepository.suggestedLawyers();
+      lawyers.value = lRes;
       final ordersRes = await _apiRepository.orderList();
       orders.value = ordersRes;
 

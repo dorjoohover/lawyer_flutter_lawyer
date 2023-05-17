@@ -1,20 +1,33 @@
-import 'user.dart';
+import 'package:frontend/data/data.dart';
 
 class User {
   String? sId;
   String? firstName;
   String? lastName;
   String? phone;
-  String? password;
   String? userType;
-  double? ratingAvg;
   List<Experiences>? experiences;
+  List<Education>? education;
+  List<Degree>? degree;
   List<Rating>? rating;
   String? userStatus;
-  List<UserServices>? userServices;
-  String? bio;
+  int? alert;
+  double? ratingAvg;
+  List<String>? userServices;
+  String? createdAt;
+  String? updatedAt;
+  Account? account;
+  String? certificate;
   int? experience;
+  String? licenseNumber;
+  Location? location;
+  Location? officeLocation;
+  String? taxNumber;
+  String? registerNumber;
   String? profileImg;
+  String? email;
+  List<String>? phoneNumbers;
+  Location? workLocation;
 
   User(
       {this.sId,
@@ -23,13 +36,27 @@ class User {
       this.phone,
       this.userType,
       this.experiences,
+      this.education,
+      this.degree,
       this.rating,
       this.userStatus,
+      this.alert,
+      this.profileImg,
       this.userServices,
-      this.bio,
+      this.createdAt,
+      this.updatedAt,
       this.ratingAvg,
+      this.account,
+      this.certificate,
       this.experience,
-      this.profileImg});
+      this.licenseNumber,
+      this.location,
+      this.registerNumber,
+      this.officeLocation,
+      this.taxNumber,
+      this.email,
+      this.phoneNumbers,
+      this.workLocation});
 
   User.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -37,11 +64,22 @@ class User {
     lastName = json['lastName'];
     phone = json['phone'];
     userType = json['userType'];
-    ratingAvg = json['ratingAvg'];
     if (json['experiences'] != null) {
       experiences = <Experiences>[];
       json['experiences'].forEach((v) {
         experiences!.add(Experiences.fromJson(v));
+      });
+    }
+    if (json['education'] != null) {
+      education = <Education>[];
+      json['education'].forEach((v) {
+        education!.add(Education.fromJson(v));
+      });
+    }
+    if (json['degree'] != null) {
+      degree = <Degree>[];
+      json['degree'].forEach((v) {
+        degree!.add(Degree.fromJson(v));
       });
     }
     if (json['rating'] != null) {
@@ -50,16 +88,40 @@ class User {
         rating!.add(Rating.fromJson(v));
       });
     }
-    userStatus = json['userStatus'];
-    if (json['userServices'] != null) {
-      userServices = <UserServices>[];
-      json['userServices'].forEach((v) {
-        userServices!.add(UserServices.fromJson(v));
+    if (json['phoneNumbers'] != null) {
+      phoneNumbers = <String>[];
+      json['phoneNumbers'].forEach((v) {
+        phoneNumbers!.add(v.toString());
       });
     }
-    bio = json['bio'];
-    experience = json['experience'];
+    userStatus = json['userStatus'];
+    email = json['email'];
+    alert = json['alert'];
     profileImg = json['profileImg'];
+    ratingAvg = json['ratingAvg'];
+    if (json['userServices'] != null) {
+      userServices = <String>[];
+      json['userServices'].forEach((v) {
+        userServices!.add(v.toString());
+      });
+    }
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    account =
+        json['account'] != null ? Account.fromJson(json['account']) : null;
+    certificate = json['certificate'];
+    experience = json['experience'];
+    licenseNumber = json['licenseNumber'];
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
+    officeLocation = json['officeLocation'] != null
+        ? Location.fromJson(json['officeLocation'])
+        : null;
+    taxNumber = json['taxNumber'];
+    registerNumber = json['registerNumber'];
+    workLocation = json['workLocation'] != null
+        ? Location.fromJson(json['workLocation'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -69,42 +131,71 @@ class User {
     data['lastName'] = lastName;
     data['phone'] = phone;
     data['userType'] = userType;
-    data['ratingAvg'] = ratingAvg;
     if (experiences != null) {
       data['experiences'] = experiences!.map((v) => v.toJson()).toList();
+    }
+    if (education != null) {
+      data['education'] = education!.map((v) => v.toJson()).toList();
+    }
+    if (degree != null) {
+      data['degree'] = degree!.map((v) => v.toJson()).toList();
     }
     if (rating != null) {
       data['rating'] = rating!.map((v) => v.toJson()).toList();
     }
     data['userStatus'] = userStatus;
-    if (userServices != null) {
-      data['userServices'] = userServices!.map((v) => v.toJson()).toList();
-    }
-    data['bio'] = bio;
-    data['experience'] = experience;
+    data['alert'] = alert;
     data['profileImg'] = profileImg;
+    data['ratingAvg'] = ratingAvg;
+    if (userServices != null) {
+      data['userServices'] = userServices;
+    }
+    if (phoneNumbers != null) {
+      data['phoneNumbers'] = phoneNumbers;
+    }
+
+    data['createdAt'] = createdAt;
+    data['email'] = email;
+    data['updatedAt'] = updatedAt;
+    if (account != null) {
+      data['account'] = account!.toJson();
+    }
+    data['certificate'] = certificate;
+    data['experience'] = experience;
+    data['licenseNumber'] = licenseNumber;
+    if (location != null) {
+      data['location'] = location!.toJson();
+    }
+    if (officeLocation != null) {
+      data['officeLocation'] = officeLocation!.toJson();
+    }
+    data['taxNumber'] = taxNumber;
+    data['registerNumber'] = registerNumber;
+    if (workLocation != null) {
+      data['workLocation'] = workLocation!.toJson();
+    }
     return data;
   }
+}
 
-  User.empty() {
+class Account {
+  int? accountNumber;
+  String? username;
+  String? bank;
+
+  Account({this.accountNumber, this.username, this.bank});
+
+  Account.fromJson(Map<String, dynamic> json) {
+    accountNumber = json['accountNumber'];
+    username = json['username'];
+    bank = json['bank'];
+  }
+
+  Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = '';
-    data['firstName'] = '';
-    data['lastName'] = '';
-    data['phone'] = '';
-    data['userType'] = '';
-    data['ratingAvg'] = '';
-
-    data['experiences'] = null;
-
-    data['rating'] = null;
-
-    data['userStatus'] = '';
-
-    data['userServices'] = null;
-
-    data['bio'] = '';
-    data['experience'] = '';
-    data['profileImg'] = '';
+    data['accountNumber'] = accountNumber;
+    data['username'] = username;
+    data['bank'] = bank;
+    return data;
   }
 }

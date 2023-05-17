@@ -30,92 +30,78 @@ class OrderBottomSheet extends GetView<PrimeController> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      icon: Icon(Icons.cancel))
+                      icon: const Icon(Icons.cancel))
                 ],
               ),
-              controller.selectedLawyer.value?.userServices?.firstWhereOrNull(
-                              (ser) =>
-                                  ser.serviceId ==
-                                  controller.selectedService.value) !=
-                          null &&
-                      controller.selectedLawyer.value?.userServices
-                              ?.firstWhereOrNull((ser) =>
-                                  ser.serviceId ==
-                                  controller.selectedService.value)
-                              ?.serviceTypes
-                              ?.firstWhereOrNull(
-                                  (type) => type.serviceType == 'fulfilled') !=
-                          null
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.person),
-                                space16,
-                                Text(
-                                  'Биечлэн уулзах',
-                                  style:
-                                      Theme.of(context).textTheme.displayMedium,
-                                )
-                              ],
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  controller.selectedServiceType.value =
-                                      "fulfilled";
-
-                                  if (controller.selectedLawyer.value != null) {
-                                    Navigator.of(context)
-                                        .push(createRoute(const OrderView()));
-                                  }
-                                },
-                                icon: const Icon(Icons.arrow_forward_ios)),
-                          ]),
-                    )
-                  : space24,
-              controller.selectedLawyer.value?.userServices?.firstWhereOrNull(
-                              (ser) =>
-                                  ser.serviceId ==
-                                  controller.selectedService.value) !=
-                          null &&
-                      controller.selectedLawyer.value?.userServices
-                              ?.firstWhereOrNull((ser) =>
-                                  ser.serviceId ==
-                                  controller.selectedService.value)
-                              ?.serviceTypes
-                              ?.firstWhereOrNull(
-                                  (type) => type.serviceType == 'online') !=
-                          null
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.camera),
-                            space16,
-                            Text(
-                              'Онлайн зөвлөгөө авах',
-                              style: Theme.of(context).textTheme.displayMedium,
-                            )
-                          ],
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              controller.selectedServiceType.value = "online";
-
-                              if (controller.selectedLawyer != null) {
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.person),
+                          space16,
+                          Text(
+                            'Биечлэн уулзах',
+                            style: Theme.of(context).textTheme.displayMedium,
+                          )
+                        ],
+                      ),
+                      IconButton(
+                          onPressed: () async {
+                            controller.order.value?.serviceType = 'fulfilled';
+                            if (controller.selectedLawyer.value != null) {
+                              bool res = await controller.getTimeLawyer();
+                              if (res) {
                                 Navigator.of(context)
-                                    .push(createRoute(const OrderView()));
+                                    .push(createRoute(const OrderTimeView()));
                               }
-                            },
-                            icon: const Icon(Icons.arrow_forward_ios))
-                      ],
-                    )
-                  : SizedBox(),
-              space24
+                            } else {
+                              bool res =
+                                  await controller.getTimeService('fulfilled');
+                              if (res) {
+                                Navigator.of(context)
+                                    .push(createRoute(const OrderTimeView()));
+                              }
+                            }
+                          },
+                          icon: const Icon(Icons.arrow_forward_ios)),
+                    ]),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.camera),
+                      space16,
+                      Text(
+                        'Онлайн зөвлөгөө авах',
+                        style: Theme.of(context).textTheme.displayMedium,
+                      )
+                    ],
+                  ),
+                  IconButton(
+                      onPressed: () async {
+                        controller.order.value?.serviceType = 'online';
+                        if (controller.selectedLawyer.value != null) {
+                          bool res = await controller.getTimeLawyer();
+                          if (res) {
+                            Navigator.of(context)
+                                .push(createRoute(const OrderTimeView()));
+                          }
+                        } else {
+                          bool res = await controller.getTimeService('online');
+                          if (res) {
+                            Navigator.of(context)
+                                .push(createRoute(const OrderTimeView()));
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.arrow_forward_ios))
+                ],
+              )
             ],
           ),
         ),

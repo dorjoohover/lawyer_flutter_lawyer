@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../shared/index.dart';
 
@@ -12,11 +13,15 @@ class WaitingChannelWidget extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           alignment: Alignment.center,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.timelapse, size: 80),
+              SvgPicture.asset(
+                svgWaiting,
+                width: 87,
+              ),
               space64,
               Text(
-                '${isLawyer ? 'Хэрэглэгч' : 'хуульч'} орж иртэл',
+                '${isLawyer ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл',
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!

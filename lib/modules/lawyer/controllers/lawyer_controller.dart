@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,73 +15,96 @@ class LawyerController extends GetxController {
   final _apiRepository = Get.find<ApiRepository>();
   final homeController = Get.put(HomeController());
   //addition register
-  final bio = "".obs;
-  final experience = "".obs;
-  final selectedService = "".obs;
-  final selectedSubServices = <String>[].obs;
-  final selectedDate = DateTime.now().obs;
-  final selectedDay = <AvailableTime>[].obs;
-  final selectedTime = <SelectedTime>[].obs;
-  final serviceTypeTimes = <ServiceTypeTime>[].obs;
-  final selectedAvailableDays =
-      Rxn<AvailableDay>(AvailableDay(serviceId: "", serviceTypeTime: []));
 
+  final CarouselController carouselController = CarouselController();
+  final currentOrder = 0.obs;
+  final availableTime = Rxn(Time(serviceType: []));
+  final timeDetail = <TimeDetail>[].obs;
+  final selectedDate = DateTime.now().obs;
+  final selectedType = <TimeType>[].obs;
+  final fade = true.obs;
   final loading = false.obs;
 
   @override
   void onInit() async {
+    Future.delayed(const Duration(milliseconds: 800), () {
+      fade.value = false;
+    });
     await start();
     super.onInit();
   }
 
-  getChannelToken(
-      String orderId,
-      String channelName,
-      String type,
-      BuildContext context,
-      bool isLawyer,
-      String name,
+  getOrderDetail(String id) async {
+    try {
+      Order order = await _apiRepository.getChannel(id);
+      return order;
+    } on DioError catch (e) {
+      Get.snackbar(e.message ?? '', 'error');
+    }
+  }
+
+  addAvailableDays() async {
+    try {
+      availableTime.value!.timeDetail = timeDetail;
+      availableTime.value!.serviceType = selectedType;
+
+      bool order = await _apiRepository.addAvailableDays(availableTime.value!);
+      return order;
+    } on DioError catch (e) {
+      Get.snackbar(e.message ?? '', 'error');
+    }
+  }
+
+  getChannelToken(Order order, BuildContext context, bool isLawyer,
       String? profileImg) async {
     try {
       loading.value = true;
-      if (type == 'online') {
-        Navigator.of(context).push(createRoute(Scaffold(
-          body: WaitingChannelWidget(
-            isLawyer: isLawyer,
-          ),
-        )));
-      }
-      if (channelName == 'string') {
+      Order getOrder = await _apiRepository.getChannel(order.sId!);
+      Navigator.of(context).push(createRoute(Scaffold(
+        body: WaitingChannelWidget(
+          isLawyer: isLawyer,
+        ),
+      )));
+      String channelName = getOrder.channelName!;
+      if (getOrder.channelName == 'string') {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
 
       Agora token =
           await _apiRepository.getAgoraToken(channelName, isLawyer ? '2' : '1');
 
-      if (token.rtcToken != null) {
-        bool res = await _apiRepository.setChannel(
-            orderId, channelName, token.rtcToken!);
-        if (res) {
-          if (type == 'online') {
-            Navigator.of(context).push(createRoute(Scaffold(
-              body: AudioView(
+      if (token.rtcToken != null && channelName != 'string') {
+        Order res = await _apiRepository.setChannel(
+            isLawyer ? 'lawyer' : 'user',
+            order.sId!,
+            channelName!,
+            token.rtcToken!);
+        if (res != null) {
+          if (res.serviceType == 'onlineEmergency') {
+            Get.to(
+              () => AudioView(
+                  order: res,
                   isLawyer: isLawyer,
-                  channelName: channelName,
+                  channelName: order.channelName!,
                   token: token.rtcToken!,
-                  name: name,
+                  name: isLawyer
+                      ? order.clientId!.lastName!
+                      : order.lawyerId!.lastName!,
                   uid: isLawyer ? 2 : 1),
-            )));
+            );
           }
-          if (type == 'fulfilled') {
-            print(token.rtcToken!);
-            Navigator.of(context).push(createRoute(Scaffold(
-              body: VideoView(
+          if (order.serviceType == 'online') {
+            Get.to(
+              () => VideoView(
+                  order: res,
                   isLawyer: isLawyer,
-                  channelName: channelName,
+                  channelName: order.channelName!,
                   token: token.rtcToken!,
-                  name: name,
+                  name: isLawyer
+                      ? order.clientId!.lastName!
+                      : order.lawyerId!.lastName!,
                   uid: isLawyer ? 2 : 1),
-            )));
+            );
           }
         }
       }
@@ -99,76 +125,6 @@ class LawyerController extends GetxController {
       Get.snackbar(
         'Error',
         'Something went wrong',
-      );
-    }
-  }
-
-  Future<bool> addAvailableDays() async {
-    try {
-      loading.value = true;
-
-      for (var type in serviceTypeTimes) {
-        type.time = selectedDay;
-      }
-      selectedAvailableDays.value?.serviceId = selectedSubServices.first;
-      selectedAvailableDays.value?.serviceTypeTime = serviceTypeTimes;
-
-      final res =
-          await _apiRepository.addAvailableDays(selectedAvailableDays.value!);
-      bio.value = "";
-      experience.value = "";
-      selectedService.value = "";
-      selectedSubServices.value = <String>[];
-      selectedDate.value = DateTime.now();
-      selectedDay.value = <AvailableTime>[];
-      selectedTime.value = <SelectedTime>[];
-      serviceTypeTimes.value = <ServiceTypeTime>[];
-      selectedAvailableDays.value =
-          AvailableDay(serviceId: "", serviceTypeTime: []);
-      loading.value = false;
-      if (res) {
-        return true;
-      } else {
-        return false;
-      }
-    } on DioError catch (e) {
-      loading.value = false;
-      Get.snackbar(
-        'Error',
-        'Something went wrong',
-      );
-      return false;
-    }
-  }
-
-  sendAddition() async {
-    try {
-      loading.value = true;
-      serviceTypeTimes.map((type) => type.time = selectedDay);
-      selectedAvailableDays.value?.serviceId = selectedService.value;
-      selectedAvailableDays.value?.serviceTypeTime = serviceTypeTimes;
-
-      final res = await _apiRepository.updateLawyer(int.parse(experience.value),
-          bio.value, "", selectedAvailableDays.value!);
-      if (res) {
-        Get.snackbar(
-          'Success',
-          'success',
-        );
-        Get.to(() => PrimeView());
-      } else {
-        Get.snackbar(
-          'error',
-          'error',
-        );
-        Get.to(() => PrimeView());
-      }
-      loading.value = false;
-    } on DioError catch (e) {
-      loading.value = false;
-      Get.snackbar(
-        'Error',
-        e.response?.data ?? 'Something went wrong',
       );
     }
   }
