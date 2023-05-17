@@ -68,7 +68,7 @@ class _VideoViewState extends State<VideoView> {
   @override
   void initState() {
     super.initState();
-    startTimer();
+    // startTimer();
     client = AgoraClient(
       agoraConnectionData: AgoraConnectionData(
           appId: config.appId,
@@ -76,6 +76,7 @@ class _VideoViewState extends State<VideoView> {
           tempToken: widget.token,
           uid: widget.uid),
     );
+    print(widget.uid);
     initAgora();
   }
 
@@ -84,9 +85,8 @@ class _VideoViewState extends State<VideoView> {
   }
 
   Future<void> _onCallEnd(BuildContext context) async {
-    Navigator.pop(context);
-
     await client.release();
+    Navigator.pop(context);
   }
 
   @override
