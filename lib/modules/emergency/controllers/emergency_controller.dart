@@ -15,16 +15,11 @@ class EmergencyController extends GetxController {
   final _apiRepository = Get.find<ApiRepository>();
   final homeController = Get.put(HomeController());
   //addition register
-
-  final selectedSubServices = <String>[].obs;
-  final selectedDate = DateTime.now().obs;
-  final selectedDay = <AvailableTime>[].obs;
-  final selectedTime = <SelectedTime>[].obs;
-  final serviceTypeTimes = <ServiceTypeTime>[].obs;
+  final serviceType = "".obs;
+  final reason = "".obs;
   final CarouselController carouselController = CarouselController();
   final currentOrder = 0.obs;
-  final selectedAvailableDays =
-      Rxn<AvailableDay>(AvailableDay(serviceId: "", serviceTypeTime: []));
+  final location = Rxn<Location>(Location(lng: 0, lat: 0));
   final fade = true.obs;
   final loading = false.obs;
 
@@ -43,6 +38,45 @@ class EmergencyController extends GetxController {
       return order;
     } on DioError catch (e) {
       Get.snackbar(e.message ?? '', 'error');
+    }
+  }
+
+  Future<bool> sendOrder() async {
+    try {
+      loading.value = true;
+      String lawyerId = '';
+      int price = 0;
+      int expiredTime = 0;
+
+      final lawyer = await _apiRepository.activeLawyer('any', serviceType.value,
+          DateTime.now().millisecondsSinceEpoch, true);
+
+      lawyerId = lawyer.first.lawyer!;
+      price = lawyer.first.serviceType!
+          .firstWhere((element) => element.type == serviceType.value)
+          .price!;
+      expiredTime = lawyer.first.serviceType!
+          .firstWhere((element) => element.type == serviceType.value)
+          .expiredTime!;
+
+      await _apiRepository.createEmergencyOrder(
+          DateTime.now().millisecondsSinceEpoch,
+          lawyerId,
+          expiredTime,
+          price,
+          serviceType.value,
+          reason.value,
+          location.value!);
+      loading.value = false;
+      return true;
+    } on DioError catch (e) {
+      loading.value = false;
+      print(e.response);
+      Get.snackbar(
+        'Error',
+        'Something went wrong',
+      );
+      return false;
     }
   }
 

@@ -14,11 +14,11 @@ class PrimeController extends GetxController {
 
   final fade = true.obs;
 
-  final order = Rxn<Order>();
+  final order = Rxn<Order>(Order(location: Location(lng: 0, lat: 0)));
   final services = <Service>[].obs;
   final subServices = <SubService>[].obs;
   final lawyers = <User>[].obs;
-  final times = <Time>[].obs;
+  final times = <SortedTime>[SortedTime(day: 0, time: [])].obs;
 
   final loading = false.obs;
   final selectedService = "".obs;
@@ -27,9 +27,8 @@ class PrimeController extends GetxController {
   final selectedExpiredTime = "".obs;
 // order select date
   final selectedLawyer = Rxn<User?>();
-  final selectedDate = DateTime.now().millisecondsSinceEpoch.obs;
-  final selectedDay = Rxn<AvailableTime>();
-  final selectedTime = Rxn<SelectedTime>();
+  final selectedDate = DateTime.now().obs;
+
   // final selectedServiceType = Rxn<ServiceTypes>();
   // final lawyerPrice = <ServicePrice>[].obs;
   final selectedAvailableDays =
@@ -45,78 +44,138 @@ class PrimeController extends GetxController {
     super.onInit();
   }
 
-  getTimeLawyer(BuildContext context) async {
+  Future<bool> getTimeLawyer() async {
     try {
       loading.value = true;
+      List<int> primaryTimes = [];
+      List<Time> res = (await _apiRepository
+          .getTimeLawyer(selectedLawyer.value!.sId!)) as List<Time>;
+      selectedDate.value = DateTime(2023, 5, 14);
 
-      final res =
-          await _apiRepository.getTimeLawyer(selectedLawyer.value!.sId!);
-      selectedDate.value = res.timeDetail!.first.time!;
-      res.timeDetail?.forEach((d) {
-        if (selectedDate > d.time!) {
-          selectedDate.value = d.time!;
+      res.forEach((time) {
+        for (var element in time.timeDetail!) {
+          if (!primaryTimes.contains(element.time!)) {
+            primaryTimes.add(element.time!);
+          }
         }
       });
-      Navigator.of(context).push(createRoute(const OrderTimeView()));
-      times.value = [res];
+      primaryTimes.sort();
+      for (int time in primaryTimes) {
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
+        int day =
+            DateTime(date.year, date.month, date.day).millisecondsSinceEpoch;
+        int nextDay = DateTime(date.year, date.month, date.day + 1)
+            .millisecondsSinceEpoch;
+        SortedTime sortedTime = times.firstWhere((t) => t.day == day,
+            orElse: () => SortedTime(day: 0, time: []));
+        if (sortedTime.day == 0) {
+          sortedTime.day = day;
+          sortedTime.time?.add(time);
+        } else {
+          sortedTime.time?.add(time);
+        }
+
+        if (times
+                .firstWhere((element) => element.day == day,
+                    orElse: () => SortedTime(day: 0, time: []))
+                .day ==
+            0) {
+          times.add(sortedTime);
+        }
+      }
       loading.value = false;
 
-      loading.value = false;
+      return true;
     } on DioError catch (e) {
       loading.value = false;
+
       print(e.response);
       Get.snackbar('Уучлаарай', "Таны сонгосон хуульч үнэ оруулаагүй байна");
+      return false;
     }
   }
 
-  getTimeService(BuildContext context) async {
+  Future<bool> getTimeService(String type) async {
     try {
       loading.value = true;
-      final res = await _apiRepository.getTimeService(
-          order.value!.serviceId!, order.value!.serviceType!);
-      times.value = res;
-      selectedDate.value = res.first.timeDetail!.first.time!;
-      for (var t in res) {
-        t.timeDetail?.forEach((d) {
-          if (selectedDate > d.time!) {
-            selectedDate.value = d.time!;
+      List<int> primaryTimes = [];
+      final res =
+          await _apiRepository.getTimeService(order.value!.serviceId!, type);
+      res.forEach((time) {
+        for (var element in time.timeDetail!) {
+          if (!primaryTimes.contains(element.time!)) {
+            primaryTimes.add(element.time!);
           }
-        });
+        }
+      });
+      primaryTimes.sort();
+      for (int time in primaryTimes) {
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
+        int day =
+            DateTime(date.year, date.month, date.day).millisecondsSinceEpoch;
+        int nextDay = DateTime(date.year, date.month, date.day + 1)
+            .millisecondsSinceEpoch;
+        SortedTime sortedTime = times.firstWhere((t) => t.day == day,
+            orElse: () => SortedTime(day: 0, time: []));
+        if (sortedTime.day == 0) {
+          sortedTime.day = day;
+          sortedTime.time?.add(time);
+        } else {
+          sortedTime.time?.add(time);
+        }
+
+        if (times
+                .firstWhere((element) => element.day == day,
+                    orElse: () => SortedTime(day: 0, time: []))
+                .day ==
+            0) {
+          times.add(sortedTime);
+        }
       }
-      Navigator.of(context).push(createRoute(const OrderTimeView()));
+      selectedDate.value = DateTime(2023, 5, 14);
 
       loading.value = false;
+      return true;
     } on DioError catch (e) {
       loading.value = false;
       print(e.response);
       Get.snackbar('Уучлаарай', "Цаг олдсонгүй.");
+      return false;
     }
   }
 
-  sendOrder(BuildContext context) async {
+  Future<bool> sendOrder() async {
     try {
       loading.value = true;
-      // DateTime date = DateTime(
-      //     selectedDate.value.year,
-      //     selectedDate.value.month,
-      //     int.parse(selectedDay.value!.day!),
-      //     int.parse(selectedDay.value!.time![0].substring(0, 2)));
+      String lawyerId = selectedLawyer.value?.sId ?? '';
+      int price = 0;
+      int expiredTime = 0;
+      if (lawyerId == '') {
+        final lawyer = await _apiRepository.activeLawyer(
+            order.value!.serviceId!,
+            order.value!.serviceType!,
+            selectedDate.value.millisecondsSinceEpoch,
+            false);
 
-      // final res = await _apiRepository.createOrder(
-      //     date.millisecondsSinceEpoch,
-      //     selectedLawyer.value!.sId!,
-      //     selectedServiceType.value!.expiredTime!,
-      //     selectedServiceType.value!.price!,
-      //     selectedServiceType.value!.serviceType!,
-      //     selectedService.value,
-      //     selectedSubService.value,
-      //     homeController.user!.sId!);
-      // print(res);
-      // Navigator.of(context).push(createRoute(AlertView(
-      //     status: 'success',
-      //     text:
-      //         'Таны сонгосон хуульчтайгаа ${date.year} / ${date.month} / ${date.day}-ны өдрийн ${date.hour}:00 дуудлагаа хийнэ үү ')));
+        lawyerId = lawyer.first.lawyer!;
+        price = lawyer.first.serviceType!
+            .firstWhere((element) => element.type == order.value!.serviceType!)
+            .price!;
+        expiredTime = lawyer.first.serviceType!
+            .firstWhere((element) => element.type == order.value!.serviceType!)
+            .expiredTime!;
+      }
+      await _apiRepository.createOrder(
+          selectedDate.value.millisecondsSinceEpoch,
+          lawyerId,
+          expiredTime,
+          price,
+          order.value!.serviceType!,
+          order.value!.serviceId!,
+          selectedSubService.value,
+          order.value!.location!);
       loading.value = false;
+      return true;
     } on DioError catch (e) {
       loading.value = false;
       print(e.response);
@@ -124,6 +183,7 @@ class PrimeController extends GetxController {
         'Error',
         'Something went wrong',
       );
+      return false;
     }
   }
 

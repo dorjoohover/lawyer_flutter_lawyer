@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/auth.dart';
+import 'package:frontend/modules/emergency/emergency.dart';
 import 'package:frontend/shared/index.dart';
+import 'package:get/get.dart';
 
 class AdditionView extends StatelessWidget {
   const AdditionView({super.key});
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(EmergencyController());
     return Scaffold(
         appBar: PrimeAppBar(
             onTap: () {
@@ -23,9 +26,12 @@ class AdditionView extends StatelessWidget {
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   space32,
-                  Input(labelText: 'Уулзах шалтгаанаа бичиж оруулна уу')
+                  Input(
+                    labelText: 'Уулзах шалтгаанаа бичиж оруулна уу',
+                    onChange: (p0) => controller.reason.value = p0,
+                  )
                 ],
               ),
               Positioned(
@@ -33,10 +39,23 @@ class AdditionView extends StatelessWidget {
                   left: 0,
                   right: 0,
                   child: MainButton(
-                    onPressed: () {
-                      // controller.sendOrder(context);
+                    onPressed: () async {
+                      if (controller.serviceType.value == 'onlineEmergency') {
+                        bool res = await controller.sendOrder();
+                        if (res) {
+                          Navigator.push(
+                              context, createRoute(const SuccessView()));
+                        }
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LocationView()));
+                      }
                     },
-                    text: "Төлбөр төлөх",
+                    text: controller.serviceType.value == 'onlineEmergency'
+                        ? "Төлбөр төлөх"
+                        : 'Үргэлжлүүлэх',
                     child: const SizedBox(),
                   ))
             ],

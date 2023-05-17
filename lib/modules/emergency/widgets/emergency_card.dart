@@ -8,22 +8,29 @@ class EmergencyCard extends StatelessWidget {
       required this.icon,
       required this.title,
       required this.expiredTime,
+      required this.onTap,
       required this.price});
   final IconData icon;
   final String title;
   final int price;
   final int expiredTime;
+  final Function() onTap;
   @override
   Widget build(BuildContext context) {
     final oCcy = NumberFormat("₮ #,##0", "en_US");
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(origin),
+      ),
+      color: primary,
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         splashColor: primary,
-        onTap: () {},
-        child: SizedBox(
+        child: Container(
+          padding: const EdgeInsets.all(origin),
           width: double.infinity,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
                 icon,
@@ -40,8 +47,10 @@ class EmergencyCard extends StatelessWidget {
               ),
               space32,
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Дуудлагын хөлс',
@@ -58,10 +67,16 @@ class EmergencyCard extends StatelessWidget {
                             .displayMedium!
                             .copyWith(color: Colors.white),
                       ),
-                      MainButton(
-                          onPressed: () {}, child: const Text('Төлбөр төлөх'))
                     ],
-                  )
+                  ),
+                  MainButton(
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: origin, vertical: small),
+                      color: Colors.white,
+                      contentColor: primary,
+                      onPressed: onTap,
+                      child: const Text('Дэлгэрэнгүй'))
                 ],
               )
             ],

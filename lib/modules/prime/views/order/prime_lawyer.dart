@@ -25,14 +25,14 @@ class OrderLawyerView extends GetView<PrimeController> {
                     child: Container(
                         alignment: Alignment.topLeft,
                         width: double.infinity,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                          image: NetworkImage(
-                            controller.selectedLawyer.value?.profileImg ??
-                                "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
-                          ),
-                          fit: BoxFit.cover,
-                        )),
+                        // decoration: BoxDecoration(
+                        //     image: DecorationImage(
+                        //   image: NetworkImage(
+                        //     controller.selectedLawyer.value?.profileImg ??
+                        //         "https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/05/joseph-barrientos-49318-unsplash-e1558728034701.jpg?resize=1500%2C1000&ssl=1",
+                        //   ),
+                        //   fit: BoxFit.cover,
+                        // )),
                         child: Padding(
                           padding:
                               const EdgeInsets.only(top: large, left: origin),

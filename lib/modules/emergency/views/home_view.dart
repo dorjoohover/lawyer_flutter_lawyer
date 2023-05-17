@@ -3,6 +3,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:frontend/modules/emergency/widgets/emergency_card.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
+import 'package:get/get.dart';
 
 class EmergencyHomeView extends StatefulWidget {
   const EmergencyHomeView({super.key});
@@ -14,6 +15,7 @@ class EmergencyHomeView extends StatefulWidget {
 class _EmergencyHomeViewState extends State<EmergencyHomeView> {
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(EmergencyController());
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: MainAppBar(
@@ -27,8 +29,6 @@ class _EmergencyHomeViewState extends State<EmergencyHomeView> {
             child: Container(
               color: bg,
               width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(
-                  left: origin, top: origin, right: origin),
               child: SingleChildScrollView(
                   child: EmergencyAnimationContainer(
                       child: AnimationLimiter(
@@ -41,15 +41,31 @@ class _EmergencyHomeViewState extends State<EmergencyHomeView> {
                     ),
                   ),
                   children: [
-                    const EmergencyCard(
+                    EmergencyCard(
                       expiredTime: 10,
+                      onTap: () {
+                        controller.serviceType.value = 'onlineEmergency';
+                        Navigator.push(
+                            context,
+                            createRoute(DirectionView(
+                              list: onlineDirection,
+                            )));
+                      },
                       price: 10000,
                       icon: Icons.phone,
                       title: 'Яаралтай дуудлага хийж  хуулийн зөвлөгөө авах',
                     ),
                     space16,
-                    const EmergencyCard(
-                      expiredTime: 30,
+                    EmergencyCard(
+                      onTap: () {
+                        controller.serviceType.value = 'fulfilledEmergency';
+                        Navigator.push(
+                            context,
+                            createRoute(DirectionView(
+                              list: fulfilledDirection,
+                            )));
+                      },
+                      expiredTime: 60,
                       price: 100000,
                       icon: Icons.person,
                       title: 'Хуульч дуудаж хууль зүйн туслалцаа авах',
@@ -59,6 +75,7 @@ class _EmergencyHomeViewState extends State<EmergencyHomeView> {
               )))),
             )),
       ),
+      bottomNavigationBar: const MainNavigationBar(),
     );
   }
 }

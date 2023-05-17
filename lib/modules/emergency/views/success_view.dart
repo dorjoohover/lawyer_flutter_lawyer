@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/modules/emergency/emergency.dart';
 import 'package:frontend/shared/index.dart';
 
 class SuccessView extends StatelessWidget {
-  const SuccessView({super.key, required this.location});
-  final String location;
+  const SuccessView({super.key});
+  // final String location;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +14,6 @@ class SuccessView extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.symmetric(horizontal: origin),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             space32,
@@ -37,16 +37,16 @@ class SuccessView extends StatelessWidget {
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
                 space32,
-                space4,
-                Text(
-                  'Байршил',
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  location,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displaySmall,
-                ),
+                // space4,
+                // Text(
+                //   'Байршил',
+                //   textAlign: TextAlign.center,
+                // ),
+                // Text(
+                //   location,
+                //   textAlign: TextAlign.center,
+                //   style: Theme.of(context).textTheme.displaySmall,
+                // ),
               ],
             ),
             Container(
@@ -54,8 +54,12 @@ class SuccessView extends StatelessWidget {
                   bottom: MediaQuery.of(context).padding.bottom + 50),
               width: double.infinity,
               child: MainButton(
-                onPressed: () {},
-                text: "Байршил харах",
+                onPressed: () {
+                  Navigator.push(
+                      context, createRoute(const EmergencyHomeView()));
+                },
+                text: "Буцах",
+                // text: "Байршил харах",
                 child: const SizedBox(),
               ),
             ),

@@ -49,12 +49,21 @@ class OrderBottomSheet extends GetView<PrimeController> {
                         ],
                       ),
                       IconButton(
-                          onPressed: () {
+                          onPressed: () async {
                             controller.order.value?.serviceType = 'fulfilled';
                             if (controller.selectedLawyer.value != null) {
-                              controller.getTimeLawyer(context);
+                              bool res = await controller.getTimeLawyer();
+                              if (res) {
+                                Navigator.of(context)
+                                    .push(createRoute(const OrderTimeView()));
+                              }
                             } else {
-                              controller.getTimeService(context);
+                              bool res =
+                                  await controller.getTimeService('fulfilled');
+                              if (res) {
+                                Navigator.of(context)
+                                    .push(createRoute(const OrderTimeView()));
+                              }
                             }
                           },
                           icon: const Icon(Icons.arrow_forward_ios)),
@@ -74,12 +83,20 @@ class OrderBottomSheet extends GetView<PrimeController> {
                     ],
                   ),
                   IconButton(
-                      onPressed: () {
+                      onPressed: () async {
                         controller.order.value?.serviceType = 'online';
                         if (controller.selectedLawyer.value != null) {
-                          controller.getTimeLawyer(context);
+                          bool res = await controller.getTimeLawyer();
+                          if (res) {
+                            Navigator.of(context)
+                                .push(createRoute(const OrderTimeView()));
+                          }
                         } else {
-                          controller.getTimeService(context);
+                          bool res = await controller.getTimeService('online');
+                          if (res) {
+                            Navigator.of(context)
+                                .push(createRoute(const OrderTimeView()));
+                          }
                         }
                       },
                       icon: const Icon(Icons.arrow_forward_ios))

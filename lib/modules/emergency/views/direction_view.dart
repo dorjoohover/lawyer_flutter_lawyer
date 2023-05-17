@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/emergency/emergency.dart';
 import 'package:frontend/shared/index.dart';
 
 class DirectionView extends StatelessWidget {
@@ -32,7 +33,8 @@ class DirectionView extends StatelessWidget {
                   Column(
                     children: list.map((e) {
                       int i = list.indexOf(e);
-                      return Padding(
+                      return Container(
+                        width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,10 +46,11 @@ class DirectionView extends StatelessWidget {
                             const SizedBox(
                               width: 11,
                             ),
-                            Text(
+                            Flexible(
+                                child: Text(
                               e,
                               style: Theme.of(context).textTheme.displayMedium,
-                            )
+                            ))
                           ],
                         ),
                       );
@@ -61,7 +64,7 @@ class DirectionView extends StatelessWidget {
                   right: 0,
                   child: MainButton(
                     onPressed: () {
-                      // controller.sendOrder(context);
+                      Navigator.push(context, createRoute(AdditionView()));
                     },
                     text: "Үргэлжлүүлэх",
                     child: const SizedBox(),

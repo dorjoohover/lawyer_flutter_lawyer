@@ -42,11 +42,13 @@ class OrderTimeView extends GetView<PrimeController> {
                             GestureDetector(
                               onTap: () {
                                 if (controller.times.any((element) =>
-                                    element.timeDetail!.any((d) =>
-                                        d.time! >=
-                                        controller.selectedDate.value +
-                                            2592000000))) {
-                                  controller.selectedDate.value + 2592000000;
+                                    element.day! >=
+                                    controller.selectedDate.value
+                                            .millisecondsSinceEpoch +
+                                        2592000000)) {
+                                  controller.selectedDate.value
+                                          .millisecondsSinceEpoch +
+                                      2592000000;
                                 }
                               },
                               child: Container(
@@ -70,7 +72,7 @@ class OrderTimeView extends GetView<PrimeController> {
                             space8,
                             Obx(
                               () => Text(
-                                  "${DateTime.fromMillisecondsSinceEpoch(controller.selectedDate.value).month}-р сар",
+                                  "${controller.selectedDate.value.month}-р сар",
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayMedium!
@@ -80,11 +82,13 @@ class OrderTimeView extends GetView<PrimeController> {
                             GestureDetector(
                               onTap: () {
                                 if (controller.times.any((element) =>
-                                    element.timeDetail!.any((d) =>
-                                        d.time! <=
-                                        controller.selectedDate.value -
-                                            2592000000))) {
-                                  controller.selectedDate.value - 2592000000;
+                                    element.day! <=
+                                    controller.selectedDate.value
+                                            .millisecondsSinceEpoch -
+                                        2592000000)) {
+                                  controller.selectedDate.value
+                                          .millisecondsSinceEpoch -
+                                      2592000000;
                                 }
                               },
                               child: Container(
@@ -103,13 +107,37 @@ class OrderTimeView extends GetView<PrimeController> {
                             ),
                           ],
                         ),
+                        space32,
+                        Expanded(
+                            child: SingleChildScrollView(
+                                child: Obx(
+                          () => Column(
+                              children: controller.times.map((time) {
+                            if (time.day != 0) {
+                              return OrderTimeWidget(
+                                day: time.day!,
+                                time: time.time ?? [],
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          }).toList()),
+                        ))),
                       ]),
                   Positioned(
                       bottom: MediaQuery.of(context).padding.bottom,
                       left: 16,
                       right: 16,
                       child: MainButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          bool res = await controller.sendOrder();
+                          if (res) {
+                            Navigator.of(context).push(createRoute(AlertView(
+                                status: 'success',
+                                text:
+                                    'Таны сонгосон хуульчтайгаа ${controller.selectedDate.value.year} / ${controller.selectedDate.value.month} / ${controller.selectedDate.value.day}-ны өдрийн ${controller.selectedDate.value.hour}:00 дуудлагаа хийнэ үү ')));
+                          }
+                        },
                         text: "Захиалга",
                         child: const SizedBox(),
                       ))

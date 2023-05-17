@@ -8,11 +8,13 @@ class MapsWidget extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.onTap,
+      this.child,
       required this.navigator})
       : super(key: key);
   final String title;
   final Function(LatLng) onTap;
   final Function() navigator;
+  final Widget? child;
   @override
   State<MapsWidget> createState() => MapsWidgetState();
 }
@@ -63,16 +65,17 @@ class MapsWidgetState extends State<MapsWidget> {
                     onTap: _handleTap,
                   ),
                 ),
-                Positioned(
-                    bottom: MediaQuery.of(context).padding.bottom + 50,
-                    left: 0,
-                    right: 0,
-                    child: MainButton(
-                      onPressed: widget.navigator,
-                      // disabled: !controller.personal.value,
-                      text: "Үргэлжлүүлэх",
-                      child: const SizedBox(),
-                    ))
+                widget.child ??
+                    Positioned(
+                        bottom: MediaQuery.of(context).padding.bottom + 50,
+                        left: 0,
+                        right: 0,
+                        child: MainButton(
+                          onPressed: widget.navigator,
+                          // disabled: !controller.personal.value,
+                          text: "Үргэлжлүүлэх",
+                          child: const SizedBox(),
+                        ))
               ],
             ),
     );

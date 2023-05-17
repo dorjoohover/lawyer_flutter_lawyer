@@ -18,8 +18,10 @@ class LawyerController extends GetxController {
 
   final CarouselController carouselController = CarouselController();
   final currentOrder = 0.obs;
-  final selectedAvailableDays =
-      Rxn<AvailableDay>(AvailableDay(serviceId: "", serviceTypeTime: []));
+  final availableTime = Rxn(Time(serviceType: []));
+  final timeDetail = <TimeDetail>[].obs;
+  final selectedDate = DateTime.now().obs;
+  final selectedType = <TimeType>[].obs;
   final fade = true.obs;
   final loading = false.obs;
 
@@ -35,6 +37,18 @@ class LawyerController extends GetxController {
   getOrderDetail(String id) async {
     try {
       Order order = await _apiRepository.getChannel(id);
+      return order;
+    } on DioError catch (e) {
+      Get.snackbar(e.message ?? '', 'error');
+    }
+  }
+
+  addAvailableDays() async {
+    try {
+      availableTime.value!.timeDetail = timeDetail;
+      availableTime.value!.serviceType = selectedType;
+
+      bool order = await _apiRepository.addAvailableDays(availableTime.value!);
       return order;
     } on DioError catch (e) {
       Get.snackbar(e.message ?? '', 'error');

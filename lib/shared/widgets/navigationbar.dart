@@ -10,34 +10,35 @@ class MainNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.put(HomeController());
-    return NavigationBar(
-      selectedIndex: homeController.currentIndex.value,
-      onDestinationSelected: (value) => homeController.changeNavIndex(value),
-      destinations: homeController.user?.userType == 'lawyer'
-          ? lawyerNavbar.map((e) {
-              NavigationDestination body;
-              body = NavigationDestination(
-                icon: SvgPicture.asset(
-                  e['icon']!,
-                ),
-                selectedIcon: SvgPicture.asset(e['activeIcon']!),
-                label: e['label']!,
-              );
-              // }
+    return Obx(() => NavigationBar(
+          selectedIndex: homeController.currentIndex.value,
+          onDestinationSelected: (value) =>
+              homeController.changeNavIndex(value),
+          destinations: homeController.currentUserType.value == 'lawyer'
+              ? lawyerNavbar.map((e) {
+                  NavigationDestination body;
+                  body = NavigationDestination(
+                    icon: SvgPicture.asset(
+                      e['icon']!,
+                    ),
+                    selectedIcon: SvgPicture.asset(e['activeIcon']!),
+                    label: e['label']!,
+                  );
+                  // }
 
-              return body;
-            }).toList()
-          : userNavbar.map((e) {
-              NavigationDestination body;
-              body = NavigationDestination(
-                icon: SvgPicture.asset(e['icon']!),
-                selectedIcon: SvgPicture.asset(e['activeIcon']!),
-                label: e['label']!,
-              );
-              // }
+                  return body;
+                }).toList()
+              : userNavbar.map((e) {
+                  NavigationDestination body;
+                  body = NavigationDestination(
+                    icon: SvgPicture.asset(e['icon']!),
+                    selectedIcon: SvgPicture.asset(e['activeIcon']!),
+                    label: e['label']!,
+                  );
+                  // }
 
-              return body;
-            }).toList(),
-    );
+                  return body;
+                }).toList(),
+        ));
   }
 }

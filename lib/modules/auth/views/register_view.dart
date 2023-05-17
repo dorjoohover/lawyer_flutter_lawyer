@@ -11,7 +11,7 @@ class RegisterView extends StatelessWidget {
     return Scaffold(
         appBar: PrimeAppBar(
             onTap: () {
-              Get.to(() => LoginView());
+              Navigator.pop(context);
             },
             title: 'Бүртгүүлэх'),
         backgroundColor: bg,
@@ -51,7 +51,8 @@ class RegisterView extends StatelessWidget {
                   right: 0,
                   child: Obx(() => MainButton(
                         onPressed: () {
-                          Get.to(() => RegisterNumberView());
+                          Navigator.push(
+                              context, createRoute(RegisterPhoneView()));
                         },
                         disabled: controller.lastName.value == "" ||
                             controller.firstName.value == '',

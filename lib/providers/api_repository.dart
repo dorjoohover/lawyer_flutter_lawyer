@@ -30,7 +30,7 @@ class ApiRepository {
     try {
       final response =
           await apiProvider.get('/user/me') as Map<String, dynamic>;
-      print(response);
+
       return User.fromJson(response);
     } on Exception {
       rethrow;
@@ -93,22 +93,23 @@ class ApiRepository {
   }
 
   Future<bool> createOrder(
-      int date,
-      String lawyerId,
-      int expiredTime,
-      int price,
-      String serviceType,
-      String serviceId,
-      String subServiceId,
-      String userId) async {
+    int date,
+    String lawyerId,
+    int expiredTime,
+    int price,
+    String serviceType,
+    String serviceId,
+    String subServiceId,
+    Location location,
+  ) async {
     try {
       final data = {
         "date": date,
-        "clientId": userId,
+
         "lawyerId": lawyerId,
         "serviceId": serviceId,
         "subServiceId": subServiceId,
-        "location": "string",
+        "location": location,
         "expiredTime": expiredTime,
         "serviceType": serviceType,
         "serviceStatus": "pending",
@@ -119,8 +120,43 @@ class ApiRepository {
         "userToken": "string",
         // here
       };
+
       final response =
           await apiProvider.post('/order', data: data) as Map<String, dynamic>;
+      return true;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<bool> createEmergencyOrder(
+    int date,
+    String lawyerId,
+    int expiredTime,
+    int price,
+    String serviceType,
+    String reason,
+    Location location,
+  ) async {
+    try {
+      final data = {
+        "date": date,
+        "reason": reason,
+        "lawyerId": lawyerId,
+        "location": location,
+        "expiredTime": expiredTime,
+        "serviceType": serviceType,
+        "serviceStatus": "pending",
+        "channelName": "string",
+        "channelToken": "string",
+        "price": "$price",
+        "lawyerToken": "string",
+        "userToken": "string",
+        // here
+      };
+
+      final response = await apiProvider.post('/order/emergency', data: data)
+          as Map<String, dynamic>;
       return true;
     } on Exception {
       rethrow;
@@ -156,16 +192,33 @@ class ApiRepository {
     }
   }
 
-  Future<bool> addAvailableDays(AvailableDay availableDay) async {
+  Future<bool> addAvailableDays(Time time) async {
     try {
       final data = {
-        "serviceTypes": availableDay.serviceTypeTime,
-        "serviceId": availableDay.serviceId,
+        "service": time.service,
+        "serviceType": time.serviceType,
+        "timeDetail": time.timeDetail,
       };
 
-      final response = await apiProvider.patch('/user/available', data: data);
-      print(response);
-      return true;
+      final response = await apiProvider.post('/time', data: data);
+
+      if (response != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } on Exception {
+      return false;
+    }
+  }
+
+  Future<List<Time>> activeLawyer(
+      String id, String type, int t, bool isActive) async {
+    try {
+      final response =
+          await apiProvider.get('/time/active/$t/$id/$type/$isActive');
+      final time = (response as List).map((e) => Time.fromJson(e)).toList();
+      return time;
     } on Exception {
       rethrow;
     }
