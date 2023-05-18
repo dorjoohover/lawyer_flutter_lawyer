@@ -79,33 +79,31 @@ class LawyerController extends GetxController {
             order.sId!,
             channelName!,
             token.rtcToken!);
-        if (res != null) {
-          if (res.serviceType == 'onlineEmergency') {
-            Get.to(
-              () => AudioView(
-                  order: res,
-                  isLawyer: isLawyer,
-                  channelName: order.channelName!,
-                  token: token.rtcToken!,
-                  name: isLawyer
-                      ? order.clientId!.lastName!
-                      : order.lawyerId!.lastName!,
-                  uid: isLawyer ? 2 : 1),
-            );
-          }
-          if (order.serviceType == 'online') {
-            Get.to(
-              () => VideoView(
-                  order: res,
-                  isLawyer: isLawyer,
-                  channelName: order.channelName!,
-                  token: token.rtcToken!,
-                  name: isLawyer
-                      ? order.clientId!.lastName!
-                      : order.lawyerId!.lastName!,
-                  uid: isLawyer ? 2 : 1),
-            );
-          }
+        if (res.serviceType == 'onlineEmergency') {
+          Get.to(
+            () => AudioView(
+                order: res,
+                isLawyer: isLawyer,
+                channelName: order.channelName!,
+                token: token.rtcToken!,
+                name: isLawyer
+                    ? order.clientId!.lastName!
+                    : order.lawyerId!.lastName!,
+                uid: isLawyer ? 2 : 1),
+          );
+        }
+        if (order.serviceType == 'online') {
+          Get.to(
+            () => VideoView(
+                order: res,
+                isLawyer: isLawyer,
+                channelName: order.channelName!,
+                token: token.rtcToken!,
+                name: isLawyer
+                    ? order.clientId!.lastName!
+                    : order.lawyerId!.lastName!,
+                uid: isLawyer ? 2 : 1),
+          );
         }
       }
 

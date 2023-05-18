@@ -69,12 +69,13 @@ class PrimeView extends GetView<PrimeController> {
                               ),
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(34),
-                                  image: const DecorationImage(
-                                      image: NetworkImage(
-                                        'https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/05/joseph-barrientos-49318-unsplash-e1558728034701.jpg?resize=1500%2C1000&ssl=1',
-                                      ),
-                                      fit: BoxFit.cover)),
+                                borderRadius: BorderRadius.circular(34),
+                                image: const DecorationImage(
+                                    image: NetworkImage(
+                                      'https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/05/joseph-barrientos-49318-unsplash-e1558728034701.jpg?resize=1500%2C1000&ssl=1',
+                                    ),
+                                    fit: BoxFit.cover),
+                              ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,20 +220,24 @@ class PrimeView extends GetView<PrimeController> {
                                                           flex: 2,
                                                           child: Container(
                                                             decoration:
-                                                                BoxDecoration(
-                                                                    borderRadius: const BorderRadius
-                                                                            .only(
-                                                                        bottomLeft:
-                                                                            Radius.circular(
-                                                                                origin),
-                                                                        topLeft:
-                                                                            Radius.circular(origin)),
-                                                                    image: DecorationImage(
-                                                                        image: NetworkImage(
-                                                                          s.img ??
-                                                                              'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-                                                                        ),
-                                                                        fit: BoxFit.cover)),
+                                                                const BoxDecoration(
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          origin),
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          origin)),
+                                                              // image:
+                                                              //     DecorationImage(
+                                                              //         image:
+                                                              //             NetworkImage(
+                                                              //           s.img ??
+                                                              //               'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+                                                              //         ),
+                                                              //         fit: BoxFit
+                                                              //             .cover),
+                                                            ),
                                                           )),
                                                       space6,
                                                       Expanded(

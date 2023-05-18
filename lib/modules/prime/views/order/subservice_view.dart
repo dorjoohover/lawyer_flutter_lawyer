@@ -71,7 +71,8 @@ class SubServiceView extends GetView<PrimeController> {
                                     return GestureDetector(
                                         onTap: () async {
                                           Navigator.of(context).push(
-                                              createRoute(const OrderLawyerView()));
+                                              createRoute(
+                                                  const OrderLawyerView()));
                                           controller.selectedLawyer.value =
                                               controller.lawyers[index];
 
@@ -100,7 +101,8 @@ class SubServiceView extends GetView<PrimeController> {
                                   },
                                 ),
                         )),
-                        space16,
+
+                        space64
                       ]),
                   title != ''
                       ? Positioned(

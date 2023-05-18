@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:get/get.dart';
 
@@ -16,6 +17,8 @@ class OrderTimeView extends GetView<PrimeController> {
         appBar: PrimeAppBar(
           title: 'Цаг сонгох',
           onTap: () {
+            controller.times.value =
+                <SortedTime>[SortedTime(day: 0, time: [])].obs;
             Navigator.of(context).pop();
           },
         ),
@@ -123,6 +126,7 @@ class OrderTimeView extends GetView<PrimeController> {
                             }
                           }).toList()),
                         ))),
+                        space64,
                       ]),
                   Positioned(
                       bottom: MediaQuery.of(context).padding.bottom,

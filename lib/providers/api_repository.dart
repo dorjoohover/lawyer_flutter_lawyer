@@ -10,6 +10,7 @@ class ApiRepository {
   Future<LoginResponse> login(String phone, String password) async {
     final data = {"phone": phone, "password": password};
     final res = await apiProvider.post('/auth/login', data: data);
+
     return LoginResponse.fromJson(res);
   }
 
@@ -100,7 +101,7 @@ class ApiRepository {
     String serviceType,
     String serviceId,
     String subServiceId,
-    Location location,
+    LocationDto location,
   ) async {
     try {
       final data = {
@@ -136,7 +137,7 @@ class ApiRepository {
     int price,
     String serviceType,
     String reason,
-    Location location,
+    LocationDto location,
   ) async {
     try {
       final data = {
@@ -231,7 +232,6 @@ class ApiRepository {
     String token,
   ) async {
     try {
-      print('/order/$url/token/$orderId/$channelName/{token}?token=${token}');
       final response = await apiProvider.get(
         '/order/$url/token/$orderId/$channelName/{token}?token=${token}',
       ) as Map<String, dynamic>;
@@ -268,11 +268,44 @@ class ApiRepository {
     try {
       final response = await apiProvider.get(
         '/time/lawyer/$id',
-      ) as Map<String, dynamic>;
-
-      return Time.fromJson(response);
+      );
+      if (response == null) {
+        return Time(sId: '');
+      } else {
+        return Time.fromJson(response);
+      }
     } on Exception {
       rethrow;
+    }
+  }
+
+  Future<LocationDto> getLawyerLocation(String id) async {
+    try {
+      final response = await apiProvider.get(
+        '/user/lawyer/location/$id',
+      );
+      if (response == null) {
+        return LocationDto(lat: 0.0, lng: 0.0);
+      } else {
+        return LocationDto.fromJson(response);
+      }
+    } on Exception catch (e) {
+      print(e);
+      return LocationDto(lat: 0.0, lng: 0.0);
+    }
+  }
+
+  Future<bool> updateLawyerLocation(LocationDto location) async {
+    try {
+      final data = {
+        "lat": location.lat,
+        "lng": location.lng,
+      };
+      await apiProvider.patch('/user/location', data: data);
+
+      return true;
+    } on Exception {
+      return false;
     }
   }
 

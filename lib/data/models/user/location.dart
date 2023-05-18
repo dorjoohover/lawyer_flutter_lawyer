@@ -1,10 +1,10 @@
-class Location {
+class LocationDto {
   double? lat;
   double? lng;
 
-  Location({this.lat, this.lng});
+  LocationDto({this.lat, this.lng});
 
-  Location.fromJson(Map<String, dynamic> json) {
+  LocationDto.fromJson(Map<String, dynamic> json) {
     lat = double.parse(json['lat'].toString());
     lng = double.parse(json['lng'].toString());
   }

@@ -215,45 +215,11 @@ class OrderLawyerView extends GetView<PrimeController> {
                   right: 16,
                   child: MainButton(
                     onPressed: () {
-                      // if (controller.selectedServiceType.value?.price != null) {
-                      //   Get.bottomSheet(
-                      //       isScrollControlled: true,
-                      //       OrderBottomSheet(
-                      //         title: 'Захиалгын төрөл сонгоно уу',
-                      //       ));
-                      // } else {
-                      //   if (controller.selectedLawyer.value?.userServices!
-                      //               .firstWhereOrNull((ser) =>
-                      //                   ser.serviceId ==
-                      //                   controller.selectedService.value)
-                      //               ?.serviceTypes !=
-                      //           null &&
-                      //       controller.selectedLawyer.value?.userServices!
-                      //               .firstWhereOrNull((ser) =>
-                      //                   ser.serviceId ==
-                      //                   controller.selectedService.value)
-                      //               ?.serviceTypes
-                      //               ?.firstWhereOrNull((type) =>
-                      //                   type.serviceType ==
-                      //                   controller.selectedServiceType.value
-                      //                       ?.serviceType) !=
-                      //           null) {
-                      //     controller.selectedServiceType.value = controller
-                      //         .selectedLawyer.value?.userServices!
-                      //         .firstWhereOrNull((ser) =>
-                      //             ser.serviceId ==
-                      //             controller.selectedService.value)
-                      //         ?.serviceTypes
-                      //         ?.firstWhereOrNull((type) =>
-                      //             type.serviceType ==
-                      //             controller
-                      //                 .selectedServiceType.value?.serviceType);
-                      //     Navigator.of(context)
-                      //         .push(createRoute(const OrderView()));
-                      //   } else {
-                      //     Get.snackbar('error', 'error');
-                      //   }
-                      // }
+                      Get.bottomSheet(
+                          isScrollControlled: true,
+                          OrderBottomSheet(
+                            title: 'Захиалгын төрөл сонгоно уу',
+                          ));
                     },
                     text: "Захиалга",
                     child: const SizedBox(),

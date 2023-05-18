@@ -5,7 +5,7 @@ class Order {
   int? date;
   ClientId? clientId;
   LawyerId? lawyerId;
-  Location? location;
+  LocationDto? location;
   int? expiredTime;
   String? serviceType;
   String? serviceStatus;
@@ -38,11 +38,12 @@ class Order {
     sId = json['_id'];
     date = json['date'];
     clientId =
-        json['clientId'] != null ? ClientId.fromJson(json['clientId']) : null;
+        json['client'] != null ? ClientId.fromJson(json['client']) : null;
     lawyerId =
-        json['lawyerId'] != null ? LawyerId.fromJson(json['lawyerId']) : null;
-    location =
-        json['location'] != null ? Location.fromJson(json['location']) : null;
+        json['lawyer'] != null ? LawyerId.fromJson(json['lawyer']) : null;
+    location = json['location'] != null
+        ? LocationDto.fromJson(json['location'])
+        : null;
 
     expiredTime = json['expiredTime'];
     serviceType = json['serviceType'];
@@ -61,10 +62,10 @@ class Order {
     data['_id'] = sId;
     data['date'] = date;
     if (clientId != null) {
-      data['clientId'] = clientId!.toJson();
+      data['client'] = clientId!.toJson();
     }
     if (lawyerId != null) {
-      data['lawyerId'] = lawyerId!.toJson();
+      data['lawyer'] = lawyerId!.toJson();
     }
     if (location != null) {
       data['location'] = location!.toJson();

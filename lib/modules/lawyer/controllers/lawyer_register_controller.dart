@@ -23,8 +23,8 @@ class LawyerRegisterController extends GetxController {
   final addition = false.obs;
   //addition register
   final lawyer = Rxn(User(
-      workLocation: Location(lat: 0.0, lng: 0.0),
-      officeLocation: Location(lat: 0.0, lng: 0.0)));
+      workLocation: LocationDto(lat: 0.0, lng: 0.0),
+      officeLocation: LocationDto(lat: 0.0, lng: 0.0)));
   // personal
   final lawyerSymbols = "${registerSymbols[0]}${registerSymbols[0]}".obs;
   // education

@@ -14,7 +14,7 @@ class PrimeController extends GetxController {
 
   final fade = true.obs;
 
-  final order = Rxn<Order>(Order(location: Location(lng: 0, lat: 0)));
+  final order = Rxn<Order>(Order(location: LocationDto(lng: 0, lat: 0)));
   final services = <Service>[].obs;
   final subServices = <SubService>[].obs;
   final lawyers = <User>[].obs;
@@ -34,6 +34,9 @@ class PrimeController extends GetxController {
   final selectedAvailableDays =
       AvailableDay(serviceId: "", serviceTypeTime: []).obs;
   final orders = <Order>[].obs;
+  clearData() {
+    // times.value = <SortedTime>[SortedTime(day: 0, time: [])].obs;
+  }
 
   @override
   void onInit() async {
@@ -48,17 +51,20 @@ class PrimeController extends GetxController {
     try {
       loading.value = true;
       List<int> primaryTimes = [];
-      List<Time> res = (await _apiRepository
-          .getTimeLawyer(selectedLawyer.value!.sId!)) as List<Time>;
+      Time res =
+          (await _apiRepository.getTimeLawyer(selectedLawyer.value!.sId!));
       selectedDate.value = DateTime(2023, 5, 14);
 
-      res.forEach((time) {
-        for (var element in time.timeDetail!) {
+      if (res.timeDetail != null) {
+        for (TimeDetail element in res.timeDetail!) {
           if (!primaryTimes.contains(element.time!)) {
             primaryTimes.add(element.time!);
           }
         }
-      });
+      } else {
+        Get.snackbar('Уучлаарай', "Таны сонгосон хуульч цаггүй байна.");
+      }
+
       primaryTimes.sort();
       for (int time in primaryTimes) {
         DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
@@ -175,6 +181,7 @@ class PrimeController extends GetxController {
           selectedSubService.value,
           order.value!.location!);
       loading.value = false;
+      times.value = <SortedTime>[SortedTime(day: 0, time: [])].obs;
       return true;
     } on DioError catch (e) {
       loading.value = false;

@@ -19,7 +19,7 @@ class EmergencyController extends GetxController {
   final reason = "".obs;
   final CarouselController carouselController = CarouselController();
   final currentOrder = 0.obs;
-  final location = Rxn<Location>(Location(lng: 0, lat: 0));
+  final location = Rxn<LocationDto>(LocationDto(lng: 0, lat: 0));
   final fade = true.obs;
   final loading = false.obs;
 

@@ -20,14 +20,14 @@ class User {
   String? certificate;
   int? experience;
   String? licenseNumber;
-  Location? location;
-  Location? officeLocation;
+  LocationDto? location;
+  LocationDto? officeLocation;
   String? taxNumber;
   String? registerNumber;
   String? profileImg;
   String? email;
   List<String>? phoneNumbers;
-  Location? workLocation;
+  LocationDto? workLocation;
 
   User(
       {this.sId,
@@ -112,15 +112,16 @@ class User {
     certificate = json['certificate'];
     experience = json['experience'];
     licenseNumber = json['licenseNumber'];
-    location =
-        json['location'] != null ? Location.fromJson(json['location']) : null;
+    location = json['location'] != null
+        ? LocationDto.fromJson(json['location'])
+        : null;
     officeLocation = json['officeLocation'] != null
-        ? Location.fromJson(json['officeLocation'])
+        ? LocationDto.fromJson(json['officeLocation'])
         : null;
     taxNumber = json['taxNumber'];
     registerNumber = json['registerNumber'];
     workLocation = json['workLocation'] != null
-        ? Location.fromJson(json['workLocation'])
+        ? LocationDto.fromJson(json['workLocation'])
         : null;
   }
 

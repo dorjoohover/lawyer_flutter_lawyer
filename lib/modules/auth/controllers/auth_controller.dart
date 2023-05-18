@@ -100,10 +100,12 @@ class AuthController extends GetxController {
 
     try {
       isLoading = true;
+
       final res = await apiRepository.login(
         phone.value,
         loginPasswordController.text,
       );
+      print(res);
       _saveTokens(res);
       isLoading = false;
     } on DioError catch (e) {

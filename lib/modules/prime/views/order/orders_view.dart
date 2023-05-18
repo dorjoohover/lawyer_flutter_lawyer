@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
+import 'package:frontend/modules/prime/views/maps.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -42,8 +44,18 @@ class OrdersView extends GetView<PrimeController> {
                       margin: const EdgeInsets.only(bottom: origin),
                       child: OrderDetailView(
                           onTap: () async {
-                            lawyerController.getChannelToken(
-                                e, context, isLawyer, '');
+                            if (e.serviceType == 'online' ||
+                                e.serviceType == 'onlineEmergency') {
+                              lawyerController.getChannelToken(
+                                  e, context, isLawyer, '');
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  createRoute(UserOrderMapPageView(
+                                      lawyerId: e.lawyerId!.sId!,
+                                      location: e.location ??
+                                          LocationDto(lat: 0.0, lng: 0.0))));
+                            }
                           },
                           date: DateFormat('yyyy/MM/dd').format(
                               DateTime.fromMillisecondsSinceEpoch(e.date!)),

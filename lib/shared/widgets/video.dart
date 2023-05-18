@@ -151,6 +151,7 @@ class _VideoViewState extends State<VideoView> {
     return Scaffold(
       body: SafeArea(
         child: Stack(
+          
           children: [
             AgoraVideoViewer(
               client: client,

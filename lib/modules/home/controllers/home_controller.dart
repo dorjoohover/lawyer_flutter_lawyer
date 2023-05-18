@@ -31,7 +31,7 @@ class HomeController extends GetxController
       case 1:
         return const EmergencyHomeView();
       case 2:
-        return const OrderTrackingPage();
+        return SizedBox();
       case 3:
         authController.logout();
         return const SizedBox();
