@@ -51,13 +51,19 @@ class PrimeController extends GetxController {
     try {
       loading.value = true;
       List<int> primaryTimes = [];
+
       Time res =
           (await _apiRepository.getTimeLawyer(selectedLawyer.value!.sId!));
       selectedDate.value = DateTime(2023, 5, 14);
 
       if (res.timeDetail != null) {
+        order.value?.serviceId ??= res.service;
+        if (order.value?.serviceType == 'fulfilled') {
+          order.value?.location = selectedLawyer.value!.officeLocation;
+        }
         for (TimeDetail element in res.timeDetail!) {
-          if (!primaryTimes.contains(element.time!)) {
+          if (!primaryTimes.contains(element.time!) &&
+              element.time! > DateTime.now().millisecondsSinceEpoch - 1800000) {
             primaryTimes.add(element.time!);
           }
         }
@@ -109,7 +115,8 @@ class PrimeController extends GetxController {
           await _apiRepository.getTimeService(order.value!.serviceId!, type);
       res.forEach((time) {
         for (var element in time.timeDetail!) {
-          if (!primaryTimes.contains(element.time!)) {
+          if (!primaryTimes.contains(element.time!) &&
+              element.time! > DateTime.now().millisecondsSinceEpoch - 1800000) {
             primaryTimes.add(element.time!);
           }
         }
@@ -170,6 +177,11 @@ class PrimeController extends GetxController {
         expiredTime = lawyer.first.serviceType!
             .firstWhere((element) => element.type == order.value!.serviceType!)
             .expiredTime!;
+        if (order.value?.serviceType == 'fulfilled') {
+          order.value?.location = lawyers
+              .firstWhere((l) => l.sId == lawyer.first.sId)
+              .officeLocation;
+        }
       }
       await _apiRepository.createOrder(
           selectedDate.value.millisecondsSinceEpoch,

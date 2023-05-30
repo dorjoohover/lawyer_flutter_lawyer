@@ -87,6 +87,7 @@ class _State extends State<AudioView> {
   @override
   void initState() {
     super.initState();
+    print(widget.isLawyer);
     setState(() {
       myDuration = Duration(seconds: widget.order.expiredTime! * 60);
     });
@@ -154,7 +155,10 @@ class _State extends State<AudioView> {
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
-
+    print('asdf');
+    print(widget.token);
+    print(widget.channelName);
+    print(widget.uid);
     await _engine.joinChannel(
         token: widget.token,
         channelId: widget.channelName,

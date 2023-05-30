@@ -44,14 +44,12 @@ class EmergencyController extends GetxController {
   Future<bool> sendOrder() async {
     try {
       loading.value = true;
-      String lawyerId = '';
+
       int price = 0;
       int expiredTime = 0;
 
       final lawyer = await _apiRepository.activeLawyer('any', serviceType.value,
           DateTime.now().millisecondsSinceEpoch, true);
-
-      lawyerId = lawyer.first.lawyer!;
       price = lawyer.first.serviceType!
           .firstWhere((element) => element.type == serviceType.value)
           .price!;
@@ -61,7 +59,7 @@ class EmergencyController extends GetxController {
 
       await _apiRepository.createEmergencyOrder(
           DateTime.now().millisecondsSinceEpoch,
-          lawyerId,
+          lawyer.first.lawyer!,
           expiredTime,
           price,
           serviceType.value,

@@ -72,7 +72,7 @@ class LawyerController extends GetxController {
 
       Agora token =
           await _apiRepository.getAgoraToken(channelName, isLawyer ? '2' : '1');
-
+      print(token);
       if (token.rtcToken != null && channelName != 'string') {
         Order res = await _apiRepository.setChannel(
             isLawyer ? 'lawyer' : 'user',
@@ -88,7 +88,9 @@ class LawyerController extends GetxController {
                 token: token.rtcToken!,
                 name: isLawyer
                     ? order.clientId!.lastName!
-                    : order.lawyerId!.lastName!,
+                    : order.lawyerId == null
+                        ? 'Lawmax'
+                        : order.lawyerId!.lastName!,
                 uid: isLawyer ? 2 : 1),
           );
         }

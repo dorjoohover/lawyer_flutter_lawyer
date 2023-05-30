@@ -24,7 +24,8 @@ class HomeController extends GetxController
   Widget getView(int index) {
     switch (index) {
       case 0:
-        return currentUserType.value == 'lawyer'
+        return currentUserType.value == 'lawyer' ||
+                currentUserType.value == 'our'
             ? const LawyerView()
             : const PrimeView();
 
@@ -52,6 +53,9 @@ class HomeController extends GetxController
       change(user, status: RxStatus.success());
       if (user?.userType == 'lawyer') {
         currentUserType.value = 'lawyer';
+      }
+      if (user?.userType == 'our') {
+        currentUserType.value = 'our';
       }
       isLoading.value = false;
     } on DioError catch (e) {

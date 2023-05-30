@@ -12,10 +12,11 @@ import 'package:location/location.dart';
 
 class OrderTrackingPage extends StatefulWidget {
   const OrderTrackingPage(
-      {Key? key, required this.isLawyer, required this.location})
+      {Key? key, required this.isLawyer, required this.location, this.child})
       : super(key: key);
   final bool isLawyer;
   final LocationDto location;
+  final Widget? child;
   @override
   State<OrderTrackingPage> createState() => OrderTrackingPageState();
 }
@@ -40,8 +41,12 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
     });
     GoogleMapController googleMapController = await _controller.future;
     location.onLocationChanged.listen((newLoc) {
-      apiRepository.updateLawyerLocation(
-          LocationDto(lat: newLoc.latitude, lng: newLoc.longitude));
+      print(newLoc.latitude);
+      print(newLoc.longitude);
+      if (widget.isLawyer) {
+        apiRepository.updateLawyerLocation(
+            LocationDto(lat: newLoc.latitude, lng: newLoc.longitude));
+      }
       setState(() {
         currentLocation = newLoc;
       });
@@ -63,10 +68,9 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
 
   @override
   void initState() {
-    if (widget.isLawyer) {
-      getCurrentLocation();
-      getPolyPoints();
-    } else {}
+    getCurrentLocation();
+    getPolyPoints();
+    print(widget.location.toJson());
     super.initState();
   }
 
@@ -74,37 +78,63 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   Widget build(BuildContext context) {
     final homeController = Get.put(HomeController());
     return Scaffold(
+      appBar: PrimeAppBar(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          title: 'Байршил харах'),
       body: currentLocation == null
           ? Center(
               child: Text('loading'),
             )
-          : GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 13.5,
-              ),
-              polylines: {
-                Polyline(
-                    polylineId: PolylineId("route"),
-                    points: polylineCoordinates,
-                    color: primary,
-                    width: 6)
-              },
-              markers: {
-                Marker(
-                  markerId: MarkerId("currentLocation"),
-                  position: LatLng(
-                      currentLocation!.latitude!, currentLocation!.longitude!),
+          : Stack(
+              children: [
+                SizedBox(
+                  height: defaultHeight(context) + 84,
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(currentLocation!.latitude!,
+                          currentLocation!.longitude!),
+                      zoom: 13.5,
+                    ),
+                    polylines: {
+                      Polyline(
+                          polylineId: PolylineId("route"),
+                          points: polylineCoordinates,
+                          color: primary,
+                          width: 6)
+                    },
+                    markers: {
+                      Marker(
+                        markerId: MarkerId("currentLocation"),
+                        position: LatLng(currentLocation!.latitude!,
+                            currentLocation!.longitude!),
+                      ),
+                      Marker(
+                        markerId: MarkerId("source"),
+                        position:
+                            LatLng(widget.location.lat!, widget.location.lng!),
+                      ),
+                    },
+                    onMapCreated: (mapController) {
+                      _controller.complete(mapController);
+                    },
+                  ),
                 ),
-                Marker(
-                  markerId: MarkerId("source"),
-                  position: LatLng(widget.location.lng!, widget.location.lat!),
-                ),
-              },
-              onMapCreated: (mapController) {
-                _controller.complete(mapController);
-              },
+                widget.child ??
+                    Positioned(
+                        bottom: MediaQuery.of(context).padding.bottom,
+                        left: origin,
+                        right: origin,
+                        child: MainButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          // disabled: !controller.personal.value,
+                          text: "Буцах",
+                          child: const SizedBox(),
+                        ))
+              ],
             ),
     );
   }

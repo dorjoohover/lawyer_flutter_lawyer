@@ -155,6 +155,7 @@ class ApiRepository {
         "userToken": "string",
         // here
       };
+      print(data);
 
       final response = await apiProvider.post('/order/emergency', data: data)
           as Map<String, dynamic>;
@@ -216,6 +217,7 @@ class ApiRepository {
   Future<List<Time>> activeLawyer(
       String id, String type, int t, bool isActive) async {
     try {
+      print('/time/active/$t/$id/$type/$isActive');
       final response =
           await apiProvider.get('/time/active/$t/$id/$type/$isActive');
       final time = (response as List).map((e) => Time.fromJson(e)).toList();
@@ -233,7 +235,7 @@ class ApiRepository {
   ) async {
     try {
       final response = await apiProvider.get(
-        '/order/$url/token/$orderId/$channelName/{token}?token=${token}',
+        '/order/$url/token/$orderId/$channelName/{token}?token=$token',
       ) as Map<String, dynamic>;
 
       return Order.fromJson(response);

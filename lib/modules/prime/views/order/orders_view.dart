@@ -49,12 +49,21 @@ class OrdersView extends GetView<PrimeController> {
                               lawyerController.getChannelToken(
                                   e, context, isLawyer, '');
                             } else {
-                              Navigator.push(
-                                  context,
-                                  createRoute(UserOrderMapPageView(
-                                      lawyerId: e.lawyerId!.sId!,
-                                      location: e.location ??
-                                          LocationDto(lat: 0.0, lng: 0.0))));
+                              if (e.serviceType == 'fulfilled') {
+                                Navigator.push(
+                                    context,
+                                    createRoute(OrderTrackingPage(
+                                        isLawyer: false,
+                                        location: e.location ??
+                                            LocationDto(lat: 0.0, lng: 0.0))));
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    createRoute(UserOrderMapPageView(
+                                        lawyerId: e.lawyerId!.sId!,
+                                        location: e.location ??
+                                            LocationDto(lat: 0.0, lng: 0.0))));
+                              }
                             }
                           },
                           date: DateFormat('yyyy/MM/dd').format(

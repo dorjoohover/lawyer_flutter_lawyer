@@ -13,10 +13,11 @@ import 'package:location/location.dart';
 
 class UserOrderMapPageView extends StatefulWidget {
   const UserOrderMapPageView(
-      {Key? key, required this.lawyerId, required this.location})
+      {Key? key, required this.lawyerId, required this.location, this.child})
       : super(key: key);
   final String lawyerId;
   final LocationDto location;
+  final Widget? child;
   @override
   State<UserOrderMapPageView> createState() => UserOrderMapPageViewState();
 }
@@ -55,38 +56,65 @@ class UserOrderMapPageViewState extends State<UserOrderMapPageView> {
       setState(() {
         lawyer = newLoc;
       });
+      
     });
 
     return Scaffold(
+      appBar: PrimeAppBar(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          title: 'Байршил харах'),
       body: lawyer.latitude == 0.0
           ? Center(
               child: Text('loading'),
             )
-          : GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: lawyer,
-                zoom: 13.5,
-              ),
-              polylines: {
-                Polyline(
-                    polylineId: PolylineId("route"),
-                    points: polylineCoordinates,
-                    color: primary,
-                    width: 6)
-              },
-              markers: {
-                Marker(
-                  markerId: MarkerId("currentLocation"),
-                  position: lawyer,
+          : Stack(
+              children: [
+                SizedBox(
+                  height: defaultHeight(context) + 84,
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: lawyer,
+                      zoom: 13.5,
+                    ),
+                    polylines: {
+                      Polyline(
+                          polylineId: PolylineId("route"),
+                          points: polylineCoordinates,
+                          color: primary,
+                          width: 6)
+                    },
+                    markers: {
+                      Marker(
+                        markerId: MarkerId("currentLocation"),
+                        position: lawyer,
+                      ),
+                      Marker(
+                        markerId: MarkerId("source"),
+                        position:
+                            LatLng(widget.location.lng!, widget.location.lat!),
+                      ),
+                    },
+                    onMapCreated: (mapController) {
+                      _controller.complete(mapController);
+                    },
+                  ),
                 ),
-                Marker(
-                  markerId: MarkerId("source"),
-                  position: LatLng(widget.location.lng!, widget.location.lat!),
-                ),
-              },
-              onMapCreated: (mapController) {
-                _controller.complete(mapController);
-              },
+                widget.child ??
+                    Positioned(
+                        bottom: MediaQuery.of(context).padding.bottom,
+                        left: origin,
+                        right: origin,
+                        child: MainButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          // disabled: !controller.personal.value,
+                          text: "Буцах",
+                          child: const SizedBox(),
+                        ))
+              ],
             ),
     );
   }
