@@ -12,6 +12,7 @@ class RegisterServiceView extends StatelessWidget {
     List<String> services =
         primeController.services.map((e) => e.title!).toList();
     return Screen(
+      step: 6,
         title: 'Туршлага',
         children: [
           space32,

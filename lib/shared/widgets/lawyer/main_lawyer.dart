@@ -25,14 +25,14 @@ class MainLawyer extends StatelessWidget {
             flex: 3,
             child: Container(
               height: 94,
-              // decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(12),
-              //     image: DecorationImage(
-              //         image: NetworkImage(
-              //           'user.profileImg ??
-              //               'https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80','
-              //         ),
-              //         fit: BoxFit.cover)),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(
+                      image: NetworkImage(
+                        user.profileImg ??
+                            'https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
+                      ),
+                      fit: BoxFit.cover)),
             ),
           ),
           space16,

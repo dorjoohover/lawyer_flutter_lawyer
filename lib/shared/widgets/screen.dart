@@ -8,6 +8,7 @@ class Screen extends StatelessWidget {
       required this.children,
       this.isScroll = true,
       this.resize = true,
+      required this.step,
       required this.child})
       : super(
           key: key,
@@ -17,11 +18,14 @@ class Screen extends StatelessWidget {
   final Widget child;
   final bool isScroll;
   final bool resize;
+  final int step;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: resize,
         appBar: PrimeAppBar(
+            bar: true,
+            step: step,
             onTap: () {
               Navigator.of(context).pop();
             },

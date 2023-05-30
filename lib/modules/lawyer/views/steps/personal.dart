@@ -10,6 +10,7 @@ class PersonalView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
     return Screen(
+      step: 1,
         title: 'Хувийн мэдээлэл',
         children: [
           space32,

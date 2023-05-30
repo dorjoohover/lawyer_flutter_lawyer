@@ -9,12 +9,14 @@ class MapsWidget extends StatefulWidget {
       required this.title,
       required this.onTap,
       this.child,
+      required this.step,
       required this.navigator})
       : super(key: key);
   final String title;
   final Function(LatLng) onTap;
   final Function() navigator;
   final Widget? child;
+  final int step;
   @override
   State<MapsWidget> createState() => MapsWidgetState();
 }
@@ -42,6 +44,8 @@ class MapsWidgetState extends State<MapsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PrimeAppBar(
+          bar: true,
+          step: widget.step,
           onTap: () {
             Navigator.of(context).pop();
           },

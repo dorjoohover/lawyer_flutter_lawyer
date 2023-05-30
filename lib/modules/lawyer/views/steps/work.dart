@@ -10,6 +10,7 @@ class WorkView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
     return MapsWidget(
+      step: 4,
         title: 'Ажлын газрын байршил',
         navigator: () {
           Navigator.push(context, createRoute(const OfficeView()));

@@ -220,7 +220,7 @@ class PrimeView extends GetView<PrimeController> {
                                                           flex: 2,
                                                           child: Container(
                                                             decoration:
-                                                                const BoxDecoration(
+                                                                BoxDecoration(
                                                               borderRadius: BorderRadius.only(
                                                                   bottomLeft: Radius
                                                                       .circular(
@@ -228,15 +228,15 @@ class PrimeView extends GetView<PrimeController> {
                                                                   topLeft: Radius
                                                                       .circular(
                                                                           origin)),
-                                                              // image:
-                                                              //     DecorationImage(
-                                                              //         image:
-                                                              //             NetworkImage(
-                                                              //           s.img ??
-                                                              //               'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-                                                              //         ),
-                                                              //         fit: BoxFit
-                                                              //             .cover),
+                                                              image:
+                                                                  DecorationImage(
+                                                                      image:
+                                                                          NetworkImage(
+                                                                        s.img ??
+                                                                            'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+                                                                      ),
+                                                                      fit: BoxFit
+                                                                          .cover),
                                                             ),
                                                           )),
                                                       space6,

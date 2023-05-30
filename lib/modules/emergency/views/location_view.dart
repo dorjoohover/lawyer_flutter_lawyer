@@ -37,6 +37,7 @@ class LocationViewState extends State<LocationView> {
   Widget build(BuildContext context) {
     final controller = Get.put(EmergencyController());
     return MapsWidget(
+        step: 0,
         title: 'Байршил сонгох',
         navigator: () async {
           bool res = await controller.sendOrder();

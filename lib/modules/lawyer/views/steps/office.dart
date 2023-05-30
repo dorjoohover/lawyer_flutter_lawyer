@@ -10,6 +10,7 @@ class OfficeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
     return MapsWidget(
+        step: 5,
         title: 'Оффисын байршил',
         navigator: () {
           Navigator.push(context, createRoute(const RegisterServiceView()));

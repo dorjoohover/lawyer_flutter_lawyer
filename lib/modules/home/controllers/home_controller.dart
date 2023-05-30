@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:frontend/data/data.dart';
-import 'package:frontend/modules/prime/views/maps.dart';
+import 'package:frontend/modules/settings/views/settings_view.dart';
 import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/constants/enums.dart';
 import 'package:get/get.dart';
@@ -29,12 +29,19 @@ class HomeController extends GetxController
             : const PrimeView();
 
       case 1:
-        return const EmergencyHomeView();
+        return currentUserType.value == 'lawyer'
+            ? const EmergencyHomeView()
+            : const SizedBox();
       case 2:
-        return SizedBox();
-      case 3:
-        authController.logout();
         return const SizedBox();
+      case 3:
+        return currentUserType.value == 'lawyer'
+            ? const SettingsView()
+            : const SizedBox();
+      case 4:
+        return currentUserType.value == 'lawyer'
+            ? const SizedBox()
+            : const SettingsView();
       default:
         return const Center(child: Text('Something went wrong'));
     }
@@ -42,6 +49,7 @@ class HomeController extends GetxController
 
   changeNavIndex(int index) {
     currentIndex.value = index;
+    getView(index);
     update();
   }
 
