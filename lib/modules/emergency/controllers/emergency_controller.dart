@@ -48,23 +48,32 @@ class EmergencyController extends GetxController {
       int price = 0;
       int expiredTime = 0;
 
-      final lawyer = await _apiRepository.activeLawyer('any', serviceType.value,
-          DateTime.now().millisecondsSinceEpoch, true);
-      price = lawyer.first.serviceType!
-          .firstWhere((element) => element.type == serviceType.value)
-          .price!;
-      expiredTime = lawyer.first.serviceType!
-          .firstWhere((element) => element.type == serviceType.value)
-          .expiredTime!;
-
-      await _apiRepository.createEmergencyOrder(
-          DateTime.now().millisecondsSinceEpoch,
-          lawyer.first.lawyer!,
-          expiredTime,
-          price,
-          serviceType.value,
-          reason.value,
-          location.value!);
+      if (serviceType.value == 'fulfilledEmergency') {
+        final lawyer = await _apiRepository.activeLawyer('any',
+            serviceType.value, DateTime.now().millisecondsSinceEpoch, true);
+        price = lawyer.first.serviceType!
+            .firstWhere((element) => element.type == serviceType.value)
+            .price!;
+        expiredTime = lawyer.first.serviceType!
+            .firstWhere((element) => element.type == serviceType.value)
+            .expiredTime!;
+        await _apiRepository.createEmergencyOrder(
+            DateTime.now().millisecondsSinceEpoch,
+            lawyer.first.lawyer!,
+            expiredTime,
+            price,
+            serviceType.value,
+            reason.value,
+            location.value!);
+      } else {
+        homeController.createEmergencyOrder(
+            "6454309e181b78295d2091b8",
+            expiredTime,
+            price,
+            serviceType.value,
+            reason.value,
+            location.value!);
+      }
       loading.value = false;
       return true;
     } on DioError catch (e) {

@@ -6,6 +6,7 @@ import '../../../config/agora.config.dart' as config;
 
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
+  
 
   final controller = Get.put<HomeController>(HomeController());
   @override

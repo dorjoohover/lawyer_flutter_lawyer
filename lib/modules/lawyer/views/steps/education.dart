@@ -10,6 +10,7 @@ class EducationView extends GetView<LawyerRegisterController> {
   @override
   Widget build(BuildContext context) {
     return Screen(
+      step: 2,
         isScroll: false,
         title: 'Боловсрол',
         children: [

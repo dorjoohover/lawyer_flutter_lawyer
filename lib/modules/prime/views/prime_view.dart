@@ -221,8 +221,7 @@ class PrimeView extends GetView<PrimeController> {
                                                           child: Container(
                                                             decoration:
                                                                 BoxDecoration(
-                                                              borderRadius: const BorderRadius
-                                                                      .only(
+                                                              borderRadius: BorderRadius.only(
                                                                   bottomLeft: Radius
                                                                       .circular(
                                                                           origin),

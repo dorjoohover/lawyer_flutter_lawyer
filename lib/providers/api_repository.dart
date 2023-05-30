@@ -10,7 +10,7 @@ class ApiRepository {
   Future<LoginResponse> login(String phone, String password) async {
     final data = {"phone": phone, "password": password};
     final res = await apiProvider.post('/auth/login', data: data);
-
+    print('asdf');
     return LoginResponse.fromJson(res);
   }
 

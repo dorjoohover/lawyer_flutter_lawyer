@@ -10,13 +10,13 @@ class DioProvider extends GetxService {
   @override
   void onInit() {
     dio.options.baseUrl = isProduction
-        ? 'https://lawyernestjs-production.up.railway.app'
-        : 'https://lawyernestjs-production.up.railway.app';
+        // ? 'https://lawyernestjs-production.up.railway.app'
+        // : 'https://lawyernestjs-production.up.railway.app';
 
-        // ? 'http://192.168.1.2:5050'
-        // : 'http://192.168.1.2:5050';
-        // ? 'http://192.168.1.14:5050'
-        // : 'http://192.168.1.14:5050';
+    // ? 'http://192.168.1.2:5050'
+    // : 'http://192.168.1.2:5050';
+    ? 'http://192.168.1.14:5050'
+    : 'http://192.168.1.14:5050';
 
     dio.interceptors.addAll(
       [

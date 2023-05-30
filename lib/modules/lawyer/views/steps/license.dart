@@ -10,6 +10,7 @@ class LicenseView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
     return Screen(
+      step: 3,
         title: 'Гэрчилгээний мэдээлэл',
         children: [
           space32,

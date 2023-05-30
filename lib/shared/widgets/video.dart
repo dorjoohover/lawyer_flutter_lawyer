@@ -5,7 +5,7 @@ import 'package:agora_uikit/controllers/rtc_buttons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+
 import 'package:frontend/config/agora.config.dart' as config;
 import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
@@ -92,8 +92,8 @@ class _VideoViewState extends State<VideoView> {
       order = widget.order;
     });
     Future.delayed(Duration.zero, () async {
-      await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE)
-          .then((value) => print(value));
+      // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE)
+      //     .then((value) => print(value));
     });
     startTimer();
     client = AgoraClient(
@@ -151,7 +151,6 @@ class _VideoViewState extends State<VideoView> {
     return Scaffold(
       body: SafeArea(
         child: Stack(
-          
           children: [
             AgoraVideoViewer(
               client: client,

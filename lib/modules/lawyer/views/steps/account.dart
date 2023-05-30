@@ -10,6 +10,7 @@ class AccountView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
     return Screen(
+      step: 8,
         title: 'Банкны мэдээлэл',
         children: [
           space32,

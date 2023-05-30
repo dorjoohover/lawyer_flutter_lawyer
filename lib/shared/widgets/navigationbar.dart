@@ -14,7 +14,8 @@ class MainNavigationBar extends StatelessWidget {
           selectedIndex: homeController.currentIndex.value,
           onDestinationSelected: (value) =>
               homeController.changeNavIndex(value),
-          destinations: homeController.currentUserType.value == 'lawyer'
+          destinations: homeController.currentUserType.value == 'lawyer' ||
+                  homeController.currentUserType.value == 'our'
               ? lawyerNavbar.map((e) {
                   NavigationDestination body;
                   body = NavigationDestination(

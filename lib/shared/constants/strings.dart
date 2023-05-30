@@ -22,7 +22,7 @@ const userNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
     'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
-    'label': 'Гарах',
+    'label': 'Профайл',
   },
 ];
 const googleMap = "AIzaSyBfIRFXoIgr-h4EDa-MK0S1rs1BViwMP_Y";
@@ -45,7 +45,7 @@ const lawyerNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
     'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
-    'label': 'Гарах',
+    'label': 'Профайл',
   },
 ];
 const onlineDirection = [

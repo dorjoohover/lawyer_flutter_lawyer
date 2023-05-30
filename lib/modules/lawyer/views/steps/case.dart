@@ -11,6 +11,7 @@ class CaseView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
     return Screen(
+      step: 7,
         isScroll: false,
         title: 'Шийдсэн хэрэг',
         children: [

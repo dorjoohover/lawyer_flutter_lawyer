@@ -10,6 +10,7 @@ class AdditionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
     return Screen(
+        step: 9,
         title: 'Нэмэлт мэдээлэл',
         children: [
           space32,
