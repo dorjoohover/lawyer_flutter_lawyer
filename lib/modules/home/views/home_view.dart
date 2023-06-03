@@ -1,16 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/modules.dart';
+import 'package:frontend/modules/settings/views/settings_view.dart';
+import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
 import '../../../config/agora.config.dart' as config;
 
-class HomeView extends StatelessWidget {
-  HomeView({Key? key}) : super(key: key);
-  
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   final controller = Get.put<HomeController>(HomeController());
+
+  List<Widget> views = [
+    const PrimeView(),
+    const EmergencyHomeView(),
+    const SizedBox(),
+    const SizedBox(),
+    const SettingsView()
+  ];
+  List<Widget> lawyerViews = [
+    const LawyerView(),
+    const SizedBox(),
+    const SizedBox(),
+    const SettingsView(),
+  ];
+  int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
+    final primeController = Get.put(PrimeController());
     return GetBuilder<HomeController>(
       init: HomeController(),
       builder: (controller) => controller.obx(
@@ -71,7 +93,27 @@ class HomeView extends StatelessWidget {
                 ],
               ), (user) {
         return Scaffold(
-          body: Obx(() => controller.getView(controller.currentIndex.value)),
+          appBar: MainAppBar(
+            currentIndex: currentIndex,
+            settingTap: () async {},
+            calendarTap: () async {
+              await primeController.getOrderList(false, context);
+            },
+            settings: currentIndex == 0,
+            calendar: currentIndex == 0,
+          ),
+          body: controller.currentUserType.value == 'lawyer' ||
+                  controller.currentUserType.value == 'our'
+              ? lawyerViews[currentIndex]
+              : views[currentIndex],
+          bottomNavigationBar: MainNavigationBar(
+            currentIndex: currentIndex,
+            changeIndex: (value) {
+              setState(() {
+                currentIndex = value;
+              });
+            },
+          ),
         );
       }),
     );

@@ -6,14 +6,15 @@ import 'package:get/get.dart';
 import '../../shared/index.dart';
 
 class MainNavigationBar extends StatelessWidget {
-  const MainNavigationBar({super.key});
+  const MainNavigationBar({super.key, required this.changeIndex, required this.currentIndex});
+  final void Function(int value) changeIndex;
+  final int currentIndex;
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.put(HomeController());
     return Obx(() => NavigationBar(
-          selectedIndex: homeController.currentIndex.value,
-          onDestinationSelected: (value) =>
-              homeController.changeNavIndex(value),
+          selectedIndex: currentIndex,
+          onDestinationSelected: (value) => changeIndex(value),
           destinations: homeController.currentUserType.value == 'lawyer' ||
                   homeController.currentUserType.value == 'our'
               ? lawyerNavbar.map((e) {

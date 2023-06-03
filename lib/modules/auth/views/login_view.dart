@@ -34,14 +34,12 @@ class LoginView extends StatelessWidget {
                     Column(
                       children: [
                         Input(
-                          focusNode: controller.phoneFocus,
                           labelText: 'Утасны дугаар',
                           onChange: (p0) => {controller.phone.value = p0},
                         ),
                         space16,
                         Obx(
                           () => Input(
-                              focusNode: controller.passwordFocus,
                               suffixIcon: IconButton(
                                   icon: Icon(
                                     !controller.isVisible.value

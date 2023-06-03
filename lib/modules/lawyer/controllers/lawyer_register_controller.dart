@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
@@ -21,6 +22,8 @@ class LawyerRegisterController extends GetxController {
   final decided = false.obs;
   final account = false.obs;
   final addition = false.obs;
+  // focus
+  final nodeFirstName = FocusNode();
   //addition register
   final lawyer = Rxn(User(
       workLocation: LocationDto(lat: 0.0, lng: 0.0),
@@ -29,7 +32,8 @@ class LawyerRegisterController extends GetxController {
   final lawyerSymbols = "${registerSymbols[0]}${registerSymbols[0]}".obs;
   // education
   final graduate = <Education>[].obs;
-  final degree = <Degree>[Degree(title: '')].obs;
+  final degree = ''.obs;
+
   // service
   final service = <String>[''].obs;
   // decided
@@ -58,7 +62,7 @@ class LawyerRegisterController extends GetxController {
           lawyerSymbols.value + lawyer.value!.registerNumber!;
       lawyer.value?.userServices = service;
       lawyer.value?.education = graduate;
-      lawyer.value?.degree = degree;
+      lawyer.value?.degree = degree.value;
       lawyer.value?.experiences = decidedCase;
       lawyer.value?.phoneNumbers = phones;
       final res = await _apiRepository.updateLawyer(lawyer.value!);
@@ -92,7 +96,7 @@ class LawyerRegisterController extends GetxController {
           homeController.user!.degree!.isNotEmpty) {
         degree.value = homeController.user!.degree!;
       } else {
-        degree.value = [Degree(title: '')];
+        degree.value = '';
       }
       if (homeController.user?.education != null &&
           homeController.user!.education!.isNotEmpty) {
@@ -105,7 +109,8 @@ class LawyerRegisterController extends GetxController {
         decidedCase.value = homeController.user!.experiences!;
       } else {
         decidedCase.value = [
-          Experiences(title: '', date: DateTime.now().microsecond, link: '')
+          Experiences(
+              title: '', date: DateTime.now().millisecondsSinceEpoch, link: '')
         ];
       }
 

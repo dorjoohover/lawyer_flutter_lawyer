@@ -34,7 +34,6 @@ class RegisterPhoneView extends StatelessWidget {
                   space32,
                   Input(
                     textInputType: TextInputType.number,
-                    focusNode: controller.registerPhoneFocus,
                     labelText: 'Утасны дугаар',
                     onChange: (p0) => {controller.registerPhone.value = p0},
                   ),

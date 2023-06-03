@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/modules/home/controllers/controllers.dart';
 import 'package:frontend/shared/constants/index.dart';
+import 'package:get/get.dart';
 
 const double kToolbarHeight = 76.0;
 
 class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   MainAppBar({
     super.key,
-    required this.title,
+    required this.currentIndex,
     this.titleMargin = 0.0,
     this.hasLeading = true,
     this.calendar = false,
@@ -18,7 +20,7 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.settings = false,
   });
-  final String title;
+  final int currentIndex;
   final bool hasLeading;
   final bool settings;
   final double paddingBottom;
@@ -30,9 +32,11 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
   final MainAxisAlignment mainAxisAlignment;
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
+  List<String> lawyerTitles = ['Нүүр', 'Яаралтай', '', 'Тохиргоо'];
+  List<String> titles = ['Нүүр', 'Яаралтай', "", "", "Тохиргоо"];
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HomeController());
     return Container(
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + origin),
       padding: const EdgeInsets.symmetric(horizontal: origin),
@@ -42,10 +46,16 @@ class MainAppBar extends StatelessWidget with PreferredSizeWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Obx(() => controller.currentUserType.value == 'lawyer' ||
+                      controller.currentUserType.value == 'our'
+                  ? Text(
+                      lawyerTitles[currentIndex],
+                      style: Theme.of(context).textTheme.titleLarge,
+                    )
+                  : Text(
+                      titles[currentIndex],
+                      style: Theme.of(context).textTheme.titleLarge,
+                    )),
               Row(
                 children: [
                   settings

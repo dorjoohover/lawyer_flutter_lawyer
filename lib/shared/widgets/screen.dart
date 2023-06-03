@@ -14,7 +14,7 @@ class Screen extends StatelessWidget {
           key: key,
         );
   final String title;
-  final List<Widget> children;
+  final Widget children;
   final Widget child;
   final bool isScroll;
   final bool resize;
@@ -38,9 +38,7 @@ class Screen extends StatelessWidget {
             children: [
               SingleChildScrollView(
                 physics: isScroll ? const NeverScrollableScrollPhysics() : null,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: children),
+                child: children,
               ),
               Positioned(
                   bottom: MediaQuery.of(context).padding.bottom + 50,

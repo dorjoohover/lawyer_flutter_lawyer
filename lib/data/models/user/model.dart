@@ -8,7 +8,7 @@ class User {
   String? userType;
   List<Experiences>? experiences;
   List<Education>? education;
-  List<Degree>? degree;
+  String? degree;
   List<Rating>? rating;
   String? userStatus;
   int? alert;
@@ -76,12 +76,7 @@ class User {
         education!.add(Education.fromJson(v));
       });
     }
-    if (json['degree'] != null) {
-      degree = <Degree>[];
-      json['degree'].forEach((v) {
-        degree!.add(Degree.fromJson(v));
-      });
-    }
+    degree = json['degree'];
     if (json['rating'] != null) {
       rating = <Rating>[];
       json['rating'].forEach((v) {
@@ -138,9 +133,7 @@ class User {
     if (education != null) {
       data['education'] = education!.map((v) => v.toJson()).toList();
     }
-    if (degree != null) {
-      data['degree'] = degree!.map((v) => v.toJson()).toList();
-    }
+    data['degree'] = degree;
     if (rating != null) {
       data['rating'] = rating!.map((v) => v.toJson()).toList();
     }

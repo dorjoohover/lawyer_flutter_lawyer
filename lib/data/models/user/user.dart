@@ -1,4 +1,3 @@
-export 'degree.dart';
 export 'education.dart';
 export 'experience.dart';
 export 'location.dart';

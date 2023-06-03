@@ -8,16 +8,18 @@ class Input extends GetView<AuthController> {
   const Input(
       {super.key,
       this.onChange,
-      this.focusNode,
+      this.textInputAction = TextInputAction.done,
       required this.labelText,
       this.tController,
       this.obscureText = false,
       this.suffixIcon,
       this.validator,
       this.onSubmitted,
+      this.focusNode,
       this.textInputType = TextInputType.text});
   final void Function(String)? onChange;
   final String labelText;
+  final TextInputAction? textInputAction;
   final FocusNode? focusNode;
   final TextEditingController? tController;
   final bool obscureText;
@@ -28,13 +30,21 @@ class Input extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onFieldSubmitted: onSubmitted,
+      autofocus: true,
+      textInputAction: textInputAction,
       // focusNode: focusNode ?? focusNode,
-      textInputAction: TextInputAction.done,
       enableSuggestions: false,
       obscureText: obscureText,
+
       keyboardType: textInputType,
       style: Theme.of(context).textTheme.displayMedium,
+
       decoration: InputDecoration(
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: const BorderSide(color: error),
+        ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
           borderSide: const BorderSide(color: line),
@@ -47,7 +57,7 @@ class Input extends GetView<AuthController> {
         fillColor: Colors.white,
         // labelText: labelText,
         hintText: labelText,
-
+        errorMaxLines: 2,
         hintStyle:
             Theme.of(context).textTheme.displayMedium!.copyWith(color: gray),
       ),

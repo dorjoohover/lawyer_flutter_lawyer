@@ -56,7 +56,6 @@ class RegisterPasswordView extends StatelessWidget {
                   space16,
                   Obx(
                     () => Input(
-                        focusNode: controller.registerPasswordRepeatFocus,
                         suffixIcon: IconButton(
                             icon: Icon(
                               controller.registerPasswordRepeatIsVisible.value

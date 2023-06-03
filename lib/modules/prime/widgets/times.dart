@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
@@ -37,8 +39,7 @@ class OrderTimeWidget extends StatelessWidget {
                         space4,
                         Obx(
                           () => Text(
-                            getDay(DateTime(controller.selectedDate.value.year,
-                                controller.selectedDate.value.month, day)),
+                            getDay(DateTime.fromMillisecondsSinceEpoch(day)),
                             style: Theme.of(context)
                                 .textTheme
                                 .labelMedium!

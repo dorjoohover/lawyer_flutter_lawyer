@@ -10,31 +10,33 @@ class LicenseView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
     return Screen(
-      step: 3,
+        step: 3,
         title: 'Гэрчилгээний мэдээлэл',
-        children: [
-          space32,
-          Text(
-            'Хуульчийн үйл ажиллагаа эрхлэх зөвшөөрлийн үнэмлэхний дугаараа оруулна уу.',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          space32,
-          Input(
-              onChange: (p0) {
-                controller.lawyer.value?.licenseNumber = p0;
+        children: Column(
+          children: [
+            space32,
+            Text(
+              'Хуульчийн үйл ажиллагаа эрхлэх зөвшөөрлийн үнэмлэхний дугаараа оруулна уу.',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            space32,
+            Input(
+                onChange: (p0) {
+                  controller.lawyer.value?.licenseNumber = p0;
 
-                check(controller);
-              },
-              labelText: 'Гэрчилгээний дугаар'),
-          space32,
-          Input(
-              onChange: (p0) {
-                controller.lawyer.value?.certificate = p0;
-                check(controller);
-              },
-              labelText: 'Өмгөөлөгчийн үнэмлэхний дугаар'),
-          space32,
-        ],
+                  check(controller);
+                },
+                labelText: 'Гэрчилгээний дугаар'),
+            space32,
+            Input(
+                onChange: (p0) {
+                  controller.lawyer.value?.certificate = p0;
+                  check(controller);
+                },
+                labelText: 'Өмгөөлөгчийн үнэмлэхний дугаар'),
+            space32,
+          ],
+        ),
         child: Obx(() => MainButton(
               onPressed: () {
                 Navigator.push(context, createRoute(const WorkView()));

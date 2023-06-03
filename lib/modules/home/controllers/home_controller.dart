@@ -77,7 +77,8 @@ class HomeController extends GetxController
         currentUserType.value = 'our';
       }
       if (user != null) {
-        socket = IO.io("http://192.168.1.14:5050", <String, dynamic>{
+        socket = IO.io(
+            "https://lawyernestjs-production.up.railway.app", <String, dynamic>{
           'autoConnect': false,
           'transports': ['websocket'],
         });

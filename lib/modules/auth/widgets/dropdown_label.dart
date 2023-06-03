@@ -22,8 +22,9 @@ class DropdownLabel extends StatelessWidget {
           color: Colors.white,
           border: Border.all(color: line, width: 1)),
       child: DropdownButton(
-        isExpanded: expanded,
+        isExpanded: true,
         value: value,
+        alignment: AlignmentDirectional.center,
         iconSize: 0,
         icon:
             const Visibility(visible: false, child: Icon(Icons.arrow_downward)),
@@ -35,7 +36,12 @@ class DropdownLabel extends StatelessWidget {
         items: list.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value),
+            child: Center(
+              child: Text(
+                value,
+                textAlign: TextAlign.center,
+              ),
+            ),
           );
         }).toList(),
       ),
