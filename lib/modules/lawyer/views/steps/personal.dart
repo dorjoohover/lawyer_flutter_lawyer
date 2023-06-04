@@ -4,15 +4,17 @@ import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
+final personalKey = GlobalKey<FormState>();
+
 class PersonalView extends StatelessWidget {
   const PersonalView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
-    final personalKey = GlobalKey<FormState>();
     return Screen(
         step: 1,
+        resize: false,
         title: 'Хувийн мэдээлэл',
         children: Form(
           key: personalKey,
@@ -31,6 +33,8 @@ class PersonalView extends StatelessWidget {
                     }
                     return null;
                   },
+                  autoFocus: true,
+                  value: controller.lawyer.value?.firstName,
                   textInputAction: TextInputAction.next,
                   onChange: (p0) {
                     controller.lawyer.value?.firstName = p0;
@@ -46,9 +50,10 @@ class PersonalView extends StatelessWidget {
                     }
                     return null;
                   },
+                  value: controller.lawyer.value?.lastName,
                   onChange: (p0) {
                     controller.lawyer.value?.lastName = p0;
-                    print(p0);
+
                     checkPersonal(controller);
                   },
                   labelText: 'Нэр'),
@@ -82,6 +87,7 @@ class PersonalView extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: Input(
+                        value: controller.lawyer.value?.registerNumber,
                         onSubmitted: (p0) {
                           if (personalKey.currentState!.validate()) {
                             Navigator.push(

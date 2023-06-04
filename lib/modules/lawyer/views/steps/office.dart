@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/modules.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter/widgets.dart';
+import 'package:frontend/modules/auth/auth.dart';
+import 'package:frontend/modules/lawyer/lawyer.dart';
+import 'package:frontend/shared/constants/index.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
-class OfficeView extends StatelessWidget {
-  const OfficeView({Key? key}) : super(key: key);
+class OfficeView extends StatefulWidget {
+  const OfficeView({super.key});
 
+  @override
+  State<OfficeView> createState() => _OfficeViewState();
+}
+
+final officeKey = GlobalKey<FormState>();
+
+class _OfficeViewState extends State<OfficeView> {
+  String office = '';
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(LawyerRegisterController());
@@ -15,6 +28,81 @@ class OfficeView extends StatelessWidget {
         navigator: () {
           Navigator.push(context, createRoute(const RegisterServiceView()));
         },
+        child: Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.only(
+                  top: large, right: origin, left: origin, bottom: origin),
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(medium),
+                      topRight: Radius.circular(medium))),
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.error_outline_rounded,
+                        color: gold,
+                        size: 38,
+                      ),
+                      space16,
+                      Flexible(
+                          child: Text(
+                        'Байршил зөвхөн Улаанбаатар хотод дотор байх ёстойг анхаарна уу',
+                        style: Theme.of(context).textTheme.displayMedium,
+                      ))
+                    ],
+                  ),
+                  space16,
+                  Form(
+                    key: officeKey,
+                    child: Input(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Та оффисын байршлаа оруулна уу';
+                          }
+                          return null;
+                        },
+                        onSubmitted: (p0) {
+                          if (officeKey.currentState!.validate() &&
+                              controller.lawyer.value?.officeLocation?.lat !=
+                                  0.0) {
+                            Navigator.push(
+                                context, createRoute(const OfficeView()));
+                          }
+                        },
+                        value: controller.lawyer.value?.officeLocationString,
+                        onChange: (p0) {
+                          setState(() {
+                            office = p0;
+                          });
+                          controller.lawyer.value?.officeLocationString = p0;
+                        },
+                        labelText: 'Оффисын хаягаа дэлгэрэнгүй бичнэ үү.'),
+                  ),
+                  space32,
+                  MainButton(
+                    width: double.infinity,
+                    onPressed: () {
+                      if (officeKey.currentState!.validate()) {
+                        Navigator.push(
+                            context, createRoute(const RegisterServiceView()));
+                      }
+                    },
+                    disabled: office == '' ||
+                        controller.lawyer.value?.officeLocation?.lat == 0.0,
+                    text: "Үргэлжлүүлэх",
+                    child: const SizedBox(),
+                  ),
+                  space32,
+                ],
+              ),
+            )),
         onTap: (p0) {
           controller.lawyer.value?.officeLocation?.lat = p0.latitude;
           controller.lawyer.value?.officeLocation?.lng = p0.longitude;

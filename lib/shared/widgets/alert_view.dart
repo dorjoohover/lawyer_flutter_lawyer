@@ -51,7 +51,7 @@ class AlertView extends StatelessWidget {
               child: MainButton(
                 onPressed: () {
                   controller.currentIndex.value = 0;
-                  Navigator.of(context).push(createRoute(PrimeView()));
+                  Navigator.of(context).push(createRoute(const HomeView()));
                 },
                 text: "Үндсэн цэс рүү буцах",
                 child: const SizedBox(),

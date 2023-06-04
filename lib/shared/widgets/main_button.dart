@@ -16,6 +16,7 @@ class MainButton extends StatelessWidget {
       this.borderRadius = 18.0,
       this.disabled = false,
       this.shadow = true,
+      this.view = true,
       this.borderWidth = 0.0,
       this.borderColor = Colors.black,
       this.disabledColor = secondary})
@@ -34,6 +35,7 @@ class MainButton extends StatelessWidget {
   final Color borderColor;
   final double borderWidth;
   final Color disabledColor;
+  final bool view;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +81,7 @@ class MainButton extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: body,
+      child: view ? body : const SizedBox(),
     );
   }
 }

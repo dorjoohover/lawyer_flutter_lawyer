@@ -87,10 +87,10 @@ class _State extends State<AudioView> {
   @override
   void initState() {
     super.initState();
-    print(widget.isLawyer);
-    setState(() {
-      myDuration = Duration(seconds: widget.order.expiredTime! * 60);
-    });
+
+    // setState(() {
+    //   myDuration = Duration(seconds: widget.order.expiredTime! * 60);
+    // });
     Future.delayed(Duration.zero, () async {
       // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     });
@@ -155,10 +155,7 @@ class _State extends State<AudioView> {
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
-    print('asdf');
-    print(widget.token);
-    print(widget.channelName);
-    print(widget.uid);
+
     await _engine.joinChannel(
         token: widget.token,
         channelId: widget.channelName,
@@ -182,8 +179,7 @@ class _State extends State<AudioView> {
       _playbackVolume = 100;
       _inEarMonitoringVolume = 100;
     });
-    Navigator.of(context).push(
-        createRoute(widget.isLawyer ? const LawyerView() : const PrimeView()));
+    Navigator.of(context).push(createRoute(HomeView()));
   }
 
   _switchMicrophone() async {

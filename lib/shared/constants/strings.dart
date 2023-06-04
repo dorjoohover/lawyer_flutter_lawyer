@@ -65,10 +65,6 @@ const serviceTypes = [
     'value': 'Онлайн уулзалт',
   },
   {
-    'id': 'onlineEmergency',
-    'value': 'Яаралтай онлайн уулзалт',
-  },
-  {
     'id': 'fulfilled',
     'value': 'Биечлэн уулзалт',
   },

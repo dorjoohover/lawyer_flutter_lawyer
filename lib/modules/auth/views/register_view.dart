@@ -3,11 +3,13 @@ import 'package:frontend/modules/auth/auth.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
+final registerKey = GlobalKey<FormState>();
+
 class RegisterView extends StatelessWidget {
-  RegisterView({Key? key}) : super(key: key);
-  final AuthController controller = Get.find();
+  const RegisterView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final AuthController controller = Get.find();
     return Scaffold(
         appBar: PrimeAppBar(
             onTap: () {
@@ -23,27 +25,59 @@ class RegisterView extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  space32,
-                  Text(
-                    'Овог, нэрээ оруулна уу',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  space32,
-                  Input(
-                    focusNode: controller.firstNameFocus,
-                    labelText: 'Овог',
-                    onChange: (p0) => {controller.firstName.value = p0},
-                  ),
-                  space16,
-                  Input(
-                    focusNode: controller.lastNameFocus,
-                    labelText: 'Нэр',
-                    onChange: (p0) => {controller.lastName.value = p0},
-                  ),
-                ],
+              Form(
+                onChanged: () {
+                  print('object');
+                },
+                key: registerKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    space32,
+                    Text(
+                      'Овог, нэрээ оруулна уу',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    space32,
+                    Flexible(
+                      child: Input(
+                        autoFocus: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Та овгоо оруулна уу';
+                          }
+
+                          return null;
+                        },
+                        textInputAction: TextInputAction.next,
+                        labelText: 'Овог',
+                        value: controller.firstName.value,
+                        onChange: (p0) => {controller.firstName.value = p0},
+                      ),
+                    ),
+                    space16,
+                    Flexible(
+                      child: Input(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Та нэрээ оруулна уу';
+                          }
+
+                          return null;
+                        },
+                        labelText: 'Нэр',
+                        value: controller.lastName.value,
+                        onSubmitted: (p0) {
+                          if (registerKey.currentState!.validate()) {
+                            Navigator.push(
+                                context, createRoute(RegisterPhoneView()));
+                          }
+                        },
+                        onChange: (p0) => {controller.lastName.value = p0},
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Positioned(
                   bottom: MediaQuery.of(context).padding.bottom + 50,

@@ -33,7 +33,7 @@ class _LawyerAvailableDaysState extends State<LawyerAvailableDays> {
                 final res = await controller.addAvailableDays();
                 if (res) {
                   Get.snackbar('Амжилттай', "asdf", backgroundColor: success);
-                  Navigator.of(context).push(createRoute(const LawyerView()));
+                  Navigator.of(context).push(createRoute(const HomeView()));
                 }
               },
               children: [

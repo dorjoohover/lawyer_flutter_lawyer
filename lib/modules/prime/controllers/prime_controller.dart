@@ -54,7 +54,6 @@ class PrimeController extends GetxController {
 
       Time res =
           (await _apiRepository.getTimeLawyer(selectedLawyer.value!.sId!));
-      selectedDate.value = DateTime(2023, 5, 14);
 
       if (res.timeDetail != null) {
         order.value?.serviceId ??= res.service;
@@ -145,7 +144,6 @@ class PrimeController extends GetxController {
           times.add(sortedTime);
         }
       }
-      selectedDate.value = DateTime(2023, 5, 14);
 
       loading.value = false;
       return true;

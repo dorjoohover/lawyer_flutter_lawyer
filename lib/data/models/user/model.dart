@@ -26,6 +26,8 @@ class User {
   String? registerNumber;
   String? profileImg;
   String? email;
+  String? workLocationString;
+  String? officeLocationString;
   List<String>? phoneNumbers;
   LocationDto? workLocation;
 
@@ -44,6 +46,8 @@ class User {
       this.profileImg,
       this.userServices,
       this.createdAt,
+      this.workLocationString,
+      this.officeLocationString,
       this.updatedAt,
       this.ratingAvg,
       this.account,
@@ -64,6 +68,8 @@ class User {
     lastName = json['lastName'];
     phone = json['phone'];
     userType = json['userType'];
+    workLocationString = json['workLocationString'];
+    officeLocationString = json['officeLocationString'];
     if (json['experiences'] != null) {
       experiences = <Experiences>[];
       json['experiences'].forEach((v) {
@@ -127,6 +133,8 @@ class User {
     data['lastName'] = lastName;
     data['phone'] = phone;
     data['userType'] = userType;
+    data['officeLocationString'] = officeLocationString;
+    data['workLocationString'] = workLocationString;
     if (experiences != null) {
       data['experiences'] = experiences!.map((v) => v.toJson()).toList();
     }

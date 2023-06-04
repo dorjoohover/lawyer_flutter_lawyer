@@ -3,6 +3,7 @@
    <application
         android:label="LawMax"
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyBfIRFXoIgr-h4EDa-MK0S1rs1BViwMP_Y"/>

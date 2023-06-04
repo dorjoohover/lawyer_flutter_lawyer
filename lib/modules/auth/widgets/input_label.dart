@@ -14,8 +14,11 @@ class Input extends GetView<AuthController> {
       this.obscureText = false,
       this.suffixIcon,
       this.validator,
+      this.autoFocus = false,
       this.onSubmitted,
       this.focusNode,
+      this.onTap,
+      this.value,
       this.textInputType = TextInputType.text});
   final void Function(String)? onChange;
   final String labelText;
@@ -23,15 +26,21 @@ class Input extends GetView<AuthController> {
   final FocusNode? focusNode;
   final TextEditingController? tController;
   final bool obscureText;
+  final bool autoFocus;
   final void Function(String)? onSubmitted;
   final TextInputType textInputType;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
+  final String? Function()? onTap;
+  final String? value;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTap: onTap ?? onTap,
+
+      initialValue: value,
       onFieldSubmitted: onSubmitted,
-      autofocus: true,
+      autofocus: autoFocus,
       textInputAction: textInputAction,
       // focusNode: focusNode ?? focusNode,
       enableSuggestions: false,

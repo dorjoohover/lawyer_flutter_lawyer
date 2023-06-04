@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 class LoginView extends StatelessWidget {
   LoginView({Key? key}) : super(key: key);
   final AuthController controller = Get.find();
+  final loginKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -31,41 +32,62 @@ class LoginView extends StatelessWidget {
                             : MediaQuery.of(context).size.width * 0.5,
                       ),
                     ),
-                    Column(
-                      children: [
-                        Input(
-                          labelText: 'Утасны дугаар',
-                          onChange: (p0) => {controller.phone.value = p0},
-                        ),
-                        space16,
-                        Obx(
-                          () => Input(
-                              suffixIcon: IconButton(
-                                  icon: Icon(
-                                    !controller.isVisible.value
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    controller.isVisible.value =
-                                        !controller.isVisible.value;
-                                  }),
-                              obscureText: controller.isVisible.value,
-                              labelText: 'Нууц үг',
-                              tController: controller.loginPasswordController,
-                              onChange: (p0) => {}),
-                        ),
-                        space16,
-                        MainButton(
-                          onPressed: () {},
-                          borderColor: Colors.transparent,
-                          color: Colors.transparent,
-                          contentColor: primary,
-                          text: 'Нууц үг мартсан',
-                          child: const SizedBox(),
-                        ),
-                      ],
+                    Form(
+                      key: loginKey,
+                      child: Column(
+                        children: [
+                          Input(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Та Утасны дугаараа оруулна уу';
+                              }
+
+                              return null;
+                            },
+                            textInputAction: TextInputAction.next,
+                            labelText: 'Утасны дугаар',
+                            onChange: (p0) => {controller.phone.value = p0},
+                          ),
+                          space16,
+                          Obx(
+                            () => Input(
+                                onSubmitted: (p0) {
+                                  controller.login(context);
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Та Утасны дугаараа оруулна уу';
+                                  }
+
+                                  return null;
+                                },
+                                suffixIcon: IconButton(
+                                    icon: Icon(
+                                      !controller.isVisible.value
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      controller.isVisible.value =
+                                          !controller.isVisible.value;
+                                    }),
+                                obscureText: controller.isVisible.value,
+                                labelText: 'Нууц үг',
+                                tController: controller.loginPasswordController,
+                                onChange: (p0) => {}),
+                          ),
+                          space16,
+                          MainButton(
+                            onPressed: () {},
+                            borderColor: Colors.transparent,
+                            color: Colors.transparent,
+                            contentColor: primary,
+                            text: 'Нууц үг мартсан',
+                            child: const SizedBox(),
+                          ),
+                        ],
+                      ),
                     ),
                     space16,
                     Column(

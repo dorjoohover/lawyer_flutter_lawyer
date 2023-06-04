@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_callkit_incoming/entities/android_params.dart';
 import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
@@ -9,6 +12,7 @@ import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/settings/views/settings_view.dart';
 import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/constants/enums.dart';
+import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,51 +23,17 @@ class HomeController extends GetxController
     with StateMixin<User>, WidgetsBindingObserver {
   final ApiRepository _apiRepository = Get.find();
   final authController = Get.put(AuthController(apiRepository: Get.find()));
+
   final showPerformanceOverlay = false.obs;
   final currentIndex = 0.obs;
   final isLoading = false.obs;
   final rxUser = Rxn<User?>();
   final currentUserType = 'user'.obs;
   final our = false.obs;
+  final emergencyOrder = Rxn<Order?>();
   late IO.Socket socket;
   User? get user => rxUser.value;
   set user(value) => rxUser.value = value;
-
-  Widget getView(int index) {
-    switch (index) {
-      case 0:
-        return currentUserType.value == 'lawyer' ||
-                currentUserType.value == 'our'
-            ? const LawyerView()
-            : const PrimeView();
-
-      case 1:
-        return currentUserType.value == 'lawyer' ||
-                currentUserType.value == 'our'
-            ? const SizedBox()
-            : const EmergencyHomeView();
-      case 2:
-        return const SizedBox();
-      case 3:
-        return currentUserType.value == 'lawyer' ||
-                currentUserType.value == 'our'
-            ? const SettingsView()
-            : const SizedBox();
-      case 4:
-        return currentUserType.value == 'lawyer' ||
-                currentUserType.value == 'our'
-            ? const SizedBox()
-            : const SettingsView();
-      default:
-        return const Center(child: Text('Something went wrong'));
-    }
-  }
-
-  changeNavIndex(int index) {
-    currentIndex.value = index;
-    getView(index);
-    update();
-  }
 
   Future<void> setupApp() async {
     isLoading.value = true;
@@ -85,24 +55,32 @@ class HomeController extends GetxController
         socket.connect();
         socket.onConnect(
           (data) => {
+            print('connect $data'),
             if (user?.userType == 'our') {our.value = true}
           },
         );
 
         socket.onDisconnect((_) => {
+              print('dis'),
               if (user?.userType == 'our') {our.value = false}
             });
         socket.onConnectError((data) => {
+              print(data),
               if (user?.userType == 'our') {our.value = false}
             });
         socket.onError((error) => {
+              print(error),
               if (user?.userType == 'our') {our.value = false}
             });
-        socket.on(
-            ('response_emergency_order'),
-            ((data) => {
-                  if (our.value) {callkit()}
-                }));
+        socket.on(('response_emergency_order'), ((data) {
+          Order order = Order.fromJson(
+              jsonDecode(jsonEncode(data)) as Map<String, dynamic>);
+          if (our.value || order.clientId?.sId == user?.sId) {
+            emergencyOrder.value = order;
+
+            callkit(order);
+          }
+        }));
         socket.on(
             ('onlineEmergency'),
             ((data) => {
@@ -113,25 +91,72 @@ class HomeController extends GetxController
       isLoading.value = false;
     } on DioError catch (e) {
       isLoading.value = false;
+
       Get.find<SharedPreferences>().remove(StorageKeys.token.name);
       update();
     }
   }
 
-  callkit() async {
+  getChannelToken(Order order, bool isLawyer, String? profileImg) async {
+    try {
+      Order getOrder = await _apiRepository.getChannel(order.sId!);
+      Get.to(() => Scaffold(
+            body: WaitingChannelWidget(
+              isLawyer: isLawyer,
+            ),
+          ));
+      String channelName = getOrder.channelName!;
+      if (getOrder.channelName == 'string') {
+        channelName = DateTime.now().millisecondsSinceEpoch.toString();
+      }
+
+      Agora token =
+          await _apiRepository.getAgoraToken(channelName, isLawyer ? '2' : '1');
+
+      if (token.rtcToken != null && channelName != 'string') {
+        Order res = await _apiRepository.setChannel(
+            isLawyer ? 'lawyer' : 'user',
+            order.sId!,
+            channelName,
+            token.rtcToken!);
+
+        Get.to(
+          () => AudioView(
+              order: res,
+              isLawyer: isLawyer,
+              channelName: order.channelName!,
+              token: token.rtcToken!,
+              name: isLawyer
+                  ? order.clientId!.lastName!
+                  : order.lawyerId == null
+                      ? 'Lawmax'
+                      : order.lawyerId!.lastName!,
+              uid: isLawyer ? 2 : 1),
+        );
+      }
+    } on DioError catch (e) {
+      print(e.response);
+      Get.snackbar(
+        'Error',
+        'Something went wrong',
+      );
+    }
+  }
+
+  callkit(Order order) async {
     CallKitParams params = CallKitParams(
-      id: "21232dgfgbcbgb",
-      nameCaller: "Coding Is Life",
-      appName: "Demo",
+      id: order.sId,
+      nameCaller: order.clientId?.firstName,
+      appName: "Lawmax",
       avatar: "https://i.pravata.cc/100",
-      handle: "123456",
+      handle: order.clientId?.firstName,
       type: 0,
       textAccept: "Accept",
       textDecline: "Decline",
       duration: 30000,
-      extra: {'userId': "sdhsjjfhuwhf"},
+      extra: {'userId': order.clientId?.sId},
       ios: IOSParams(
-          iconName: "Call Demo",
+          iconName: "Lawmax",
           handleType: 'generic',
           supportsVideo: true,
           maximumCallGroups: 2,
@@ -151,12 +176,12 @@ class HomeController extends GetxController
           backgroundColor: "#0955fa",
           backgroundUrl: "https://i.pravata.cc/500",
           actionColor: "#4CAF50",
-          incomingCallNotificationChannelName: "Incoming call",
-          missedCallNotificationChannelName: "Missed call"),
+          incomingCallNotificationChannelName: "Дуудлага ирж байна",
+          missedCallNotificationChannelName: "Аваагүй дуудлага"),
     );
 
     await FlutterCallkitIncoming.showCallkitIncoming(params);
-    FlutterCallkitIncoming.onEvent.listen((CallEvent? event) {
+    FlutterCallkitIncoming.onEvent.listen((CallEvent? event) async {
       switch (event!.event) {
         case Event.actionCallIncoming:
           // TODO: received an incoming call
@@ -166,7 +191,8 @@ class HomeController extends GetxController
           // TODO: show screen calling in Flutter
           break;
         case Event.actionCallAccept:
-          print('asdf');
+          await getChannelToken(order, true, user?.profileImg ?? '');
+
           break;
         case Event.actionCallDecline:
           // TODO: declined an incoming call
@@ -232,10 +258,10 @@ class HomeController extends GetxController
     socket.emit('create_emergency_order', data);
   }
 
-  changeOrderStatus(String id, String status) {
-    Map data = {"id": id, "status": status};
-    socket.emit('change_order_status', data);
-  }
+  // changeOrderStatus(String id, String status) {
+  //   Map data = {"id": id, "status": status};
+  //   socket.emit('change_order_status', data);
+  // }
 
   @override
   void onInit() async {

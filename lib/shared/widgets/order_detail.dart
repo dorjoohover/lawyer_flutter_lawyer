@@ -37,20 +37,20 @@ class OrderDetailView extends GetView<PrimeController> {
             children: [
               Row(
                 children: [
-                  // Container(
-                  //     width: 66,
-                  //     height: 66,
-                  //     decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(12),
-                  //         image: DecorationImage(
-                  //           image: NetworkImage(
-                  //             image != ""
-                  //                 ? image
-                  //                 : "https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/05/joseph-barrientos-49318-unsplash-e1558728034701.jpg?resize=1500%2C1000&ssl=1",
-                  //           ),
-                  //           fit: BoxFit.cover,
-                  //         )),
-                  //     child: SizedBox()),
+                  Container(
+                      width: 66,
+                      height: 66,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              image != ""
+                                  ? image
+                                  : "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+                            ),
+                            fit: BoxFit.cover,
+                          )),
+                      child: SizedBox()),
                   space16,
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,

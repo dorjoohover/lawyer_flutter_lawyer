@@ -105,7 +105,11 @@ class _VideoViewState extends State<VideoView> {
         uid: widget.uid,
       ),
     );
+
+    print(widget.channelName);
     print(widget.uid);
+    print(widget.name);
+    print(widget.token);
     initAgora();
   }
 
@@ -129,11 +133,7 @@ class _VideoViewState extends State<VideoView> {
       }
     });
 
-    if (!widget.isLawyer) {
-      Navigator.of(context).push(createRoute(PrimeView()));
-    } else {
-      Navigator.of(context).push(createRoute(LawyerView()));
-    }
+    Navigator.of(context).push(createRoute(const HomeView()));
 
     try {
       await client.release();

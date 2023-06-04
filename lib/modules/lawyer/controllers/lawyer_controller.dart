@@ -55,16 +55,15 @@ class LawyerController extends GetxController {
     }
   }
 
-  getChannelToken(Order order, BuildContext context, bool isLawyer,
-      String? profileImg) async {
+  getChannelToken(Order order, bool isLawyer, String? profileImg) async {
     try {
       loading.value = true;
       Order getOrder = await _apiRepository.getChannel(order.sId!);
-      Navigator.of(context).push(createRoute(Scaffold(
-        body: WaitingChannelWidget(
-          isLawyer: isLawyer,
-        ),
-      )));
+      Get.to(() => Scaffold(
+            body: WaitingChannelWidget(
+              isLawyer: isLawyer,
+            ),
+          ));
       String channelName = getOrder.channelName!;
       if (getOrder.channelName == 'string') {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();

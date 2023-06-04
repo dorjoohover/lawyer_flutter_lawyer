@@ -3,6 +3,8 @@ import 'package:frontend/modules/auth/auth.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
+final phoneKey = GlobalKey<FormState>();
+
 class RegisterPhoneView extends StatelessWidget {
   RegisterPhoneView({Key? key}) : super(key: key);
   final AuthController controller = Get.find();
@@ -32,10 +34,34 @@ class RegisterPhoneView extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   space32,
-                  Input(
-                    textInputType: TextInputType.number,
-                    labelText: 'Утасны дугаар',
-                    onChange: (p0) => {controller.registerPhone.value = p0},
+                  Form(
+                    key: phoneKey,
+                    child: Input(
+                      autoFocus: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Та утасны дугаараа оруулна уу';
+                        }
+                        if (value.length != 8 &&
+                            value.length > 4 &&
+                            value.substring(0, 3) != '976') {
+                          return 'Таны оруулсан утасны дугаар буруу байна';
+                        }
+
+                        return null;
+                      },
+                      onSubmitted: (p0) {
+                        if (phoneKey.currentState!.validate()) {
+                          Navigator.of(context)
+                              .push(createRoute(RegisterPasswordView()));
+                        }
+                        
+                      },
+                      value: controller.registerPhone.value,
+                      textInputType: TextInputType.number,
+                      labelText: 'Утасны дугаар',
+                      onChange: (p0) => {controller.registerPhone.value = p0},
+                    ),
                   ),
                 ],
               ),

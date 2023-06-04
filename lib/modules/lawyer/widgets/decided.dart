@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/modules.dart';
-import 'package:frontend/shared/index.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:frontend/modules/auth/auth.dart';
+import 'package:frontend/shared/constants/index.dart';
 
-class DecidedWidget extends StatefulWidget {
+class DecidedWidget extends StatelessWidget {
   const DecidedWidget(
       {super.key,
       required this.onTitle,
@@ -17,23 +19,23 @@ class DecidedWidget extends StatefulWidget {
   final String title;
   final String link;
   final int date;
-  @override
-  State<DecidedWidget> createState() => _DecidedWidgetState();
-}
-
-class _DecidedWidgetState extends State<DecidedWidget> {
-  int date = DateTime.now().millisecondsSinceEpoch;
-  @override
-  void initState() {
-    super.initState();
-    date = widget.date;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Input(onChange: widget.onTitle, labelText: 'Гарчиг'),
+        Input(
+          onChange: onTitle,
+          value: title,
+          labelText: 'Гарчиг',
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Та гарчигаа оруулна уу';
+            }
+
+            return null;
+          },
+        ),
         space16,
         GestureDetector(
           onTap: () async {
@@ -42,12 +44,9 @@ class _DecidedWidgetState extends State<DecidedWidget> {
                 initialDate: DateTime.now(),
                 firstDate: DateTime(1970),
                 lastDate: DateTime.now());
-            if (picked != null) {
-              widget.onDate(picked.millisecondsSinceEpoch);
 
-              setState(() {
-                date = picked.millisecondsSinceEpoch;
-              });
+            if (picked != null) {
+              onDate(picked.millisecondsSinceEpoch);
             }
           },
           child: Container(
@@ -66,7 +65,19 @@ class _DecidedWidgetState extends State<DecidedWidget> {
               )),
         ),
         space16,
-        Input(onChange: widget.onLink, labelText: 'Линк'),
+        Input(
+          autoFocus: false,
+          onChange: onLink,
+          labelText: 'Линк',
+          value: link,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Та линкээ оруулна уу';
+            }
+
+            return null;
+          },
+        ),
       ],
     );
   }

@@ -182,6 +182,8 @@ class ApiRepository {
         'registerNumber': user.registerNumber,
         'profileImg': user.profileImg,
         'userServices': user.userServices,
+        'workLocationString': user.workLocationString,
+        'officeLocationString': user.officeLocationString,
         'email': user.email,
         'phoneNumbers': user.phoneNumbers,
         'profileImg': user.profileImg ?? '',

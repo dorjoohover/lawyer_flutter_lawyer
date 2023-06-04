@@ -27,6 +27,7 @@ class MapsWidgetState extends State<MapsWidget> {
 
   void getCurrentLocation() async {
     Location location = Location();
+
     location.getLocation().then((location) {
       setState(() {
         currentLocation = location;
@@ -66,7 +67,10 @@ class MapsWidgetState extends State<MapsWidget> {
                     ),
                     mapType: MapType.hybrid,
                     markers: Set.from(marker),
-                    onTap: _handleTap,
+                    onTap: (argument) {
+                      
+                      _handleTap(argument);
+                    },
                   ),
                 ),
                 widget.child ??

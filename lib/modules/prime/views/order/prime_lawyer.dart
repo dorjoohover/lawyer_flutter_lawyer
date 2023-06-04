@@ -28,8 +28,13 @@ class OrderLawyerView extends GetView<PrimeController> {
                         decoration: BoxDecoration(
                             image: DecorationImage(
                           image: NetworkImage(
-                            controller.selectedLawyer.value?.profileImg ??
-                                "https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/05/joseph-barrientos-49318-unsplash-e1558728034701.jpg?resize=1500%2C1000&ssl=1",
+                            controller.selectedLawyer.value?.profileImg !=
+                                        null &&
+                                    controller
+                                            .selectedLawyer.value?.profileImg !=
+                                        ""
+                                ? controller.selectedLawyer.value!.profileImg!
+                                : "https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/05/joseph-barrientos-49318-unsplash-e1558728034701.jpg?resize=1500%2C1000&ssl=1",
                           ),
                           fit: BoxFit.cover,
                         )),

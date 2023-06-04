@@ -14,6 +14,7 @@ class LawyerRegisterController extends GetxController {
   final _apiRepository = Get.find<ApiRepository>();
   final homeController = Get.put(HomeController());
   final primeController = Get.put(PrimeController());
+  final authController = Get.put(AuthController(apiRepository: Get.find()));
   // permission
   final personal = false.obs;
   final education = false.obs;
@@ -22,6 +23,8 @@ class LawyerRegisterController extends GetxController {
   final decided = false.obs;
   final account = false.obs;
   final addition = false.obs;
+  final work = false.obs;
+  final office = false.obs;
   // focus
   final nodeFirstName = FocusNode();
   //addition register
@@ -71,7 +74,7 @@ class LawyerRegisterController extends GetxController {
           'Success',
           'success',
         );
-        Get.to(() => const LawyerView());
+        authController.logout();
       } else {
         Get.snackbar(
           'error',
@@ -129,7 +132,7 @@ class LawyerRegisterController extends GetxController {
           homeController.user!.userServices!.isNotEmpty) {
         service.value = homeController.user!.userServices!;
       } else {
-        service.value = [primeController.services[0].sId ?? ''];
+        service.value = [''];
       }
 
       loading.value = false;

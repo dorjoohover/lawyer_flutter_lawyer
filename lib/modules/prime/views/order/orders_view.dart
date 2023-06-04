@@ -47,7 +47,7 @@ class OrdersView extends GetView<PrimeController> {
                             if (e.serviceType == 'online' ||
                                 e.serviceType == 'onlineEmergency') {
                               lawyerController.getChannelToken(
-                                  e, context, isLawyer, '');
+                                  e, isLawyer, '');
                             } else {
                               if (e.serviceType == 'fulfilled') {
                                 Navigator.push(

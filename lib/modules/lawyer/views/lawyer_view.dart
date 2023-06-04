@@ -17,7 +17,6 @@ class LawyerView extends GetView<LawyerController> {
     final controller = Get.put(LawyerController());
     final primeController = Get.put(PrimeController());
     final homeController = Get.put(HomeController());
-    final authController = Get.put(AuthController(apiRepository: Get.find()));
     final oCcy = NumberFormat("₮ #,##0", "en_US");
     return SafeArea(
         child: RefreshIndicator(
@@ -174,7 +173,6 @@ class LawyerView extends GetView<LawyerController> {
                                                                 controller
                                                                     .getChannelToken(
                                                                         i,
-                                                                        context,
                                                                         true,
                                                                         '');
                                                               } else {
@@ -316,9 +314,6 @@ class LawyerView extends GetView<LawyerController> {
                                         'user';
                                     Navigator.push(context,
                                         createRoute(const PrimeView()));
-
-                                    homeController.getView(
-                                        homeController.currentIndex.value);
                                   },
                                   child: CardContainer(
                                     value: 'Хэрэглэгч цэс рүү буцах',

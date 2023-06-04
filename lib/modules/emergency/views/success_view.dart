@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/modules/emergency/emergency.dart';
+import 'package:frontend/modules/home/home.dart';
+import 'package:frontend/modules/lawyer/controllers/controllers.dart';
 import 'package:frontend/shared/index.dart';
+import 'package:get/get.dart';
 
 class SuccessView extends StatelessWidget {
   const SuccessView({super.key});
   // final String location;
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HomeController());
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -55,8 +59,11 @@ class SuccessView extends StatelessWidget {
               width: double.infinity,
               child: MainButton(
                 onPressed: () {
-                  Navigator.push(
-                      context, createRoute(const EmergencyHomeView()));
+                  print(controller.emergencyOrder.value);
+                  if (controller.emergencyOrder.value != null) {
+                    controller.getChannelToken(
+                        controller.emergencyOrder.value!, false, '');
+                  }
                 },
                 text: "Буцах",
                 // text: "Байршил харах",
