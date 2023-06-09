@@ -230,14 +230,14 @@ class ApiRepository {
   }
 
   Future<Order> setChannel(
-    String url,
+    bool isLawyer,
     String orderId,
     String channelName,
-    String token,
   ) async {
     try {
+      Agora token = await getAgoraToken(channelName, isLawyer ? '2' : '1');
       final response = await apiProvider.get(
-        '/order/$url/token/$orderId/$channelName/{token}?token=$token',
+        '/order/${isLawyer ? 'lawyer' : 'user'}/token/$orderId/$channelName/{token}?token=${token.rtcToken}',
       ) as Map<String, dynamic>;
 
       return Order.fromJson(response);

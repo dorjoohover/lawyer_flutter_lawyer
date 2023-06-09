@@ -1,17 +1,12 @@
 import 'dart:async';
 
-import 'package:agora_uikit/agora_uikit.dart';
-import 'package:agora_uikit/controllers/rtc_buttons.dart';
-import 'package:flutter/foundation.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
 import 'package:frontend/config/agora.config.dart' as config;
 import 'package:frontend/data/data.dart';
-import 'package:frontend/modules/modules.dart';
 import 'package:frontend/providers/api_repository.dart';
-import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class VideoView extends StatefulWidget {
   const VideoView(
@@ -34,7 +29,9 @@ class VideoView extends StatefulWidget {
 }
 
 class _VideoViewState extends State<VideoView> {
-  late final AgoraClient client;
+  late RtcEngine rtc;
+  int? _remoteUid;
+  bool _localUserJoined = false;
   bool isSwitchCamera = false;
   bool isMuted = false;
   bool isSpeaker = false;
@@ -61,17 +58,16 @@ class _VideoViewState extends State<VideoView> {
     if (myDuration.inSeconds < 1) {
       Get.snackbar('Анхааруулга', "Цаг дууслаа");
       Navigator.of(context).pop();
-      await client.release();
     }
     final reduceSecondsBy = 1;
-    setState(() {
-      final seconds = myDuration.inSeconds - reduceSecondsBy;
-      if (seconds < 0) {
-        countdownTimer!.cancel();
-      } else {
-        myDuration = Duration(seconds: seconds);
-      }
-    });
+    // setState(() {
+    //   final seconds = myDuration.inSeconds - reduceSecondsBy;
+    //   if (seconds < 0) {
+    //     countdownTimer!.cancel();
+    //   } else {
+    //     myDuration = Duration(seconds: seconds);
+    //   }
+    // });
     // if (order.lawyerToken == 'string' &&
     //     order.userToken == 'string' &&
     //     myDuration.inSeconds % 5 == 0) {
@@ -95,35 +91,71 @@ class _VideoViewState extends State<VideoView> {
       // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE)
       //     .then((value) => print(value));
     });
-    startTimer();
-    client = AgoraClient(
-      agoraConnectionData: AgoraConnectionData(
-        appId: config.appId,
-        channelName: widget.channelName,
-        username: widget.name,
-        tempToken: widget.token,
-        uid: widget.uid,
-      ),
-    );
+    // startTimer();
 
-    print(widget.channelName);
-    print(widget.uid);
-    print(widget.name);
-    print(widget.token);
     initAgora();
   }
 
-  void initAgora() async {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      await Permission.microphone.request();
-      await Permission.camera.request();
-    }
+  @override
+  dispose() {
+    rtc.leaveChannel();
 
-    try {
-      await client.initialize();
-    } catch (e) {
-      Get.snackbar('', '');
-    }
+    super.dispose();
+  }
+
+  Future<void> initAgora() async {
+    // retrieve permissions
+    await [Permission.microphone, Permission.camera].request();
+
+    //create the engine
+    rtc = createAgoraRtcEngine();
+    await rtc.initialize(RtcEngineContext(
+      appId: config.appId,
+      channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
+    ));
+    print('asdf');
+    rtc.registerEventHandler(
+      RtcEngineEventHandler(
+        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+          debugPrint("local user ${connection.localUid} joined");
+          print("local user ${connection.localUid} joined");
+          setState(() {
+            _localUserJoined = true;
+          });
+        },
+        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+          debugPrint("remote user $remoteUid joined");
+          print("remote user $remoteUid joined");
+          setState(() {
+            _remoteUid = remoteUid;
+          });
+        },
+        onUserOffline: (RtcConnection connection, int remoteUid,
+            UserOfflineReasonType reason) {
+          debugPrint("remote user $remoteUid left channel");
+          setState(() {
+            _remoteUid = null;
+          });
+        },
+        onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
+          print('asdfg');
+          debugPrint(
+              '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
+        },
+      ),
+    );
+
+    await rtc.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+    await rtc.enableVideo();
+    await rtc.startPreview();
+
+    await rtc.joinChannel(
+      token:
+          "006a941d13a5641456b95014aa4fc703f70IACR2JJf79N7ldvpgK8fPiV QFi8tjVGJg8F9ORq D ogr5mF1y379yDIgDy9J0CI 6DZAQAAQDLv4JkAgDLv4JkAwDLv4JkBADLv4Jk",
+      channelId: widget.channelName,
+      uid: 1,
+      options: const ChannelMediaOptions(),
+    );
   }
 
   Future<void> _onCallEnd(BuildContext context) async {
@@ -133,11 +165,9 @@ class _VideoViewState extends State<VideoView> {
       }
     });
 
-    Navigator.of(context).push(createRoute(const HomeView()));
+    Navigator.of(context).pop();
 
-    try {
-      await client.release();
-    } catch (error) {
+    try {} catch (error) {
       Get.snackbar(error.toString(), 'error');
     }
   }
@@ -152,144 +182,147 @@ class _VideoViewState extends State<VideoView> {
       body: SafeArea(
         child: Stack(
           children: [
-            AgoraVideoViewer(
-              client: client,
-              layoutType: Layout.oneToOne,
-            ),
-            Positioned(
-                bottom: MediaQuery.of(context).padding.bottom + 150,
-                left: 0,
-                right: 0,
-                child: Align(
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: medium, vertical: small),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(origin),
-                        color: Colors.white,
-                      ),
-                      child: Text(
-                        '$minutes:$seconds',
-                        style: Theme.of(context).textTheme.displayMedium,
-                      ),
-                    ),
-                  ),
-                )),
-            // AgoraVideoButtons(
-            //   onDisconnect: () {
-            //     setState(() {
-            //       if (countdownTimer != null) {
-            //         countdownTimer!.cancel();
-            //       }
-            //     });
-            //     Navigator.pop(context);
-            //   },
-            //   addScreenSharing: false,
+            Center(
+              child: _remoteVideo(),
+            )
+            // AgoraVideoViewer(
             //   client: client,
-            //   // muteButtonChild: SvgPicture.asset(
-            //   //   client.sessionController.value.isLocalUserMuted
-            //   //       ? svgMicrophone
-            //   //       : svgMicrophoneDisable,
-            //   //   width: 14,
-            //   // ),
+            //   layoutType: Layout.oneToOne,
             // ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: MediaQuery.of(context).padding.bottom + 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  RawMaterialButton(
-                    constraints: BoxConstraints(minWidth: 70),
-                    onPressed: () {
-                      setState(() {
-                        isMuted = !isMuted;
-                      });
-                      toggleMute(
-                        sessionController: client.sessionController,
-                      );
-                    },
-                    child: SvgPicture.asset(
-                      !isMuted ? svgMicrophone : svgMicrophoneDisable,
-                      width: 14,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: isMuted ? primary : Colors.white,
-                    padding: const EdgeInsets.all(origin),
-                  ),
-                  RawMaterialButton(
-                    constraints: BoxConstraints(minWidth: 70),
-                    onPressed: () {
-                      setState(() {
-                        isSpeaker = !isSpeaker;
-                      });
-                      toggleMute(
-                        sessionController: client.sessionController,
-                      );
-                    },
-                    child: SvgPicture.asset(
-                      !isSpeaker ? svgVolume : svgVolumeDisable,
-                      width: 20,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: isSpeaker ? primary : Colors.white,
-                    padding: const EdgeInsets.all(origin),
-                  ),
-                  RawMaterialButton(
-                    constraints: BoxConstraints(minWidth: 70),
-                    onPressed: () => _onCallEnd(context),
-                    child: Icon(Icons.call_end, color: Colors.white, size: 35),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: error,
-                    padding: const EdgeInsets.all(origin),
-                  ),
-                  RawMaterialButton(
-                    constraints: BoxConstraints(minWidth: 60),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: isSwitchCamera ? primary : Colors.white,
-                    padding: const EdgeInsets.all(origin),
-                    onPressed: () {
-                      setState(() {
-                        isSwitchCamera = !isSwitchCamera;
-                      });
-                      switchCamera(
-                        sessionController: client.sessionController,
-                      );
-                    },
-                    child: Icon(
-                      Icons.switch_camera,
-                      color: !isSwitchCamera ? primary : Colors.white,
-                      size: 20.0,
-                    ),
-                  ),
-                  RawMaterialButton(
-                    constraints: BoxConstraints(minWidth: 70),
-                    onPressed: () => toggleCamera(
-                      sessionController: client.sessionController,
-                    ),
-                    child: Icon(
-                      !isCamera ? Icons.videocam_off : Icons.videocam,
-                      color: !isCamera ? Colors.white : primary,
-                      size: 20.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: !isCamera ? primary : Colors.white,
-                    padding: const EdgeInsets.all(origin),
-                  )
-                ],
-              ),
-            ),
+            // Positioned(
+            //     bottom: MediaQuery.of(context).padding.bottom + 150,
+            //     left: 0,
+            //     right: 0,
+            //     child: Align(
+            //       child: FittedBox(
+            //         fit: BoxFit.contain,
+            //         child: Container(
+            //           padding: const EdgeInsets.symmetric(
+            //               horizontal: medium, vertical: small),
+            //           decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(origin),
+            //             color: Colors.white,
+            //           ),
+            //           child: Text(
+            //             '$minutes:$seconds',
+            //             style: Theme.of(context).textTheme.displayMedium,
+            //           ),
+            //         ),
+            //       ),
+            //     )),
+
+            // Positioned(
+            //   left: 0,
+            //   right: 0,
+            //   bottom: MediaQuery.of(context).padding.bottom + 50,
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       RawMaterialButton(
+            //         constraints: BoxConstraints(minWidth: 70),
+            //         onPressed: () {
+            //           setState(() {
+            //             isMuted = !isMuted;
+            //           });
+            //           toggleMute(
+            //             sessionController: client.sessionController,
+            //           );
+            //         },
+            //         child: SvgPicture.asset(
+            //           !isMuted ? svgMicrophone : svgMicrophoneDisable,
+            //           width: 14,
+            //         ),
+            //         shape: CircleBorder(),
+            //         elevation: 2.0,
+            //         fillColor: isMuted ? primary : Colors.white,
+            //         padding: const EdgeInsets.all(origin),
+            //       ),
+            //       RawMaterialButton(
+            //         constraints: BoxConstraints(minWidth: 70),
+            //         onPressed: () {
+            //           setState(() {
+            //             isSpeaker = !isSpeaker;
+            //           });
+            //           toggleMute(
+            //             sessionController: client.sessionController,
+            //           );
+            //         },
+            //         child: SvgPicture.asset(
+            //           !isSpeaker ? svgVolume : svgVolumeDisable,
+            //           width: 20,
+            //         ),
+            //         shape: CircleBorder(),
+            //         elevation: 2.0,
+            //         fillColor: isSpeaker ? primary : Colors.white,
+            //         padding: const EdgeInsets.all(origin),
+            //       ),
+            //       RawMaterialButton(
+            //         constraints: BoxConstraints(minWidth: 70),
+            //         onPressed: () => _onCallEnd(context),
+            //         child: Icon(Icons.call_end, color: Colors.white, size: 35),
+            //         shape: CircleBorder(),
+            //         elevation: 2.0,
+            //         fillColor: error,
+            //         padding: const EdgeInsets.all(origin),
+            //       ),
+            //       RawMaterialButton(
+            //         constraints: BoxConstraints(minWidth: 60),
+            //         shape: CircleBorder(),
+            //         elevation: 2.0,
+            //         fillColor: isSwitchCamera ? primary : Colors.white,
+            //         padding: const EdgeInsets.all(origin),
+            //         onPressed: () {
+            //           setState(() {
+            //             isSwitchCamera = !isSwitchCamera;
+            //           });
+            //           switchCamera(
+            //             sessionController: client.sessionController,
+            //           );
+            //         },
+            //         child: Icon(
+            //           Icons.switch_camera,
+            //           color: !isSwitchCamera ? primary : Colors.white,
+            //           size: 20.0,
+            //         ),
+            //       ),
+            //       RawMaterialButton(
+            //         constraints: BoxConstraints(minWidth: 70),
+            //         onPressed: () => toggleCamera(
+            //           sessionController: client.sessionController,
+            //         ),
+            //         child: Icon(
+            //           !isCamera ? Icons.videocam_off : Icons.videocam,
+            //           color: !isCamera ? Colors.white : primary,
+            //           size: 20.0,
+            //         ),
+            //         shape: CircleBorder(),
+            //         elevation: 2.0,
+            //         fillColor: !isCamera ? primary : Colors.white,
+            //         padding: const EdgeInsets.all(origin),
+            //       )
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _remoteVideo() {
+    if (_remoteUid != null) {
+      return AgoraVideoView(
+        controller: VideoViewController.remote(
+          rtcEngine: rtc,
+          canvas: VideoCanvas(uid: _remoteUid),
+          connection: RtcConnection(channelId: widget.channelName),
+        ),
+      );
+    } else {
+      return const Text(
+        'Please wait for remote user to join',
+        textAlign: TextAlign.center,
+      );
+    }
   }
 }

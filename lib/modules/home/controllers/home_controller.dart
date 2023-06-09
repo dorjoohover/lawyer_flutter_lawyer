@@ -2,22 +2,16 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_callkit_incoming/entities/android_params.dart';
-import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
 import 'package:flutter_callkit_incoming/entities/entities.dart';
-import 'package:flutter_callkit_incoming/entities/ios_params.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:frontend/data/data.dart';
-import 'package:frontend/modules/settings/views/settings_view.dart';
 import 'package:frontend/providers/api_repository.dart';
-import 'package:frontend/shared/constants/enums.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../modules.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class HomeController extends GetxController
     with StateMixin<User>, WidgetsBindingObserver {
@@ -99,6 +93,7 @@ class HomeController extends GetxController
 
   getChannelToken(Order order, bool isLawyer, String? profileImg) async {
     try {
+      print('a');
       Order getOrder = await _apiRepository.getChannel(order.sId!);
       Get.to(() => Scaffold(
             body: WaitingChannelWidget(
@@ -110,30 +105,25 @@ class HomeController extends GetxController
         channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
 
-      Agora token =
-          await _apiRepository.getAgoraToken(channelName, isLawyer ? '2' : '1');
-
-      if (token.rtcToken != null && channelName != 'string') {
-        Order res = await _apiRepository.setChannel(
-            isLawyer ? 'lawyer' : 'user',
-            order.sId!,
-            channelName,
-            token.rtcToken!);
-
-        Get.to(
-          () => AudioView(
-              order: res,
-              isLawyer: isLawyer,
-              channelName: order.channelName!,
-              token: token.rtcToken!,
-              name: isLawyer
-                  ? order.clientId!.lastName!
-                  : order.lawyerId == null
-                      ? 'Lawmax'
-                      : order.lawyerId!.lastName!,
-              uid: isLawyer ? 2 : 1),
-        );
-      }
+      Order res = await _apiRepository.setChannel(
+        isLawyer,
+        order.sId!,
+        channelName,
+      );
+      print(res.toJson());
+      Get.to(
+        () => AudioView(
+            order: res,
+            isLawyer: isLawyer,
+            channelName: res.channelName ?? '',
+            token: isLawyer ? res.lawyerToken ?? '' : res.userToken ?? '',
+            name: isLawyer
+                ? res.clientId?.lastName ?? ''
+                : res.lawyerId == null
+                    ? 'Lawmax'
+                    : order.lawyerId?.lastName ?? '',
+            uid: isLawyer ? 2 : 1),
+      );
     } on DioError catch (e) {
       print(e.response);
       Get.snackbar(

@@ -90,6 +90,7 @@ class EmergencyController extends GetxController {
   getChannelToken(Order order, BuildContext context, String? profileImg) async {
     try {
       loading.value = true;
+      print('a');
       Order getOrder = await _apiRepository.getChannel(order.sId!);
       Navigator.of(context).push(createRoute(Scaffold(
         body: WaitingChannelWidget(
@@ -101,22 +102,21 @@ class EmergencyController extends GetxController {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
 
-      Agora token = await _apiRepository.getAgoraToken(channelName, '1');
-
-      if (token.rtcToken != null && channelName != 'string') {
-        Order res = await _apiRepository.setChannel(
-            'lawyer', order.sId!, channelName!, token.rtcToken!);
-        if (res.serviceType == 'onlineEmergency') {
-          Get.to(
-            () => AudioView(
-                order: res,
-                isLawyer: false,
-                channelName: order.channelName!,
-                token: token.rtcToken!,
-                name: order.lawyerId!.lastName!,
-                uid: 1),
-          );
-        }
+      Order res = await _apiRepository.setChannel(
+        false,
+        order.sId!,
+        channelName,
+      );
+      if (res.serviceType == 'onlineEmergency') {
+        Get.to(
+          () => AudioView(
+              order: res,
+              isLawyer: false,
+              channelName: res.channelName!,
+              token: res.userToken ?? '',
+              name: order.lawyerId!.lastName!,
+              uid: 1),
+        );
       }
 
       loading.value = false;

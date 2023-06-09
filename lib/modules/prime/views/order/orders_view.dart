@@ -44,10 +44,11 @@ class OrdersView extends GetView<PrimeController> {
                       margin: const EdgeInsets.only(bottom: origin),
                       child: OrderDetailView(
                           onTap: () async {
+                           
                             if (e.serviceType == 'online' ||
                                 e.serviceType == 'onlineEmergency') {
-                              lawyerController.getChannelToken(
-                                  e, isLawyer, '');
+                             
+                              lawyerController.getChannelToken(e, isLawyer, '');
                             } else {
                               if (e.serviceType == 'fulfilled') {
                                 Navigator.push(

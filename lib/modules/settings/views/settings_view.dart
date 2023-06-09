@@ -33,8 +33,10 @@ class _SettingsViewState extends State<SettingsView> {
                       borderRadius: BorderRadius.circular(100),
                       image: DecorationImage(
                           image: NetworkImage(
-                            homeController.user?.profileImg ??
-                                "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+                            homeController.user?.profileImg != null &&
+                                    homeController.user?.profileImg != ''
+                                ? homeController.user!.profileImg!
+                                : "https://images.unsplash.com/photo-1605664041952-4a2855d9363b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
                           ),
                           fit: BoxFit.cover)),
                 ),
@@ -77,7 +79,8 @@ class _SettingsViewState extends State<SettingsView> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      if (homeController.user?.userType == 'lawyer') {
+                      if (homeController.user?.userType == 'lawyer' ||
+                          homeController.user?.userType == 'our') {
                         homeController.currentUserType.value = 'lawyer';
                       } else {
                         Navigator.of(context)
@@ -93,9 +96,8 @@ class _SettingsViewState extends State<SettingsView> {
                         minLeadingWidth: 0,
                         leading: SvgPicture.asset(svgRefresh),
                         title: Obx(
-                          () => homeController.currentUserType.value ==
-                                      'lawyer' ||
-                                  homeController.currentUserType.value == 'our'
+                          () => homeController.user?.userType == 'lawyer' ||
+                                  homeController.user?.userType == 'our'
                               ? Text(
                                   'Хуульчийн цэс рүү буцах',
                                   style:

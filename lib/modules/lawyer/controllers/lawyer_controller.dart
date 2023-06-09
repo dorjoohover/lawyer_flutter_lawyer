@@ -58,54 +58,57 @@ class LawyerController extends GetxController {
   getChannelToken(Order order, bool isLawyer, String? profileImg) async {
     try {
       loading.value = true;
+
       Order getOrder = await _apiRepository.getChannel(order.sId!);
-      Get.to(() => Scaffold(
-            body: WaitingChannelWidget(
-              isLawyer: isLawyer,
-            ),
-          ));
+
       String channelName = getOrder.channelName!;
       if (getOrder.channelName == 'string') {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
+      print(channelName);
+      Order res = await _apiRepository.setChannel(
+        isLawyer,
+        order.sId!,
+        channelName,
+      );
+      if (res.userToken == null ||
+          res.userToken == '' ||
+          res.lawyerToken == null ||
+          res.lawyerToken == '') {
+        Get.to(() => Scaffold(
+              body: WaitingChannelWidget(
+                isLawyer: isLawyer,
+              ),
+            ));
+      }
 
-      Agora token =
-          await _apiRepository.getAgoraToken(channelName, isLawyer ? '2' : '1');
-      print(token);
-      if (token.rtcToken != null && channelName != 'string') {
-        Order res = await _apiRepository.setChannel(
-            isLawyer ? 'lawyer' : 'user',
-            order.sId!,
-            channelName!,
-            token.rtcToken!);
-        if (res.serviceType == 'onlineEmergency') {
-          Get.to(
-            () => AudioView(
-                order: res,
-                isLawyer: isLawyer,
-                channelName: order.channelName!,
-                token: token.rtcToken!,
-                name: isLawyer
-                    ? order.clientId!.lastName!
-                    : order.lawyerId == null
-                        ? 'Lawmax'
-                        : order.lawyerId!.lastName!,
-                uid: isLawyer ? 2 : 1),
-          );
-        }
-        if (order.serviceType == 'online') {
-          Get.to(
-            () => VideoView(
-                order: res,
-                isLawyer: isLawyer,
-                channelName: order.channelName!,
-                token: token.rtcToken!,
-                name: isLawyer
-                    ? order.clientId!.lastName!
-                    : order.lawyerId!.lastName!,
-                uid: isLawyer ? 2 : 1),
-          );
-        }
+      if (res.serviceType == 'onlineEmergency') {
+        Get.to(
+          () => AudioView(
+              order: res,
+              isLawyer: isLawyer,
+              channelName: order.channelName!,
+              token: isLawyer ? res.lawyerToken ?? '' : res.userToken ?? '',
+              name: isLawyer
+                  ? order.clientId!.lastName!
+                  : order.lawyerId == null
+                      ? 'Lawmax'
+                      : order.lawyerId!.lastName!,
+              uid: isLawyer ? 2 : 1),
+        );
+      }
+      if (res.serviceType == 'online') {
+        Get.to(
+          () => VideoView(
+              order: res,
+              isLawyer: isLawyer,
+              channelName: order.channelName!,
+              token: res.userToken ?? '',
+              name: isLawyer
+                  ? order.clientId!.lastName!
+                  : order.lawyerId!.lastName!,
+              uid: isLawyer ? 2 : 1),
+        );
       }
 
       // videoController.channelId.value =

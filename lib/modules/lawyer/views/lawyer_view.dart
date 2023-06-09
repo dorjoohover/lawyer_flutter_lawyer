@@ -164,8 +164,7 @@ class LawyerView extends GetView<LawyerController> {
                                                         margin: const EdgeInsets
                                                             .only(right: small),
                                                         child: OrderDetailView(
-                                                            onTap: () async {
-                                                              print(i.toJson());
+                                                            onTap: () {
                                                               if (i.serviceType ==
                                                                       'online' ||
                                                                   i.serviceType ==
@@ -312,8 +311,8 @@ class LawyerView extends GetView<LawyerController> {
                                   onTap: () {
                                     homeController.currentUserType.value =
                                         'user';
-                                    Navigator.push(context,
-                                        createRoute(const PrimeView()));
+                                    Navigator.push(
+                                        context, createRoute(const HomeView()));
                                   },
                                   child: CardContainer(
                                     value: 'Хэрэглэгч цэс рүү буцах',
