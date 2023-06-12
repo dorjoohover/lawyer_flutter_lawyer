@@ -97,9 +97,11 @@ class _VideoViewState extends State<VideoView> {
   }
 
   @override
-  dispose() {
+  void dispose() {
     rtc.leaveChannel();
-
+    setState(() {
+      _localUserJoined = false;
+    });
     super.dispose();
   }
 
@@ -118,7 +120,7 @@ class _VideoViewState extends State<VideoView> {
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           debugPrint("local user ${connection.localUid} joined");
-          print("local user ${connection.localUid} joined");
+          print("local user ${connection.toJson()} joined");
           setState(() {
             _localUserJoined = true;
           });
@@ -150,10 +152,9 @@ class _VideoViewState extends State<VideoView> {
     await rtc.startPreview();
 
     await rtc.joinChannel(
-      token:
-          "006a941d13a5641456b95014aa4fc703f70IACR2JJf79N7ldvpgK8fPiV QFi8tjVGJg8F9ORq D ogr5mF1y379yDIgDy9J0CI 6DZAQAAQDLv4JkAgDLv4JkAwDLv4JkBADLv4Jk",
+      token: widget.token,
       channelId: widget.channelName,
-      uid: 1,
+      uid: widget.uid,
       options: const ChannelMediaOptions(),
     );
   }
@@ -184,7 +185,24 @@ class _VideoViewState extends State<VideoView> {
           children: [
             Center(
               child: _remoteVideo(),
-            )
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: SizedBox(
+                width: 100,
+                height: 150,
+                child: Center(
+                  child: _localUserJoined
+                      ? AgoraVideoView(
+                          controller: VideoViewController(
+                            rtcEngine: rtc,
+                            canvas: VideoCanvas(uid: widget.uid),
+                          ),
+                        )
+                      : const CircularProgressIndicator(),
+                ),
+              ),
+            ),
             // AgoraVideoViewer(
             //   client: client,
             //   layoutType: Layout.oneToOne,

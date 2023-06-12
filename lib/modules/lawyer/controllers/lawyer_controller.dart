@@ -62,7 +62,8 @@ class LawyerController extends GetxController {
       Order getOrder = await _apiRepository.getChannel(order.sId!);
 
       String channelName = getOrder.channelName!;
-      if (getOrder.channelName == 'string') {
+      print(channelName);
+      if (channelName == 'string') {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
       print(channelName);
@@ -103,7 +104,7 @@ class LawyerController extends GetxController {
               order: res,
               isLawyer: isLawyer,
               channelName: order.channelName!,
-              token: res.userToken ?? '',
+              token: isLawyer ? res.lawyerToken ?? '' : res.userToken ?? '',
               name: isLawyer
                   ? order.clientId!.lastName!
                   : order.lawyerId!.lastName!,
