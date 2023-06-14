@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 const double kToolbarHeight = 76.0;
 
-class MainAppBar extends StatelessWidget with PreferredSizeWidget {
+class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   MainAppBar({
     super.key,
     required this.currentIndex,

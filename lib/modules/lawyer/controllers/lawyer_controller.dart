@@ -61,35 +61,61 @@ class LawyerController extends GetxController {
 
       Order getOrder = await _apiRepository.getChannel(order.sId!);
 
-      String channelName = getOrder.channelName!;
-      print(channelName);
-      if (channelName == 'string') {
-        channelName = DateTime.now().millisecondsSinceEpoch.toString();
+      if (getOrder.lawyerToken == '' || getOrder.userToken == '') {
+        getOrder = await _apiRepository
+            .setChannel(
+          isLawyer,
+          order.sId!,
+          getOrder.channelName == 'string' || getOrder.channelName == null
+              ? DateTime.now().millisecondsSinceEpoch.toString()
+              : getOrder.channelName!,
+        )
+            .then((value) {
+          if (getOrder.serviceType == 'onlineEmergency') {
+            Get.to(
+              () => AudioView(
+                  order: getOrder,
+                  isLawyer: isLawyer,
+                  channelName: order.channelName!,
+                  token: isLawyer
+                      ? getOrder.lawyerToken ?? ''
+                      : getOrder.userToken ?? '',
+                  name: isLawyer
+                      ? order.clientId!.lastName!
+                      : order.lawyerId == null
+                          ? 'Lawmax'
+                          : order.lawyerId!.lastName!,
+                  uid: isLawyer ? 2 : 1),
+            );
+          }
+          if (getOrder.serviceType == 'online') {
+            Get.to(
+              () => VideoView(
+                  order: getOrder,
+                  isLawyer: isLawyer,
+                  channelName: order.channelName!,
+                  token: isLawyer
+                      ? getOrder.lawyerToken ?? ''
+                      : getOrder.userToken ?? '',
+                  name: isLawyer
+                      ? order.clientId!.lastName!
+                      : order.lawyerId!.lastName!,
+                  uid: isLawyer ? 2 : 1),
+            );
+          }
+          return value;
+        });
+        return;
       }
-      print(channelName);
-      Order res = await _apiRepository.setChannel(
-        isLawyer,
-        order.sId!,
-        channelName,
-      );
-      if (res.userToken == null ||
-          res.userToken == '' ||
-          res.lawyerToken == null ||
-          res.lawyerToken == '') {
-        Get.to(() => Scaffold(
-              body: WaitingChannelWidget(
-                isLawyer: isLawyer,
-              ),
-            ));
-      }
-
-      if (res.serviceType == 'onlineEmergency') {
+      if (getOrder.serviceType == 'onlineEmergency') {
         Get.to(
           () => AudioView(
-              order: res,
+              order: getOrder,
               isLawyer: isLawyer,
               channelName: order.channelName!,
-              token: isLawyer ? res.lawyerToken ?? '' : res.userToken ?? '',
+              token: isLawyer
+                  ? getOrder.lawyerToken ?? ''
+                  : getOrder.userToken ?? '',
               name: isLawyer
                   ? order.clientId!.lastName!
                   : order.lawyerId == null
@@ -98,13 +124,15 @@ class LawyerController extends GetxController {
               uid: isLawyer ? 2 : 1),
         );
       }
-      if (res.serviceType == 'online') {
+      if (getOrder.serviceType == 'online') {
         Get.to(
           () => VideoView(
-              order: res,
+              order: getOrder,
               isLawyer: isLawyer,
               channelName: order.channelName!,
-              token: isLawyer ? res.lawyerToken ?? '' : res.userToken ?? '',
+              token: isLawyer
+                  ? getOrder.lawyerToken ?? ''
+                  : getOrder.userToken ?? '',
               name: isLawyer
                   ? order.clientId!.lastName!
                   : order.lawyerId!.lastName!,

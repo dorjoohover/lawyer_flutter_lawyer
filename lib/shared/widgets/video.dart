@@ -98,10 +98,14 @@ class _VideoViewState extends State<VideoView> {
 
   @override
   void dispose() {
-    rtc.leaveChannel();
-    setState(() {
-      _localUserJoined = false;
-    });
+    try {
+      rtc.leaveChannel();
+      setState(() {
+        _localUserJoined = false;
+      });
+    } catch (e) {
+      print(e.toString());
+    }
     super.dispose();
   }
 
@@ -147,16 +151,20 @@ class _VideoViewState extends State<VideoView> {
       ),
     );
 
-    await rtc.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
-    await rtc.enableVideo();
-    await rtc.startPreview();
+    try {
+      await rtc.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+      await rtc.enableVideo();
+      await rtc.startPreview();
 
-    await rtc.joinChannel(
-      token: widget.token,
-      channelId: widget.channelName,
-      uid: widget.uid,
-      options: const ChannelMediaOptions(),
-    );
+      await rtc.joinChannel(
+        token: widget.token,
+        channelId: widget.channelName,
+        uid: widget.uid,
+        options: const ChannelMediaOptions(),
+      );
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> _onCallEnd(BuildContext context) async {

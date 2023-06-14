@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/constants/index.dart';
 
-class PrimeAppBar extends StatelessWidget with PreferredSizeWidget {
+class PrimeAppBar extends StatelessWidget implements PreferredSizeWidget {
   PrimeAppBar(
       {super.key,
       required this.title,
