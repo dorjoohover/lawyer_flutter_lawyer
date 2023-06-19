@@ -24,6 +24,7 @@ class HomeController extends GetxController
   final rxUser = Rxn<User?>();
   final currentUserType = 'user'.obs;
   final our = false.obs;
+  final loading = false.obs;
   final emergencyOrder = Rxn<Order?>();
   late IO.Socket socket;
   User? get user => rxUser.value;
@@ -49,21 +50,17 @@ class HomeController extends GetxController
         socket.connect();
         socket.onConnect(
           (data) => {
-            print('connect $data'),
             if (user?.userType == 'our') {our.value = true}
           },
         );
 
         socket.onDisconnect((_) => {
-              print('dis'),
               if (user?.userType == 'our') {our.value = false}
             });
         socket.onConnectError((data) => {
-              print(data),
               if (user?.userType == 'our') {our.value = false}
             });
         socket.onError((error) => {
-              print(error),
               if (user?.userType == 'our') {our.value = false}
             });
         socket.on(('response_emergency_order'), ((data) {
@@ -91,40 +88,76 @@ class HomeController extends GetxController
     }
   }
 
+  callOrder(Order order, String userType) {
+    if (order.date != null &&
+        order.date! > DateTime.now().millisecondsSinceEpoch - 30 * 60000 &&
+        order.date! < DateTime.now().millisecondsSinceEpoch + 30 * 60000) {
+      if (order.lawyerId?.sId == user?.sId && userType == user?.userType) {
+        callkit(order);
+      }
+      if (order.clientId?.sId == user?.sId && userType == user?.userType) {
+        callkit(order);
+      }
+    }
+  }
+
   getChannelToken(Order order, bool isLawyer, String? profileImg) async {
     try {
-      print('a');
+      loading.value = true;
+
       Order getOrder = await _apiRepository.getChannel(order.sId!);
-      Get.to(() => Scaffold(
-            body: WaitingChannelWidget(
-              isLawyer: isLawyer,
-            ),
-          ));
+
       String channelName = getOrder.channelName!;
-      if (getOrder.channelName == 'string') {
+      if (channelName == 'string') {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
+      if (getOrder.lawyerToken == null ||
+          getOrder.userToken == null ||
+          getOrder.lawyerToken == '' ||
+          getOrder.userToken == '') {
+        getOrder = await _apiRepository.setChannel(
+          isLawyer,
+          order.sId!,
+          channelName,
+        );
+      }
 
-      Order res = await _apiRepository.setChannel(
-        isLawyer,
-        order.sId!,
-        channelName,
-      );
-      print(res.toJson());
-      Get.to(
-        () => AudioView(
-            order: res,
-            isLawyer: isLawyer,
-            channelName: res.channelName ?? '',
-            token: isLawyer ? res.lawyerToken ?? '' : res.userToken ?? '',
-            name: isLawyer
-                ? res.clientId?.lastName ?? ''
-                : res.lawyerId == null
-                    ? 'Lawmax'
-                    : order.lawyerId?.lastName ?? '',
-            uid: isLawyer ? 2 : 1),
-      );
+      if (getOrder.serviceType == 'onlineEmergency') {
+        Get.to(
+          () => AudioView(
+              order: getOrder,
+              isLawyer: isLawyer,
+              channelName: order.channelName!,
+              token: isLawyer
+                  ? getOrder.lawyerToken ?? ''
+                  : getOrder.userToken ?? '',
+              name: isLawyer
+                  ? order.clientId!.lastName!
+                  : order.lawyerId == null
+                      ? 'Lawmax'
+                      : order.lawyerId!.lastName!,
+              uid: isLawyer ? 2 : 1),
+        );
+      }
+      if (getOrder.serviceType == 'online') {
+        Get.to(
+          () => VideoView(
+              order: getOrder,
+              isLawyer: isLawyer,
+              channelName: order.channelName!,
+              token: isLawyer
+                  ? getOrder.lawyerToken ?? ''
+                  : getOrder.userToken ?? '',
+              name: isLawyer
+                  ? order.clientId!.lastName!
+                  : order.lawyerId!.lastName!,
+              uid: isLawyer ? 2 : 1),
+        );
+      }
+
+      loading.value = false;
     } on DioError catch (e) {
+      loading.value = false;
       print(e.response);
       Get.snackbar(
         'Error',
@@ -145,7 +178,7 @@ class HomeController extends GetxController
       textDecline: "Decline",
       duration: 30000,
       extra: {'userId': order.clientId?.sId},
-      ios: IOSParams(
+      ios: const IOSParams(
           iconName: "Lawmax",
           handleType: 'generic',
           supportsVideo: true,
@@ -159,7 +192,7 @@ class HomeController extends GetxController
           supportsHolding: true,
           supportsGrouping: false,
           ringtonePath: 'system_ringtone_default'),
-      android: AndroidParams(
+      android: const AndroidParams(
           isCustomNotification: true,
           isShowLogo: false,
           ringtonePath: 'system_ringtone_default',
@@ -181,7 +214,8 @@ class HomeController extends GetxController
           // TODO: show screen calling in Flutter
           break;
         case Event.actionCallAccept:
-          await getChannelToken(order, true, user?.profileImg ?? '');
+          await getChannelToken(
+              order, user?.userType != 'user', user?.profileImg ?? '');
 
           break;
         case Event.actionCallDecline:
