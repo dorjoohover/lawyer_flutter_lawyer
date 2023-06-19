@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/modules.dart';
-import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
 import '../../../providers/providers.dart';
@@ -52,65 +50,6 @@ class LawyerController extends GetxController {
       return order;
     } on DioError catch (e) {
       Get.snackbar(e.message ?? '', 'error');
-    }
-  }
-
-  getChannelToken(Order order, bool isLawyer, String? profileImg) async {
-    try {
-      loading.value = true;
-
-      Order getOrder = await _apiRepository.getChannel(order.sId!);
-
-      String channelName = getOrder.channelName!;
-      if (channelName == 'string') {
-        channelName = DateTime.now().millisecondsSinceEpoch.toString();
-      }
-      if(getOrder.lawyerToken == null || getOrder.userToken == null || getOrder.lawyerToken == '' || getOrder.userToken == ''){
-        getOrder = await _apiRepository.setChannel(
-        isLawyer,
-        order.sId!,
-        channelName,
-      );
-      }
-
-      if (getOrder.serviceType == 'onlineEmergency') {
-        Get.to(
-          () => AudioView(
-              order: getOrder,
-              isLawyer: isLawyer,
-              channelName: order.channelName!,
-              token: isLawyer ? getOrder.lawyerToken ?? '' : getOrder.userToken ?? '',
-              name: isLawyer
-                  ? order.clientId!.lastName!
-                  : order.lawyerId == null
-                      ? 'Lawmax'
-                      : order.lawyerId!.lastName!,
-              uid: isLawyer ? 2 : 1),
-        );
-      }
-      if (getOrder.serviceType == 'online') {
-        Get.to(
-          () => VideoView(
-              order: getOrder,
-              isLawyer: isLawyer,
-              channelName: order.channelName!,
-              token: isLawyer ? getOrder.lawyerToken ?? '' : getOrder.userToken ?? '',
-              name: isLawyer
-                  ? order.clientId!.lastName!
-                  : order.lawyerId!.lastName!,
-              uid: isLawyer ? 2 : 1),
-        );
-      }
-
-
-      loading.value = false;
-    } on DioError catch (e) {
-      loading.value = false;
-      print(e.response);
-      Get.snackbar(
-        'Error',
-        'Something went wrong',
-      );
     }
   }
 

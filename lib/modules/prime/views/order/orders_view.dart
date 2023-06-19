@@ -14,7 +14,7 @@ class OrdersView extends GetView<PrimeController> {
   final bool isLawyer;
   @override
   Widget build(BuildContext context) {
-    final lawyerController = Get.put(LawyerController());
+    final homeController = Get.put(HomeController());
     return Scaffold(
         backgroundColor: bg,
         appBar: PrimeAppBar(
@@ -44,13 +44,15 @@ class OrdersView extends GetView<PrimeController> {
                       margin: const EdgeInsets.only(bottom: origin),
                       child: OrderDetailView(
                           onTap: () async {
-                           
                             if (e.serviceType == 'online' ||
                                 e.serviceType == 'onlineEmergency') {
-                             
-                              lawyerController.getChannelToken(e, isLawyer, '');
+                              homeController.getChannelToken(e, isLawyer, '');
                             } else {
                               if (e.serviceType == 'fulfilled') {
+                                Get.to(() =>OrderTrackingPage(
+                                        isLawyer: false,
+                                        location: e.location ??
+                                            LocationDto(lat: 0.0, lng: 0.0)) )
                                 Navigator.push(
                                     context,
                                     createRoute(OrderTrackingPage(
