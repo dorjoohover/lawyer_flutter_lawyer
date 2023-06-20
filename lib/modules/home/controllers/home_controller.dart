@@ -66,7 +66,7 @@ class HomeController extends GetxController
         socket.on(('response_emergency_order'), ((data) {
           Order order = Order.fromJson(
               jsonDecode(jsonEncode(data)) as Map<String, dynamic>);
-          if (our.value || order.clientId?.sId == user?.sId) {
+          if (our.value || order.lawyerId?.sId == user?.sId) {
             emergencyOrder.value = order;
 
             callkit(order);
@@ -92,12 +92,12 @@ class HomeController extends GetxController
     if (order.date != null &&
         order.date! > DateTime.now().millisecondsSinceEpoch - 30 * 60000 &&
         order.date! < DateTime.now().millisecondsSinceEpoch + 30 * 60000) {
-      if (order.lawyerId?.sId == user?.sId && userType == user?.userType) {
-        callkit(order);
-      }
-      if (order.clientId?.sId == user?.sId && userType == user?.userType) {
-        callkit(order);
-      }
+      // if (order.lawyerId?.sId == user?.sId && userType == user?.userType) {
+      //   callkit(order);
+      // }
+      // if (order.clientId?.sId == user?.sId && userType == user?.userType) {
+      //   callkit(order);
+      // }
     }
   }
 

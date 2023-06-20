@@ -65,7 +65,7 @@ class SuccessView extends StatelessWidget {
                         controller.emergencyOrder.value!, false, '');
                   }
                 },
-                text: "Буцах",
+                text: "Дуудлага эхлүүлэх",
                 // text: "Байршил харах",
                 child: const SizedBox(),
               ),

@@ -102,7 +102,7 @@ class _State extends State<AudioView> {
 
   Future<void> _dispose() async {
     await _engine.leaveChannel();
-    countdownTimer!.cancel();
+
     await _engine.release();
   }
 
@@ -212,6 +212,8 @@ class _State extends State<AudioView> {
         body: Container(
       padding: const EdgeInsets.symmetric(vertical: huge),
       height: MediaQuery.of(context).size.height,
+      alignment: Alignment.center,
+      width: double.infinity,
       child: _remoteUid != null
           ? Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -317,9 +319,11 @@ class _State extends State<AudioView> {
                 ),
               ],
             )
-          : Text(
-              '${widget.uid == 1 ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл түр хүлээнэ үү ',
-              textAlign: TextAlign.center,
+          : Center(
+              child: Text(
+                '${widget.uid == 1 ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл түр хүлээнэ үү ',
+                textAlign: TextAlign.center,
+              ),
             ),
     ));
   }

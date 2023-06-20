@@ -19,7 +19,7 @@ class LoginView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: origin),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
                       alignment: Alignment.center,

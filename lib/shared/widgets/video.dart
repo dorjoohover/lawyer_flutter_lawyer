@@ -164,11 +164,7 @@ class _VideoViewState extends State<VideoView> {
   }
 
   Future<void> _onCallEnd(BuildContext context) async {
-    setState(() {
-      if (countdownTimer != null) {
-        countdownTimer!.cancel();
-      }
-    });
+    
 
     try {
       await rtc.leaveChannel();
@@ -247,6 +243,8 @@ class _VideoViewState extends State<VideoView> {
                 ),
               )),
           Positioned(
+            left: 0,
+            right: 0,
             bottom: MediaQuery.of(context).padding.bottom + 50,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -270,7 +268,14 @@ class _VideoViewState extends State<VideoView> {
                 ),
                 RawMaterialButton(
                   constraints: const BoxConstraints(minWidth: 70),
-                  onPressed: () => _onCallEnd(context),
+                  onPressed: () {
+                    _onCallEnd(context);
+                    setState(() {
+      if (countdownTimer != null) {
+        countdownTimer!.cancel();
+      }
+    });
+                  },
                   shape: CircleBorder(),
                   elevation: 2.0,
                   fillColor: error,
@@ -320,21 +325,23 @@ class _VideoViewState extends State<VideoView> {
         ],
       );
     } else {
-      return ListView(
-        children: [
-          Text(widget.token),
-          SizedBox(height: 300),
-          Text(widget.channelName),
-          Text(
-            widget.uid.toString(),
-          ),
-          ...logs.map((e) => Text(e))
-        ],
-      );
-      // return Text(
-      //   '${widget.uid == 2 ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл түр хүлээнэ үү ',
-      //   textAlign: TextAlign.center,
+      // return ListView(
+      //   children: [
+      //     Text(widget.token),
+      //     SizedBox(height: 300),
+      //     Text(widget.channelName),
+      //     Text(
+      //       widget.uid.toString(),
+      //     ),
+      //     ...logs.map((e) => Text(e))
+      //   ],
       // );
+      return Center(
+        child: Text(
+          '${widget.uid == 2 ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл түр хүлээнэ үү ',
+          textAlign: TextAlign.center,
+        ),
+      );
     }
   }
 }
