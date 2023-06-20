@@ -16,15 +16,14 @@ class LoginView extends StatelessWidget {
             child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                padding: const EdgeInsets.all(origin),
+                padding: const EdgeInsets.symmetric(horizontal: origin),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  // mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                       alignment: Alignment.center,
-                      margin: EdgeInsets.only(top: 16),
+                      margin: const EdgeInsets.only(top: 16),
                       child: Image.asset(
                         imageLogo,
                         width: MediaQuery.of(context).size.width > 400
@@ -37,6 +36,7 @@ class LoginView extends StatelessWidget {
                       child: Column(
                         children: [
                           Input(
+                            textInputType: TextInputType.phone,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Та Утасны дугаараа оруулна уу';

@@ -204,33 +204,6 @@ class PrimeController extends GetxController {
     }
   }
 
-  getChannelToken(String orderId, String channelName, String type,
-      BuildContext context) async {
-    try {
-      loading.value = true;
-
-      if (channelName == 'string') {
-        channelName = DateTime.now().millisecondsSinceEpoch.toString();
-      }
-
-      Agora token = await _apiRepository.getAgoraToken(channelName, '2');
-
-      // if (token.rtcToken != null) {
-      //   bool res = await _apiRepository.setChannel(
-      //       orderId, channelName, token.rtcToken!);
-      // }
-
-      loading.value = false;
-    } on DioError catch (e) {
-      loading.value = false;
-      print(e.response);
-      Get.snackbar(
-        'Error',
-        'Something went wrong',
-      );
-    }
-  }
-
   getOrderList(bool isLawyer, BuildContext context) async {
     try {
       loading.value = true;

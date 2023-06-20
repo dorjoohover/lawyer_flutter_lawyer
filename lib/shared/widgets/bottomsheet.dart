@@ -22,9 +22,12 @@ class OrderBottomSheet extends GetView<PrimeController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleMedium,
+                  Flexible(
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      maxLines: 2,
+                    ),
                   ),
                   IconButton(
                       onPressed: () {

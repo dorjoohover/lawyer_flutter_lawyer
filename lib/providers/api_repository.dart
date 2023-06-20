@@ -82,7 +82,7 @@ class ApiRepository {
     }
   }
 
-  Future<Agora> getAgoraToken(String channelName, String uid) async {
+  Future<Agora> getAgoraToken(String channelName, int uid) async {
     try {
       final response = await Dio().get(
           "https://agora-token-service-production-3c76.up.railway.app/rtc/$channelName/publisher/uid/$uid?expiry=9000");
@@ -235,11 +235,14 @@ class ApiRepository {
     String channelName,
   ) async {
     try {
-      Agora token = await getAgoraToken(channelName, isLawyer ? '2' : '1');
-      final response = await apiProvider.get(
-        '/order/${isLawyer ? 'lawyer' : 'user'}/token/$orderId/$channelName/{token}?token=${token.rtcToken}',
-      ) as Map<String, dynamic>;
+      print('token channelName $channelName');
+      Agora token = await getAgoraToken(channelName, isLawyer ? 2 : 1);
+      print(token.rtcToken);
 
+      final response = await apiProvider.post(
+          '/order/token/$orderId/$channelName/${isLawyer.toString()}',
+          data: {'token': token.rtcToken}) as Map<String, dynamic>;
+      print(response);
       return Order.fromJson(response);
     } on Exception {
       rethrow;

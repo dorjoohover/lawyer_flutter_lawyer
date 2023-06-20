@@ -320,10 +320,21 @@ class _VideoViewState extends State<VideoView> {
         ],
       );
     } else {
-      return Text(
-        '${widget.uid == 1 ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл түр хүлээнэ үү ',
-        textAlign: TextAlign.center,
+      return ListView(
+        children: [
+          Text(widget.token),
+          SizedBox(height: 300),
+          Text(widget.channelName),
+          Text(
+            widget.uid.toString(),
+          ),
+          ...logs.map((e) => Text(e))
+        ],
       );
+      // return Text(
+      //   '${widget.uid == 2 ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл түр хүлээнэ үү ',
+      //   textAlign: TextAlign.center,
+      // );
     }
   }
 }

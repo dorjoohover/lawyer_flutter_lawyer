@@ -49,10 +49,10 @@ class OrdersView extends GetView<PrimeController> {
                               homeController.getChannelToken(e, isLawyer, '');
                             } else {
                               if (e.serviceType == 'fulfilled') {
-                                Get.to(() =>OrderTrackingPage(
-                                        isLawyer: false,
-                                        location: e.location ??
-                                            LocationDto(lat: 0.0, lng: 0.0)) )
+                                Get.to(() => OrderTrackingPage(
+                                    isLawyer: false,
+                                    location: e.location ??
+                                        LocationDto(lat: 0.0, lng: 0.0)));
                                 Navigator.push(
                                     context,
                                     createRoute(OrderTrackingPage(

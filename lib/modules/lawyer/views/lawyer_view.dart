@@ -169,7 +169,7 @@ class LawyerView extends GetView<LawyerController> {
                                                                       'online' ||
                                                                   i.serviceType ==
                                                                       'onlineEmergency') {
-                                                                controller
+                                                                homeController
                                                                     .getChannelToken(
                                                                         i,
                                                                         true,

@@ -111,12 +111,13 @@ class HomeController extends GetxController
       if (channelName == 'string') {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
+      print('channelName $channelName');
       if (getOrder.lawyerToken == null ||
           getOrder.userToken == null ||
-          getOrder.lawyerToken == '' ||
-          getOrder.userToken == '') {
+          getOrder.lawyerToken == 'string' ||
+          getOrder.userToken == 'string') {
         getOrder = await _apiRepository.setChannel(
-          isLawyer,
+          user?.userType != 'user',
           order.sId!,
           channelName,
         );
@@ -126,32 +127,32 @@ class HomeController extends GetxController
         Get.to(
           () => AudioView(
               order: getOrder,
-              isLawyer: isLawyer,
-              channelName: order.channelName!,
-              token: isLawyer
+              isLawyer: user?.userType != 'user',
+              channelName: getOrder.channelName!,
+              token: user?.userType != 'user'
                   ? getOrder.lawyerToken ?? ''
                   : getOrder.userToken ?? '',
-              name: isLawyer
-                  ? order.clientId!.lastName!
-                  : order.lawyerId == null
+              name: user?.userType != 'user'
+                  ? getOrder.clientId!.lastName!
+                  : getOrder.lawyerId == null
                       ? 'Lawmax'
-                      : order.lawyerId!.lastName!,
-              uid: isLawyer ? 2 : 1),
+                      : getOrder.lawyerId!.lastName!,
+              uid: user?.userType != 'user' ? 2 : 1),
         );
       }
       if (getOrder.serviceType == 'online') {
         Get.to(
           () => VideoView(
               order: getOrder,
-              isLawyer: isLawyer,
-              channelName: order.channelName!,
-              token: isLawyer
+              isLawyer: user?.userType != 'user',
+              channelName: getOrder.channelName!,
+              token: user?.userType != 'user'
                   ? getOrder.lawyerToken ?? ''
                   : getOrder.userToken ?? '',
-              name: isLawyer
-                  ? order.clientId!.lastName!
-                  : order.lawyerId!.lastName!,
-              uid: isLawyer ? 2 : 1),
+              name: user?.userType != 'user'
+                  ? getOrder.clientId!.lastName!
+                  : getOrder.lawyerId!.lastName!,
+              uid: user?.userType != 'user' ? 2 : 1),
         );
       }
 
