@@ -101,6 +101,10 @@ class HomeController extends GetxController
     }
   }
 
+  sendRate(String id, double rate) async {
+    await _apiRepository.sendRating(id, rate, '');
+  }
+
   getChannelToken(Order order, bool isLawyer, String? profileImg) async {
     try {
       loading.value = true;

@@ -130,6 +130,25 @@ class ApiRepository {
     }
   }
 
+  Future<bool> sendRating(
+    String id,
+    double rate,
+    String comment,
+  ) async {
+    try {
+      final data = {
+        "rating": rate,
+        "message": comment,
+      };
+
+      await apiProvider.post('/user/$id', data: data);
+
+      return false;
+    } on Exception {
+      rethrow;
+    }
+  }
+
   Future<bool> createEmergencyOrder(
     int date,
     String lawyerId,

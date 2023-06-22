@@ -8,7 +8,7 @@ class Rating {
   Rating.fromJson(Map<String, dynamic> json) {
     clientId = json['clientId'];
     comment = json['comment'];
-    rating = json['rating'];
+    rating = double.parse(json['rating'].toString());
   }
 
   Map<String, dynamic> toJson() {

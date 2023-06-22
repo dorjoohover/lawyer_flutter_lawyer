@@ -206,16 +206,13 @@ class PrimeController extends GetxController {
 
   getOrderList(bool isLawyer, BuildContext context) async {
     try {
-      loading.value = true;
+      // loading.value = true;
       final res = await _apiRepository.orderList();
       orders.value = res;
-      Navigator.of(context).push(createRoute(OrdersView(
-        title: 'Захиалгууд',
-        isLawyer: isLawyer,
-      )));
-      loading.value = false;
+
+      // loading.value = false;
     } on DioError catch (e) {
-      loading.value = false;
+      // loading.value = false;
       Get.snackbar(
         'Error',
         e.response?.data ?? 'Something went wrong',
@@ -280,7 +277,7 @@ class PrimeController extends GetxController {
       loading.value = false;
       Get.snackbar(
         'Error',
-        e.response?.data ?? 'Something went wrong',
+        e.response?.data.toString() ?? 'Something went wrong',
       );
     }
   }

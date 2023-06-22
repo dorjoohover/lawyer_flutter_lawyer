@@ -9,7 +9,7 @@ const TextStyle head1 =
 const TextStyle largeTitle = TextStyle(
   fontSize: 31,
   color: primary,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w700,
 );
 
 const TextStyle smallBody = TextStyle(

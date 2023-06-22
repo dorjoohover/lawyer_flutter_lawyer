@@ -57,6 +57,7 @@ class _SettingsViewState extends State<SettingsView> {
                   child: GestureDetector(
                     onTap: () {},
                     child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(origin),
@@ -69,7 +70,10 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                         title: Text(
                           'Утасны дугаар солих',
-                          style: Theme.of(context).textTheme.labelMedium,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -88,6 +92,7 @@ class _SettingsViewState extends State<SettingsView> {
                       }
                     },
                     child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(origin),
@@ -100,13 +105,17 @@ class _SettingsViewState extends State<SettingsView> {
                                   homeController.user?.userType == 'our'
                               ? Text(
                                   'Хуульчийн цэс рүү буцах',
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(fontWeight: FontWeight.w700),
                                 )
                               : Text(
                                   'Хуульч болох',
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(fontWeight: FontWeight.w700),
                                 ),
                         ),
                       ),
@@ -123,6 +132,7 @@ class _SettingsViewState extends State<SettingsView> {
                   child: GestureDetector(
                     onTap: () {},
                     child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(origin),
@@ -135,7 +145,10 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                         title: Text(
                           'Холбоо барих',
-                          style: Theme.of(context).textTheme.labelMedium,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -146,6 +159,7 @@ class _SettingsViewState extends State<SettingsView> {
                   child: GestureDetector(
                     onTap: () {},
                     child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(origin),
@@ -158,7 +172,10 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                         title: Text(
                           'Түгээмэл асуулт хариулт',
-                          style: Theme.of(context).textTheme.labelMedium,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -176,6 +193,7 @@ class _SettingsViewState extends State<SettingsView> {
                       authController.logout();
                     },
                     child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(origin),
@@ -188,7 +206,10 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                         title: Text(
                           'Aпп-с гарах',
-                          style: Theme.of(context).textTheme.labelMedium,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),

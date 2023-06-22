@@ -9,14 +9,19 @@ class AlertDialogView extends StatelessWidget {
       required this.text,
       required this.approve,
       this.cancel,
+      this.child,
+      this.approveBtn = 'Тийм',
+      this.cancelBtn = 'Буцах',
       required this.color});
   final IconData icon;
   final String title;
   final String text;
   final Color color;
   final Function() approve;
+  final String approveBtn;
+  final String cancelBtn;
   final Function()? cancel;
-
+  final Widget? child;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -26,7 +31,7 @@ class AlertDialogView extends StatelessWidget {
       actions: [
         Container(
           padding:
-              const EdgeInsets.symmetric(vertical: large, horizontal: huge),
+              const EdgeInsets.symmetric(vertical: large, horizontal: large),
           width: MediaQuery.of(context).size.width - large,
           child: Column(
             children: [
@@ -41,17 +46,18 @@ class AlertDialogView extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               space8,
-              Text(
-                text,
-                style: Theme.of(context).textTheme.labelMedium,
-                textAlign: TextAlign.center,
-              ),
+              child ??
+                  Text(
+                    text,
+                    style: Theme.of(context).textTheme.labelMedium,
+                    textAlign: TextAlign.center,
+                  ),
               space32,
               SizedBox(
                 width: double.infinity,
                 child: MainButton(
                   onPressed: approve,
-                  text: 'Тийм',
+                  text: approveBtn,
                   child: const SizedBox(),
                 ),
               ),
@@ -65,7 +71,7 @@ class AlertDialogView extends StatelessWidget {
                       () {
                         Navigator.of(context).pop();
                       },
-                  text: 'Буцах',
+                  text: cancelBtn,
                   child: const SizedBox(),
                 ),
               )

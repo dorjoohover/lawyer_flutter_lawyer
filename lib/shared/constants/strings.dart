@@ -12,12 +12,7 @@ const userNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/notary.svg',
     'activeIcon': 'assets/svgs/navigationBar/notaryActive.svg',
-    'label': 'Нотариат',
-  },
-  {
-    'icon': 'assets/svgs/navigationBar/podcast.svg',
-    'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
-    'label': 'Подкаст',
+    'label': 'Захиалга',
   },
   {
     'icon': 'assets/svgs/navigationBar/home.svg',
@@ -35,12 +30,7 @@ const lawyerNavbar = [
   {
     'icon': 'assets/svgs/navigationBar/notary.svg',
     'activeIcon': 'assets/svgs/navigationBar/notaryActive.svg',
-    'label': 'Нотариат',
-  },
-  {
-    'icon': 'assets/svgs/navigationBar/podcast.svg',
-    'activeIcon': 'assets/svgs/navigationBar/podcastActive.svg',
-    'label': 'Подкаст',
+    'label': 'Захиалга',
   },
   {
     'icon': 'assets/svgs/navigationBar/home.svg',

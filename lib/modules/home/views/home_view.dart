@@ -19,20 +19,17 @@ class _HomeViewState extends State<HomeView> {
   List<Widget> views = [
     const PrimeView(),
     const EmergencyHomeView(),
-    const SizedBox(),
-    const SizedBox(),
+    const OrdersView(isLawyer: false),
     const SettingsView()
   ];
   List<Widget> lawyerViews = [
     const LawyerView(),
-    const SizedBox(),
-    const SizedBox(),
+    const OrdersView(isLawyer: true),
     const SettingsView(),
   ];
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
-    final primeController = Get.put(PrimeController());
     return GetBuilder<HomeController>(
       init: HomeController(),
       builder: (controller) => controller.obx(
@@ -96,11 +93,11 @@ class _HomeViewState extends State<HomeView> {
           appBar: MainAppBar(
             currentIndex: currentIndex,
             settingTap: () async {},
-            calendarTap: () async {
-              await primeController.getOrderList(false, context);
-            },
+            // calendarTap: () async {
+            //   await primeController.getOrderList(false, context);
+            // },
             settings: currentIndex == 0,
-            calendar: currentIndex == 0,
+            calendar: false,
           ),
           body: controller.currentUserType.value == 'lawyer' ||
                   controller.currentUserType.value == 'our'

@@ -99,7 +99,8 @@ class User {
     email = json['email'];
     alert = json['alert'];
     profileImg = json['profileImg'];
-    ratingAvg = json['ratingAvg'];
+    ratingAvg = double.parse(
+        json['ratingAvg'] == null ? '0' : json['ratingAvg'].toString());
     if (json['userServices'] != null) {
       userServices = <String>[];
       json['userServices'].forEach((v) {

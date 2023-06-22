@@ -186,7 +186,7 @@ class PrimeView extends GetView<PrimeController> {
                                             child: Container(
                                               padding: EdgeInsets.zero,
                                               decoration: BoxDecoration(
-                                                  color: Colors.white,
+                                                  color: rareWhite,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           origin)),

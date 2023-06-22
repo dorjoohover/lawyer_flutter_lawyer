@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/config/agora.config.dart' as config;
 import 'package:frontend/data/data.dart';
@@ -39,6 +40,7 @@ class _VideoViewState extends State<VideoView> {
   bool isMuted = false;
   bool isSpeaker = false;
   bool isCamera = true;
+  double rating = 0;
   ChannelProfileType _channelProfileType =
       ChannelProfileType.channelProfileLiveBroadcasting;
   final controller = Get.put(HomeController());
@@ -60,19 +62,47 @@ class _VideoViewState extends State<VideoView> {
   void setCountDown() async {
     if (myDuration.inSeconds == 300) {
       Get.snackbar('Анхааруулга', "5 мин үлдлээ", icon: Icon(Icons.warning));
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialogView(
+                icon: Icons.expand_outlined,
+                title: 'Таны уулзалт дуусахад 5 мин үлдлээ.',
+                text: 'Та уулзалтаа сунгах уу?',
+                approve: () {
+                  myDuration = Duration(minutes: 6);
+                  Navigator.pop(context);
+                },
+                color: warning);
+          });
     }
     if (myDuration.inSeconds == 60) {
       Get.snackbar('Анхааруулга', "1 мин үлдлээ", icon: Icon(Icons.warning));
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialogView(
+                icon: Icons.expand_outlined,
+                title: 'Таны уулзалт дуусахад 1 мин үлдлээ.',
+                text: 'Та уулзалтаа сунгах уу?',
+                approve: () {
+                  myDuration = Duration(minutes: 6);
+                  Navigator.pop(context);
+                },
+                color: warning);
+          });
     }
     if (myDuration.inSeconds < 1) {
       Get.snackbar('Анхааруулга', "Цаг дууслаа");
       _onCallEnd(context);
+      countdownTimer!.cancel();
     }
     const reduceSecondsBy = 1;
     setState(() {
       final seconds = myDuration.inSeconds - reduceSecondsBy;
       if (seconds < 0 && countdownTimer != null) {
         _onCallEnd(context);
+        countdownTimer!.cancel();
       } else {
         myDuration = Duration(seconds: seconds);
       }
@@ -85,9 +115,9 @@ class _VideoViewState extends State<VideoView> {
     setState(() {
       order = widget.order;
     });
-    setState(() {
-      myDuration = Duration(seconds: widget.order.expiredTime! * 60);
-    });
+    // setState(() {
+    //   myDuration = Duration(seconds: widget.order.expiredTime! * 60);
+    // });
     Future.delayed(Duration.zero, () async {
       // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE)
       //     .then((value) => print(value));
@@ -138,6 +168,11 @@ class _VideoViewState extends State<VideoView> {
           });
           startTimer();
         },
+        onUserOffline: (connection, remoteUid, reason) {
+          setState(() {
+            _remoteUid = null;
+          });
+        },
         onLeaveChannel: (RtcConnection connection, RtcStats stats) {
           logSink.log(
               '[onLeaveChannel] connection: ${connection.toJson()} stats: ${stats.toJson()}');
@@ -164,11 +199,45 @@ class _VideoViewState extends State<VideoView> {
   }
 
   Future<void> _onCallEnd(BuildContext context) async {
-    
-
     try {
       await rtc.leaveChannel();
-      Get.to(() => const HomeView());
+      if (controller.user?.userType == 'user') {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialogView(
+                  icon: Icons.expand_outlined,
+                  title: 'Та хуульчид санал өгнө үү.',
+                  text: '',
+                  approveBtn: 'Илгээх',
+                  cancelBtn: 'Болих',
+                  child: RatingBar.builder(
+                    initialRating: 0,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (rating) {
+                      setState(() {
+                        rating = rating;
+                      });
+                    },
+                  ),
+                  approve: () {
+                    controller.sendRate(
+                        order.lawyerId!.sId!, rating == 0 ? 1 : rating);
+                    Get.to(() => const HomeView());
+                  },
+                  cancel: () async {},
+                  color: success);
+            });
+        Get.to(() => const HomeView());
+      }
     } catch (error) {
       Get.snackbar(error.toString(), 'error');
     }
@@ -254,7 +323,11 @@ class _VideoViewState extends State<VideoView> {
                   onPressed: () {
                     setState(() {
                       isMuted = !isMuted;
-                      rtc.muteAllRemoteAudioStreams(!isMuted);
+                      if (!isMuted) {
+                        rtc.disableAudio();
+                      } else {
+                        rtc.enableAudio();
+                      }
                     });
                   },
                   shape: const CircleBorder(),
@@ -271,10 +344,10 @@ class _VideoViewState extends State<VideoView> {
                   onPressed: () {
                     _onCallEnd(context);
                     setState(() {
-      if (countdownTimer != null) {
-        countdownTimer!.cancel();
-      }
-    });
+                      if (countdownTimer != null) {
+                        countdownTimer!.cancel();
+                      }
+                    });
                   },
                   shape: CircleBorder(),
                   elevation: 2.0,
@@ -293,7 +366,7 @@ class _VideoViewState extends State<VideoView> {
                     setState(() {
                       isSwitchCamera = !isSwitchCamera;
                     });
-                    // rtc.setcamera
+                    rtc.switchCamera();
                   },
                   child: Icon(
                     Icons.switch_camera,
@@ -306,7 +379,12 @@ class _VideoViewState extends State<VideoView> {
                   onPressed: () => {
                     setState(() {
                       isCamera = !isCamera;
-                      rtc.muteAllRemoteVideoStreams(!isCamera);
+
+                      if (!isCamera) {
+                        rtc.disableVideo();
+                      } else {
+                        rtc.enableVideo();
+                      }
                     })
                   },
                   child: Icon(
