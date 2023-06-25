@@ -280,7 +280,7 @@ class HomeController extends GetxController
       "serviceStatus": "pending",
       "channelName": "string",
       "channelToken": "string",
-      "price": "$price",
+      "price": price,
       "lawyerToken": "string",
       "userToken": "string",
     };

@@ -45,8 +45,8 @@ class EmergencyController extends GetxController {
     try {
       loading.value = true;
 
-      int price = 0;
-      int expiredTime = 0;
+      int price = 10000;
+      int expiredTime = 10;
 
       if (serviceType.value == 'fulfilledEmergency') {
         final lawyer = await _apiRepository.activeLawyer('any',

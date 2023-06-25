@@ -62,35 +62,22 @@ class _VideoViewState extends State<VideoView> {
   void setCountDown() async {
     if (myDuration.inSeconds == 300) {
       Get.snackbar('Анхааруулга', "5 мин үлдлээ", icon: Icon(Icons.warning));
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialogView(
-                icon: Icons.expand_outlined,
-                title: 'Таны уулзалт дуусахад 5 мин үлдлээ.',
-                text: 'Та уулзалтаа сунгах уу?',
-                approve: () {
-                  myDuration = Duration(minutes: 6);
-                  Navigator.pop(context);
-                },
-                color: warning);
-          });
+      // showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return AlertDialogView(
+      //           icon: Icons.expand_outlined,
+      //           title: 'Таны уулзалт дуусахад 5 мин үлдлээ.',
+      //           text: 'Та уулзалтаа сунгах уу?',
+      //           approve: () {
+      //             myDuration = Duration(minutes: 6);
+      //             Navigator.pop(context);
+      //           },
+      //           color: warning);
+      //     });
     }
     if (myDuration.inSeconds == 60) {
       Get.snackbar('Анхааруулга', "1 мин үлдлээ", icon: Icon(Icons.warning));
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialogView(
-                icon: Icons.expand_outlined,
-                title: 'Таны уулзалт дуусахад 1 мин үлдлээ.',
-                text: 'Та уулзалтаа сунгах уу?',
-                approve: () {
-                  myDuration = Duration(minutes: 6);
-                  Navigator.pop(context);
-                },
-                color: warning);
-          });
     }
     if (myDuration.inSeconds < 1) {
       Get.snackbar('Анхааруулга', "Цаг дууслаа");

@@ -53,23 +53,41 @@ class SuccessView extends StatelessWidget {
                 // ),
               ],
             ),
-            Container(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom + 50),
-              width: double.infinity,
-              child: MainButton(
-                onPressed: () {
-                  print(controller.emergencyOrder.value);
-                  if (controller.emergencyOrder.value != null) {
-                    controller.getChannelToken(
-                        controller.emergencyOrder.value!, false, '');
-                  }
-                },
-                text: "Дуудлага эхлүүлэх",
-                // text: "Байршил харах",
-                child: const SizedBox(),
-              ),
-            ),
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(bottom: origin),
+                  width: double.infinity,
+                  child: MainButton(
+                    onPressed: () {
+                      Get.to(() => HomeView(),
+                          curve: Curves.bounceIn,
+                          duration: Duration(milliseconds: 500));
+                    },
+                    text: "Буцах",
+                    // text: "Байршил харах",
+                    child: const SizedBox(),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom + 50),
+                  width: double.infinity,
+                  child: MainButton(
+                    onPressed: () {
+                      print(controller.emergencyOrder.value);
+                      if (controller.emergencyOrder.value != null) {
+                        controller.getChannelToken(
+                            controller.emergencyOrder.value!, false, '');
+                      }
+                    },
+                    text: "Дуудлага эхлүүлэх",
+                    // text: "Байршил харах",
+                    child: const SizedBox(),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),
