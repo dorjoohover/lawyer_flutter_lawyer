@@ -43,9 +43,11 @@ class AdditionView extends StatelessWidget {
                       if (controller.serviceType.value == 'onlineEmergency') {
                         bool res = await controller.sendOrder();
                         if (res) {
-                          
                           Navigator.push(
-                              context, createRoute(const SuccessView()));
+                              context,
+                              createRoute(const SuccessView(
+                                type: 'onlineEmergency',
+                              )));
                         }
                       } else {
                         Navigator.push(

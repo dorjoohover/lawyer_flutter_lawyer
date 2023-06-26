@@ -42,7 +42,7 @@ class ClientRatingWidget extends GetView<PrimeController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              ratings[index].clientId ?? "",
+                              ratings[index].clientId?.firstName ?? "",
                               style: Theme.of(context).textTheme.displayMedium,
                             ),
                             space8,

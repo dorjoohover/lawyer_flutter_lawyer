@@ -126,25 +126,30 @@ class OrderTimeView extends GetView<PrimeController> {
                             }
                           }).toList()),
                         ))),
+                        controller.times.isEmpty
+                            ? const Center(
+                                child: Text('Уучлаарай хуульч цаггүй байна.'))
+                            : const SizedBox(),
                         space64,
                       ]),
                   Positioned(
                       bottom: MediaQuery.of(context).padding.bottom,
                       left: 16,
                       right: 16,
-                      child: MainButton(
-                        onPressed: () async {
-                          bool res = await controller.sendOrder();
-                          if (res) {
-                            Navigator.of(context).push(createRoute(AlertView(
-                                status: 'success',
-                                text:
-                                    'Таны сонгосон хуульчтайгаа ${controller.selectedDate.value.year} / ${controller.selectedDate.value.month} / ${controller.selectedDate.value.day}-ны өдрийн ${controller.selectedDate.value.hour}:00 дуудлагаа хийнэ үү ')));
-                          }
-                        },
-                        text: "Захиалга",
-                        child: const SizedBox(),
-                      ))
+                      child: Obx(() => MainButton(
+                            loading: controller.loading.value,
+                            onPressed: () async {
+                              bool res = await controller.sendOrder();
+                              if (res) {
+                                Navigator.of(context).push(createRoute(AlertView(
+                                    status: 'success',
+                                    text:
+                                        'Таны сонгосон хуульчтайгаа ${controller.selectedDate.value.year} / ${controller.selectedDate.value.month} / ${controller.selectedDate.value.day}-ны өдрийн ${controller.selectedDate.value.hour}:00 дуудлагаа хийнэ үү ')));
+                              }
+                            },
+                            text: "Захиалга",
+                            child: const SizedBox(),
+                          )))
                 ],
               )),
         ));

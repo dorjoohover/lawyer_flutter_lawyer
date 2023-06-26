@@ -7,8 +7,8 @@ import 'package:get/get.dart';
 import '../../../config/agora.config.dart' as config;
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
-
+  const HomeView({super.key, this.currentIndex = 0});
+  final int currentIndex;
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -26,8 +26,10 @@ class _HomeViewState extends State<HomeView> {
     const LawyerView(),
     const OrdersView(isLawyer: true),
     const SettingsView(),
+    const SizedBox(),
   ];
   int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -89,26 +91,26 @@ class _HomeViewState extends State<HomeView> {
                   )
                 ],
               ), (user) {
+
         return Scaffold(
           appBar: MainAppBar(
-            currentIndex: currentIndex,
+            currentIndex: controller.currentIndex.value,
             settingTap: () async {},
             // calendarTap: () async {
             //   await primeController.getOrderList(false, context);
             // },
-            settings: currentIndex == 0,
+            settings: controller.currentIndex.value == 0,
             calendar: false,
           ),
-          body: controller.currentUserType.value == 'lawyer' ||
-                  controller.currentUserType.value == 'our'
-              ? lawyerViews[currentIndex]
-              : views[currentIndex],
+          body: Obx(
+            () => controller.currentUserType.value == 'user'
+                ? views[controller.currentIndex.value]
+                : lawyerViews[controller.currentIndex.value],
+          ),
           bottomNavigationBar: MainNavigationBar(
-            currentIndex: currentIndex,
+            currentIndex: controller.currentIndex.value,
             changeIndex: (value) {
-              setState(() {
-                currentIndex = value;
-              });
+              controller.currentIndex.value = value;
             },
           ),
         );

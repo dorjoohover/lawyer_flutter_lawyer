@@ -31,6 +31,7 @@ class _LawyerAvailableDaysState extends State<LawyerAvailableDays> {
             child: LawyerServiceWidget(
               onPress: () async {
                 final res = await controller.addAvailableDays();
+                print(res);
                 if (res) {
                   Get.snackbar('Амжилттай', "asdf", backgroundColor: success);
                   Navigator.of(context).push(createRoute(const HomeView()));

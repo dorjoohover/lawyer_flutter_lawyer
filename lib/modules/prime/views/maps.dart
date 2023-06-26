@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:frontend/data/data.dart';
-import 'package:frontend/modules/home/controllers/controllers.dart';
+import 'package:frontend/modules/home/home.dart';
 import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
@@ -28,10 +28,7 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   final apiRepository = Get.find<ApiRepository>();
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
-
-  BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   void getCurrentLocation() async {
     Location location = Location();
     location.getLocation().then((location) {
@@ -41,8 +38,6 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
     });
     GoogleMapController googleMapController = await _controller.future;
     location.onLocationChanged.listen((newLoc) {
-      print(newLoc.latitude);
-      print(newLoc.longitude);
       if (widget.isLawyer) {
         apiRepository.updateLawyerLocation(
             LocationDto(lat: newLoc.latitude, lng: newLoc.longitude));
@@ -51,6 +46,18 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
         currentLocation = newLoc;
       });
     });
+  }
+
+  void moveCurrentLocation() async {
+    GoogleMapController googleMapController = await _controller.future;
+    googleMapController.animateCamera(CameraUpdate.newLatLngZoom(
+        LatLng(currentLocation!.latitude!, currentLocation!.longitude!), 14));
+  }
+
+  void moveOtherLocation() async {
+    GoogleMapController googleMapController = await _controller.future;
+    googleMapController.animateCamera(CameraUpdate.newLatLngZoom(
+        LatLng(widget.location.lat!, widget.location.lng!), 14));
   }
 
   void getPolyPoints() async {
@@ -70,22 +77,35 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   void initState() {
     getCurrentLocation();
     getPolyPoints();
+    addCustomIcon();
     print(widget.location.toJson());
     super.initState();
   }
 
+  void addCustomIcon() {
+    BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(), "assets/Location_marker.png")
+        .then(
+      (icon) {
+        setState(() {
+          markerIcon = icon;
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.put(HomeController());
     return Scaffold(
       appBar: PrimeAppBar(
           onTap: () {
-            Navigator.of(context).pop();
+            Get.to(() => const HomeView(),
+                curve: Curves.bounceIn, duration: Duration(milliseconds: 500));
           },
           title: 'Байршил харах'),
       body: currentLocation == null
           ? Center(
-              child: Text('loading'),
+              child: Text('Уншиж байна...'),
             )
           : Stack(
               children: [
@@ -111,6 +131,8 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
                             currentLocation!.longitude!),
                       ),
                       Marker(
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                            BitmapDescriptor.hueGreen),
                         markerId: MarkerId("source"),
                         position:
                             LatLng(widget.location.lat!, widget.location.lng!),
@@ -128,12 +150,84 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
                         right: origin,
                         child: MainButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Get.to(() => const HomeView(),
+                                curve: Curves.bounceIn,
+                                duration: Duration(milliseconds: 500));
                           },
                           // disabled: !controller.personal.value,
                           text: "Буцах",
                           child: const SizedBox(),
-                        ))
+                        )),
+                Positioned(
+                    bottom: MediaQuery.of(context).padding.bottom + 80,
+                    right: origin,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(100)),
+                      child: IconButton(
+                        onPressed: () {
+                          moveCurrentLocation();
+                        },
+                        icon: const Icon(
+                          Icons.my_location,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )),
+                Positioned(
+                    top: 20,
+                    left: origin,
+                    child: Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(100)),
+                          width: 10,
+                          height: 10,
+                        ),
+                        space8,
+                        Text(
+                          widget.isLawyer ? "Хэрэглэгч" : 'Хуульч',
+                        )
+                      ],
+                    )),
+                Positioned(
+                    top: 40,
+                    left: origin,
+                    child: Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(100)),
+                          width: 10,
+                          height: 10,
+                        ),
+                        space8,
+                        Text(
+                          !widget.isLawyer ? "Миний" : 'Хуульч',
+                        )
+                      ],
+                    )),
+                Positioned(
+                    bottom: MediaQuery.of(context).padding.bottom + 140,
+                    right: origin,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(100)),
+                      child: IconButton(
+                        onPressed: () {
+                          moveOtherLocation();
+                        },
+                        icon: const Icon(
+                          Icons.location_city,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ))
               ],
             ),
     );

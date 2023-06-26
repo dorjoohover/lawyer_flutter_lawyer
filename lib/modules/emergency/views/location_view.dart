@@ -82,7 +82,10 @@ class LocationViewState extends State<LocationView> {
                       bool res = await controller.sendOrder();
                       if (res) {
                         Navigator.push(
-                            context, createRoute(const SuccessView()));
+                            context,
+                            createRoute(SuccessView(
+                              type: 'fulfilledEmergency',
+                            )));
                       }
                     },
                     // disabled: !controller.personal.value,

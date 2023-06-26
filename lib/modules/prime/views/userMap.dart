@@ -3,13 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:frontend/data/data.dart';
-import 'package:frontend/modules/home/controllers/controllers.dart';
-import 'package:frontend/modules/modules.dart';
+import 'package:frontend/modules/home/home.dart';
 import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 
 class UserOrderMapPageView extends StatefulWidget {
   const UserOrderMapPageView(
@@ -56,18 +54,18 @@ class UserOrderMapPageViewState extends State<UserOrderMapPageView> {
       setState(() {
         lawyer = newLoc;
       });
-      
     });
 
     return Scaffold(
       appBar: PrimeAppBar(
           onTap: () {
-            Navigator.of(context).pop();
+            Get.to(() => const HomeView(),
+                curve: Curves.bounceIn, duration: Duration(milliseconds: 500));
           },
           title: 'Байршил харах'),
       body: lawyer.latitude == 0.0
           ? Center(
-              child: Text('loading'),
+              child: Text('Уншиж байна...'),
             )
           : Stack(
               children: [

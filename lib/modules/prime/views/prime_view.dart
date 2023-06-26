@@ -223,13 +223,14 @@ class PrimeView extends GetView<PrimeController> {
                                                       )),
                                                   space6,
                                                   Expanded(
-                                                      flex: 3,
-                                                      child: Text(
-                                                        s.title ?? '',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .displaySmall,
-                                                      )),
+                                                    flex: 4,
+                                                    child: Text(
+                                                      s.title ?? '',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .displaySmall,
+                                                    ),
+                                                  ),
                                                   space6,
                                                   Expanded(
                                                       child: Icon(
@@ -252,12 +253,21 @@ class PrimeView extends GetView<PrimeController> {
                             ),
                             TextButton(
                                 onPressed: () {},
-                                child: const Text(
-                                  'Бүгдийг харах',
-                                  style: TextStyle(
+                                child: Row(
+                                  children: const [
+                                    Text(
+                                      'Бүгдийг харах',
+                                      style: TextStyle(
+                                          color: gray,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
                                       color: gray,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400),
+                                      size: 14,
+                                    )
+                                  ],
                                 )),
                           ],
                         ),

@@ -17,6 +17,7 @@ class MainButton extends StatelessWidget {
       this.disabled = false,
       this.shadow = true,
       this.view = true,
+      this.loading = false,
       this.borderWidth = 0.0,
       this.borderColor = Colors.black,
       this.disabledColor = secondary})
@@ -36,13 +37,13 @@ class MainButton extends StatelessWidget {
   final double borderWidth;
   final Color disabledColor;
   final bool view;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
-    Color color = disabled ? disabledColor : this.color;
+    Color color =
+        loading || disabled ? this.color.withOpacity(0.6) : this.color;
 
-    final brightness = color.computeLuminance();
-    final isDark = brightness < 0.6;
     Color contentColor = this.contentColor ?? Colors.white;
 
     Widget body = AnimatedContainer(
@@ -63,21 +64,27 @@ class MainButton extends StatelessWidget {
           ),
           child: IconTheme(
             data: Theme.of(context).iconTheme.copyWith(color: contentColor),
-            child: text != null
-                ? Text(
-                    text!,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
+            child: loading
+                ? const CircularProgressIndicator(
+                    color: Colors.white,
                   )
-                : child,
+                : text != null
+                    ? Text(
+                        text!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      )
+                    : child,
           ),
         ),
       ),
     );
 
-    if (!disabled) body = TouchableScale(onPressed: onPressed, child: body);
+    if (!disabled && !loading) {
+      body = TouchableScale(onPressed: onPressed, child: body);
+    }
 
     return Material(
       color: Colors.transparent,

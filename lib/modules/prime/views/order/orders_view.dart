@@ -58,18 +58,12 @@ class _OrdersViewState extends State<OrdersView> {
                                 homeController.getChannelToken(
                                     e, widget.isLawyer, '');
                               } else {
+                                homeController.loading.value = true;
                                 if (e.serviceType == 'fulfilled') {
                                   Get.to(() => OrderTrackingPage(
                                       isLawyer: false,
                                       location: e.location ??
                                           LocationDto(lat: 0.0, lng: 0.0)));
-                                  Navigator.push(
-                                      context,
-                                      createRoute(OrderTrackingPage(
-                                          isLawyer: false,
-                                          location: e.location ??
-                                              LocationDto(
-                                                  lat: 0.0, lng: 0.0))));
                                 } else {
                                   Navigator.push(
                                       context,
@@ -79,6 +73,7 @@ class _OrdersViewState extends State<OrdersView> {
                                               LocationDto(
                                                   lat: 0.0, lng: 0.0))));
                                 }
+                                homeController.loading.value = false;
                               }
                             },
                             date: DateFormat('yyyy/MM/dd').format(

@@ -4,7 +4,7 @@ import 'package:frontend/shared/index.dart';
 class ServiceCard extends StatelessWidget {
   const ServiceCard({super.key, required this.text});
   final String text;
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -1,12 +1,15 @@
+import 'package:frontend/data/data.dart';
+
 class Rating {
-  String? clientId;
+  ClientId? clientId;
   String? comment;
   double? rating;
 
   Rating({this.clientId, this.comment, this.rating});
 
   Rating.fromJson(Map<String, dynamic> json) {
-    clientId = json['clientId'];
+    clientId =
+        json['client'] != null ? ClientId.fromJson(json['clientId']) : null;
     comment = json['comment'];
     rating = double.parse(json['rating'].toString());
   }

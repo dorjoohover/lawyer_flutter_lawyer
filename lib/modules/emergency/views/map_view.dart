@@ -35,7 +35,7 @@ class MapViewState extends State<MapView> {
     return Scaffold(
         body: currentLocation == null
             ? Center(
-                child: Text('loading'),
+                child: Text('Уншиж байна...'),
               )
             : Container(
                 padding: EdgeInsets.only(

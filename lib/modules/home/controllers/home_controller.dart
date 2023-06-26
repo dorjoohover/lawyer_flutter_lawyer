@@ -115,7 +115,7 @@ class HomeController extends GetxController
       if (channelName == 'string') {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();
       }
-      print('channelName $channelName');
+
       if (getOrder.lawyerToken == null ||
           getOrder.userToken == null ||
           getOrder.lawyerToken == 'string' ||

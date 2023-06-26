@@ -53,7 +53,7 @@ class MapsWidgetState extends State<MapsWidget> {
           title: widget.title),
       body: currentLocation == null
           ? const Center(
-              child: Text('loading'),
+              child: Text('Уншиж байна...'),
             )
           : Stack(
               children: [
@@ -68,7 +68,6 @@ class MapsWidgetState extends State<MapsWidget> {
                     mapType: MapType.hybrid,
                     markers: Set.from(marker),
                     onTap: (argument) {
-                      
                       _handleTap(argument);
                     },
                   ),

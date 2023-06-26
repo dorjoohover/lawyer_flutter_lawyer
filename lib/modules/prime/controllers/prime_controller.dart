@@ -229,17 +229,14 @@ class PrimeController extends GetxController {
         description: description,
       )));
       selectedSubService.value = sId;
-      // final lRes = await _apiRepository.suggestedLawyersByCategory(
-      //     selectedService.value, sId);
-      // lawyers.value = lRes;
+      final lRes = await _apiRepository.suggestedLawyersByCategory(
+          selectedService.value, sId);
+      lawyers.value = lRes;
 
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
-      Get.snackbar(
-        'Error',
-        e.response?.data ?? 'Something went wrong',
-      );
+  
     }
   }
 

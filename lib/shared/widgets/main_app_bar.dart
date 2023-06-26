@@ -32,7 +32,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final MainAxisAlignment mainAxisAlignment;
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-  List<String> lawyerTitles = ['Нүүр', 'Захиалгууд', 'Профайл'];
+  List<String> lawyerTitles = ['Нүүр', 'Захиалгууд', 'Профайл', ''];
   List<String> titles = ['Нүүр', 'Яаралтай', "Захиалгууд", "Профайл"];
   @override
   Widget build(BuildContext context) {
@@ -49,11 +49,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               Obx(() => controller.currentUserType.value == 'lawyer' ||
                       controller.currentUserType.value == 'our'
                   ? Text(
-                      lawyerTitles[currentIndex],
+                      lawyerTitles[controller.currentIndex.value],
                       style: Theme.of(context).textTheme.titleLarge,
                     )
                   : Text(
-                      titles[currentIndex],
+                      titles[controller.currentIndex.value],
                       style: Theme.of(context).textTheme.titleLarge,
                     )),
               Row(

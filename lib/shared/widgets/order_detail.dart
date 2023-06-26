@@ -185,34 +185,35 @@ class OrderDetailView extends GetView<PrimeController> {
                   ],
                 ),
               ),
-              MainButton(
-                height: 40,
-                padding: const EdgeInsets.symmetric(
-                    vertical: small, horizontal: origin),
-                borderRadius: 40,
-                onPressed: onTap,
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                        type == 'onlineEmergency'
-                            ? svgPhone
-                            : type == 'online'
-                                ? svgCamera
-                                : svgLocation,
-                        width: 13),
-                    space8,
-                    Text(
-                      type == 'online' || type == 'onlineEmergency'
-                          ? 'Дуудлага эхлүүлэх'
-                          : 'Байршил харах',
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelMedium!
-                          .copyWith(color: Colors.white),
-                    )
-                  ],
-                ),
-              )
+              Obx(() => MainButton(
+                    loading: controller.loading.value,
+                    height: 40,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: small, horizontal: origin),
+                    borderRadius: 40,
+                    onPressed: onTap,
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                            type == 'onlineEmergency'
+                                ? svgPhone
+                                : type == 'online'
+                                    ? svgCamera
+                                    : svgLocation,
+                            width: 13),
+                        space8,
+                        Text(
+                          type == 'online' || type == 'onlineEmergency'
+                              ? 'Дуудлага эхлүүлэх'
+                              : 'Байршил харах',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ))
             ],
           ),
         ],

@@ -85,7 +85,9 @@ class _SettingsViewState extends State<SettingsView> {
                     onTap: () {
                       if (homeController.user?.userType == 'lawyer' ||
                           homeController.user?.userType == 'our') {
-                        homeController.currentUserType.value = 'lawyer';
+                        homeController.currentUserType.value =
+                            homeController.user!.userType!;
+                        homeController.currentIndex.value = 0;
                       } else {
                         Navigator.of(context)
                             .push(createRoute(const PersonalView()));

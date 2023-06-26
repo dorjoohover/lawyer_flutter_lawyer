@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import '../../shared/index.dart';
 
 class MainNavigationBar extends StatelessWidget {
-  const MainNavigationBar({super.key, required this.changeIndex, required this.currentIndex});
+  const MainNavigationBar(
+      {super.key, required this.changeIndex, required this.currentIndex});
   final void Function(int value) changeIndex;
   final int currentIndex;
   @override
