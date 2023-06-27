@@ -14,7 +14,7 @@ class MainNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomeController homeController = Get.put(HomeController());
     return Obx(() => NavigationBar(
-          selectedIndex: currentIndex,
+          selectedIndex: homeController.currentIndex.value,
           onDestinationSelected: (value) => changeIndex(value),
           destinations: homeController.currentUserType.value == 'lawyer' ||
                   homeController.currentUserType.value == 'our'

@@ -8,7 +8,7 @@ const imageLogo = '${images}logo.png';
 
 const svgCalendar = '${svgs}calendar.svg';
 const svgSettings = '${svgs}settings.svg';
-const svgUser = '${svgs}user.svg';
+const svgUser = '${svgs}navigationBar/userActive.svg';
 const svgMicrophone = '${svgs}microphone.svg';
 const svgMicrophoneDisable = '${svgs}microphoneDisable.svg';
 const svgVolumeDisable = '${svgs}volumeDisable.svg';

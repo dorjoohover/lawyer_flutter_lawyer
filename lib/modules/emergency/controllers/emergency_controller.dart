@@ -66,7 +66,7 @@ class EmergencyController extends GetxController {
             reason.value,
             location.value!);
       } else {
-        homeController.createEmergencyOrder(
+        await homeController.createEmergencyOrder(
             "6454309e181b78295d2091b8",
             expiredTime,
             price,
@@ -74,7 +74,7 @@ class EmergencyController extends GetxController {
             reason.value,
             location.value!);
       }
-      loading.value = false;
+
       return true;
     } on DioError catch (e) {
       loading.value = false;
@@ -90,13 +90,9 @@ class EmergencyController extends GetxController {
   getChannelToken(Order order, BuildContext context, String? profileImg) async {
     try {
       loading.value = true;
-      print('a');
+
       Order getOrder = await _apiRepository.getChannel(order.sId!);
-      Navigator.of(context).push(createRoute(Scaffold(
-        body: WaitingChannelWidget(
-          isLawyer: false,
-        ),
-      )));
+
       String channelName = getOrder.channelName!;
       if (getOrder.channelName == 'string') {
         channelName = DateTime.now().millisecondsSinceEpoch.toString();

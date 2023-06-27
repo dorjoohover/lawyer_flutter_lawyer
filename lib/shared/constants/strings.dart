@@ -15,8 +15,8 @@ const userNavbar = [
     'label': 'Захиалга',
   },
   {
-    'icon': 'assets/svgs/navigationBar/home.svg',
-    'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
+    'icon': 'assets/svgs/navigationBar/user.svg',
+    'activeIcon': 'assets/svgs/navigationBar/userActive.svg',
     'label': 'Профайл',
   },
 ];
@@ -33,8 +33,8 @@ const lawyerNavbar = [
     'label': 'Захиалга',
   },
   {
-    'icon': 'assets/svgs/navigationBar/home.svg',
-    'activeIcon': 'assets/svgs/navigationBar/homeActive.svg',
+    'icon': 'assets/svgs/navigationBar/user.svg',
+    'activeIcon': 'assets/svgs/navigationBar/userActive.svg',
     'label': 'Профайл',
   },
 ];

@@ -47,8 +47,25 @@ class AuthController extends GetxController {
 
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
-  final pageController = PageController();
   final currentPage = 0.obs;
+  clear() {
+    lastName.value = '';
+    phone.value = '';
+    loginPhoneController.text = '';
+    loginPasswordController.text = '';
+    firstName.value = '';
+    registerNumber.value = '';
+    registerSymbol1.value = registerSymbols[0];
+    registerSymbol2.value = registerSymbols[0];
+    registerPhone.value = '';
+    registerPasswordIsVisible.value = false;
+    registerPassword.value = '';
+    registerPasswordRepeat.value = '';
+    registerPasswordController.text = '';
+    registerPasswordRepeatController.text = '';
+    currentPage.value = 0;
+  }
+
   showPassword() async {
     isVisible.value = !isVisible.value;
     await Future.delayed(const Duration(milliseconds: 500));
@@ -75,6 +92,7 @@ class AuthController extends GetxController {
       final res = await apiRepository.register(registerPhone.value,
           registerPassword.value, firstName.value, lastName.value);
       _saveTokens(res);
+
       Get.snackbar(
         'Бүртгэл амжилттай',
         " asdf",
@@ -82,6 +100,7 @@ class AuthController extends GetxController {
         backgroundColor: success,
         colorText: Colors.white,
       );
+      clear();
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;

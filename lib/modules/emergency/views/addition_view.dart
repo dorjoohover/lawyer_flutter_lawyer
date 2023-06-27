@@ -38,29 +38,25 @@ class AdditionView extends StatelessWidget {
                   bottom: MediaQuery.of(context).padding.bottom + 50,
                   left: 0,
                   right: 0,
-                  child: MainButton(
-                    onPressed: () async {
-                      if (controller.serviceType.value == 'onlineEmergency') {
-                        bool res = await controller.sendOrder();
-                        if (res) {
-                          Navigator.push(
-                              context,
-                              createRoute(const SuccessView(
-                                type: 'onlineEmergency',
-                              )));
-                        }
-                      } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LocationView()));
-                      }
-                    },
-                    text: controller.serviceType.value == 'onlineEmergency'
-                        ? "Төлбөр төлөх"
-                        : 'Үргэлжлүүлэх',
-                    child: const SizedBox(),
-                  ))
+                  child: Obx(() => MainButton(
+                        loading: controller.loading.value,
+                        onPressed: () async {
+                          if (controller.serviceType.value ==
+                              'onlineEmergency') {
+                            await controller.sendOrder();
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const LocationView()));
+                          }
+                        },
+                        text: controller.serviceType.value == 'onlineEmergency'
+                            ? "Төлбөр төлөх"
+                            : 'Үргэлжлүүлэх',
+                        child: const SizedBox(),
+                      )))
             ],
           ),
         ));

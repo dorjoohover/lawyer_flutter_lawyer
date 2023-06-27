@@ -38,7 +38,8 @@ class LawyerRegisterController extends GetxController {
   final degree = ''.obs;
 
   // service
-  final service = <String>[''].obs;
+  final service = <String>[].obs;
+  final serviceNames = <String>[''].obs;
   // decided
   final decidedCase = <Experiences>[].obs;
 
@@ -131,8 +132,16 @@ class LawyerRegisterController extends GetxController {
       if (homeController.user?.userServices != null &&
           homeController.user!.userServices!.isNotEmpty) {
         service.value = homeController.user!.userServices!;
+        serviceNames.value =
+            List.filled(homeController.user!.userServices!.length, '');
+        for (int i = 0; i < homeController.user!.userServices!.length; i++) {
+          Service ser = primeController.services.firstWhere((element) =>
+              element.sId == homeController.user!.userServices![i]);
+          serviceNames[i] = ser.title!;
+        }
       } else {
-        service.value = [''];
+        service.value = [primeController.services.first.sId ?? ''];
+        serviceNames.value = [primeController.services.first.title ?? ''];
       }
 
       loading.value = false;

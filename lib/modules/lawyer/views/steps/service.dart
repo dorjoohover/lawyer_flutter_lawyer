@@ -44,55 +44,62 @@ class _RegisterServiceViewState extends State<RegisterServiceView> {
               Obx(() => Column(
                     children: controller.service.map((e) {
                       int i = controller.service.indexOf(e);
-                      final val = primeController.services
-                              .firstWhere((element) => element.sId == e,
-                                  orElse: () => Service(title: ''))
-                              .title ??
-                          '';
-
+                      final val = controller.serviceNames[i];
                       if (val != '' || controller.service.length == 1) {
                         return Container(
-                          margin: const EdgeInsets.symmetric(vertical: small),
-                          child: DropdownLabel(
-                              expanded: true,
-                              value: val != '' ? val : services[0],
-                              onChange: (String? v) {
-                                String id = primeController.services
-                                        .firstWhere((s) => s.title == v)
-                                        .sId ??
-                                    primeController.services.first.sId!;
-                                if (!controller.service.contains(id)) {
-                                  if (controller.service.length == 1) {
-                                    if (controller.service.first == '') {
-                                      controller.service.add(id);
-                                      controller.service.remove('');
-                                    } else {
-                                      controller.service.first = id;
-                                    }
+                            margin: const EdgeInsets.symmetric(vertical: small),
+                            child: DropdownLabel(
+                                expanded: true,
+                                value: val != '' ? val : services[0],
+                                onChange: (String? v) {
+                                  if (controller.serviceNames
+                                      .where((p0) => v == p0)
+                                      .isEmpty) {
+                                    controller.service[i] = primeController
+                                        .services
+                                        .firstWhere(
+                                            (element) => element.title == v!)
+                                        .sId!;
+                                    controller.serviceNames[i] = v!;
                                   } else {
-                                    controller.service[i] = id;
+                                    Get.snackbar('Сонгогдсон байна', "");
                                   }
-                                } else {
-                                  Get.snackbar('Сонгогдсон байна', "");
-                                }
-                              },
-                              list: services),
-                        );
+                                },
+                                list: services));
                       } else {
                         return const SizedBox();
                       }
                     }).toList(),
                   )),
               space16,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Obx(() => Text(
+                      '${controller.service.length} / ${primeController.services.length}'))
+                ],
+              ),
+              space16,
               Obx(() => controller.service.length < 4
                   ? InputButton(
                       onPressed: () {
+                        String val = services
+                            .toSet()
+                            .difference(controller.serviceNames.toSet())
+                            .toList()[0];
+                        int i = services.indexOf(val);
                         controller.service
-                            .add(primeController.services.first.sId!);
+                            .add(primeController.services[i].sId!);
+                        controller.serviceNames.add(val);
                       },
                       icon: Icons.abc,
                       text: 'Өөр чиглэл нэмэх')
                   : const SizedBox()),
+              space16,
+              Text(
+                'Та ажилласан жилээ оруулна уу.',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               space32,
               Input(
                   autoFocus: false,

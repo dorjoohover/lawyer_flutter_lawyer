@@ -50,7 +50,7 @@ class HomeController extends GetxController
         socket.connect();
         socket.onConnect(
           (data) => {
-            if (user?.userType == 'our') {our.value = true}
+            if (user?.userType == 'our') {our.value = true},
           },
         );
 
@@ -66,10 +66,14 @@ class HomeController extends GetxController
         socket.on(('response_emergency_order'), ((data) {
           Order order = Order.fromJson(
               jsonDecode(jsonEncode(data)) as Map<String, dynamic>);
+
           if (our.value || order.lawyerId?.sId == user?.sId) {
             emergencyOrder.value = order;
-
             callkit(order);
+          }
+
+          if (order.clientId?.sId == user?.sId) {
+            getChannelToken(order, false, '');
           }
         }));
         socket.on(
@@ -79,10 +83,7 @@ class HomeController extends GetxController
                     {print(socket.id)}
                 }));
       }
-      isLoading.value = false;
     } on DioError catch (e) {
-      isLoading.value = false;
-
       Get.find<SharedPreferences>().remove(StorageKeys.token.name);
       update();
     }
@@ -177,10 +178,10 @@ class HomeController extends GetxController
       nameCaller: order.clientId?.firstName,
       appName: "Lawmax",
       avatar: "https://i.pravata.cc/100",
-      handle: order.clientId?.firstName,
+      handle: order.clientId?.lastName,
       type: 0,
-      textAccept: "Accept",
-      textDecline: "Decline",
+      textAccept: "Дуудлага авах",
+      textDecline: "Дуудлага цуцлах",
       duration: 30000,
       extra: {'userId': order.clientId?.sId},
       ios: const IOSParams(
@@ -261,14 +262,14 @@ class HomeController extends GetxController
     });
   }
 
-  createEmergencyOrder(
+  Future<bool> createEmergencyOrder(
     String lawyerId,
     int expiredTime,
     int price,
     String serviceType,
     String reason,
     LocationDto location,
-  ) {
+  ) async {
     Map data = {
       "userId": user!.sId,
       "date": DateTime.now().millisecondsSinceEpoch,
@@ -278,13 +279,14 @@ class HomeController extends GetxController
       "expiredTime": expiredTime,
       "serviceType": serviceType,
       "serviceStatus": "pending",
-      "channelName": "string",
+      "channelName": DateTime.now().millisecondsSinceEpoch,
       "channelToken": "string",
       "price": price,
       "lawyerToken": "string",
       "userToken": "string",
     };
     socket.emit('create_emergency_order', data);
+    return true;
   }
 
   // changeOrderStatus(String id, String status) {

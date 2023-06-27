@@ -204,11 +204,31 @@ class PrimeController extends GetxController {
     }
   }
 
-  getOrderList(bool isLawyer, BuildContext context) async {
+  getOrderList(bool isLawyer) async {
     try {
       // loading.value = true;
       final res = await _apiRepository.orderList();
-      orders.value = res;
+      if (homeController.user?.userType != 'user') {
+        List<Order> o = [];
+        for (Order order in res) {
+          if (order.lawyerId?.sId != homeController.user?.sId &&
+              homeController.currentUserType.value == 'user') {
+            o.add(order);
+          }
+
+          if (order.lawyerId?.sId == homeController.user?.sId &&
+              homeController.currentUserType.value != 'user') {
+            o.add(order);
+          }
+          if (order.lawyerId?.sId == null &&
+              homeController.user?.userType == 'our') {
+            o.add(order);
+          }
+        }
+        orders.value = o;
+      } else {
+        orders.value = res;
+      }
 
       // loading.value = false;
     } on DioError catch (e) {
@@ -236,7 +256,6 @@ class PrimeController extends GetxController {
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
-  
     }
   }
 
