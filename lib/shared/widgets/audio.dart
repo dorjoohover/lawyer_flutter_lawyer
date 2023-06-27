@@ -183,9 +183,10 @@ class _State extends State<AudioView> {
 
   _switchMicrophone() async {
     // await await _engine.muteLocalAudioStream(!openMicrophone);
-    await _engine.enableLocalAudio(!openMicrophone);
+
     setState(() {
       openMicrophone = !openMicrophone;
+      _engine.muteAllRemoteAudioStreams(!openMicrophone);
     });
   }
 

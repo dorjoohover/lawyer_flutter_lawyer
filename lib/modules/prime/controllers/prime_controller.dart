@@ -220,7 +220,7 @@ class PrimeController extends GetxController {
               homeController.currentUserType.value != 'user') {
             o.add(order);
           }
-          if (order.lawyerId?.sId == null &&
+          if ((order.lawyerId?.sId == null || order.lawyerId == null) &&
               homeController.user?.userType == 'our') {
             o.add(order);
           }

@@ -79,21 +79,21 @@ class _VideoViewState extends State<VideoView> {
     if (myDuration.inSeconds == 60) {
       Get.snackbar('Анхааруулга', "1 мин үлдлээ", icon: Icon(Icons.warning));
     }
-    if (myDuration.inSeconds < 1) {
-      Get.snackbar('Анхааруулга', "Цаг дууслаа");
-      _onCallEnd(context);
-      countdownTimer!.cancel();
-    }
+
     const reduceSecondsBy = 1;
-    setState(() {
-      final seconds = myDuration.inSeconds - reduceSecondsBy;
-      if (seconds < 0 && countdownTimer != null) {
-        _onCallEnd(context);
-        countdownTimer!.cancel();
-      } else {
-        myDuration = Duration(seconds: seconds);
-      }
-    });
+
+    if (mounted) {
+      setState(() {
+        final seconds = myDuration.inSeconds - reduceSecondsBy;
+        if (seconds < 0 && countdownTimer != null) {
+          Get.snackbar('Анхааруулга', "Цаг дууслаа");
+          _onCallEnd();
+          countdownTimer!.cancel();
+        } else {
+          myDuration = Duration(seconds: seconds);
+        }
+      });
+    }
   }
 
   @override
@@ -115,7 +115,7 @@ class _VideoViewState extends State<VideoView> {
 
   @override
   void dispose() async {
-    _onCallEnd(context);
+    _onCallEnd();
 
     super.dispose();
   }
@@ -185,7 +185,7 @@ class _VideoViewState extends State<VideoView> {
         ));
   }
 
-  Future<void> _onCallEnd(BuildContext context) async {
+  Future<void> _onCallEnd() async {
     try {
       await rtc.leaveChannel();
       if (controller.user?.userType == 'user') {
@@ -198,32 +198,33 @@ class _VideoViewState extends State<VideoView> {
                   text: '',
                   approveBtn: 'Илгээх',
                   cancelBtn: 'Болих',
+                  approve: () {
+                    Navigator.of(context).pop();
+                    controller.sendRate(
+                        order.lawyerId!.sId!, rating == 0 ? 1 : rating);
+                  },
+                  cancel: () {
+                    Navigator.of(context).pop();
+                  },
+                  color: success,
                   child: RatingBar.builder(
                     initialRating: 0,
                     minRating: 1,
                     direction: Axis.horizontal,
                     allowHalfRating: true,
                     itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => const Icon(
                       Icons.star,
                       color: Colors.amber,
                     ),
-                    onRatingUpdate: (rating) {
+                    onRatingUpdate: (r) {
                       setState(() {
-                        rating = rating;
+                        rating = r;
                       });
                     },
-                  ),
-                  approve: () {
-                    controller.sendRate(
-                        order.lawyerId!.sId!, rating == 0 ? 1 : rating);
-                    Get.to(() => const HomeView());
-                  },
-                  cancel: () async {},
-                  color: success);
-            });
-        Get.to(() => const HomeView());
+                  ));
+            }).then((value) => Get.to(() => const HomeView()));
       }
     } catch (error) {
       Get.snackbar(error.toString(), 'error');
@@ -310,11 +311,7 @@ class _VideoViewState extends State<VideoView> {
                   onPressed: () {
                     setState(() {
                       isMuted = !isMuted;
-                      if (!isMuted) {
-                        rtc.disableAudio();
-                      } else {
-                        rtc.enableAudio();
-                      }
+                      rtc.muteAllRemoteAudioStreams(isMuted);
                     });
                   },
                   shape: const CircleBorder(),
@@ -329,7 +326,7 @@ class _VideoViewState extends State<VideoView> {
                 RawMaterialButton(
                   constraints: const BoxConstraints(minWidth: 70),
                   onPressed: () {
-                    _onCallEnd(context);
+                    _onCallEnd();
                     setState(() {
                       if (countdownTimer != null) {
                         countdownTimer!.cancel();
