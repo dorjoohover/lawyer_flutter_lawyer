@@ -11,7 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class OrderTrackingPage extends StatefulWidget {
-  const OrderTrackingPage(
+const OrderTrackingPage(
       {Key? key, required this.isLawyer, required this.location, this.child})
       : super(key: key);
   final bool isLawyer;
