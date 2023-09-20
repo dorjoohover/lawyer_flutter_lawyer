@@ -74,10 +74,10 @@ class SuccessView extends StatelessWidget {
                   child: MainButton(
                     onPressed: () {
                       print(controller.emergencyOrder.value);
-                      // if (controller.emergencyOrder.value != null) {
-                      //   controller.getChannelToken(
-                      //       controller.emergencyOrder.value!, false, '');
-                      // }
+                      if (controller.emergencyOrder.value != null) {
+                        controller.getChannelToken(
+                            controller.emergencyOrder.value!, false, '');
+                      }
                     },
                     text: type == 'onlineEmergency'
                         ? "Дуудлага эхлүүлэх"

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/modules/auth/auth.dart';
-import 'package:frontend/modules/lawyer/controllers/controllers.dart';
 import 'package:frontend/modules/lawyer/lawyer.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';

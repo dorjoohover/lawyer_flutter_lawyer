@@ -8,11 +8,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 class DenpendencyInjection {
   static Future<void> init() async {
-    await Get.putAsync(() => LocalStorage().init());
-    Get.put<DioProvider>(DioProvider());
-    Get.put<ApiRepository>(ApiRepository(apiProvider: Get.find()),
-        permanent: true);
-    Get.put<Connectivity>(Connectivity(), permanent: true);
+    // await Get.putAsync(() => LocalStorage().init());
+    // Get.put<DioProvider>(DioProvider());
+    // Get.put<ApiRepository>(ApiRepository(apiProvider: Get.find()),
+    //     permanent: true);
+    // Get.put<Connectivity>(Connectivity(), permanent: true);
     // Get.put<NotificationController>(NotificationController(), permanent: true);
   }
 }

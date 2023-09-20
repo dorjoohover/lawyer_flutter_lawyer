@@ -9,7 +9,7 @@ import '../../../providers/providers.dart';
 import '../../../shared/index.dart';
 
 class PrimeController extends GetxController {
-  final _apiRepository = Get.find<ApiRepository>();
+  ApiRepository apiRepository = ApiRepository();
   final homeController = Get.put(HomeController());
 
   final fade = true.obs;
@@ -53,7 +53,7 @@ class PrimeController extends GetxController {
       List<int> primaryTimes = [];
 
       Time res =
-          (await _apiRepository.getTimeLawyer(selectedLawyer.value!.sId!));
+          (await apiRepository.getTimeLawyer(selectedLawyer.value!.sId!));
 
       if (res.timeDetail != null) {
         order.value?.serviceId ??= res.service;
@@ -75,8 +75,8 @@ class PrimeController extends GetxController {
         DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
         int day =
             DateTime(date.year, date.month, date.day).millisecondsSinceEpoch;
-        int nextDay = DateTime(date.year, date.month, date.day + 1)
-            .millisecondsSinceEpoch;
+        // int nextDay = DateTime(date.year, date.month, date.day + 1)
+        //     .millisecondsSinceEpoch;
         SortedTime sortedTime = times.firstWhere((t) => t.day == day,
             orElse: () => SortedTime(day: 0, time: []));
         if (sortedTime.day == 0) {
@@ -111,7 +111,7 @@ class PrimeController extends GetxController {
       loading.value = true;
       List<int> primaryTimes = [];
       final res =
-          await _apiRepository.getTimeService(order.value!.serviceId!, type);
+          await apiRepository.getTimeService(order.value!.serviceId!, type);
       res.forEach((time) {
         for (var element in time.timeDetail!) {
           if (!primaryTimes.contains(element.time!) &&
@@ -125,8 +125,8 @@ class PrimeController extends GetxController {
         DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
         int day =
             DateTime(date.year, date.month, date.day).millisecondsSinceEpoch;
-        int nextDay = DateTime(date.year, date.month, date.day + 1)
-            .millisecondsSinceEpoch;
+        // int nextDay = DateTime(date.year, date.month, date.day + 1)
+        //     .millisecondsSinceEpoch;
         SortedTime sortedTime = times.firstWhere((t) => t.day == day,
             orElse: () => SortedTime(day: 0, time: []));
         if (sortedTime.day == 0) {
@@ -162,7 +162,7 @@ class PrimeController extends GetxController {
       int price = 0;
       int expiredTime = 0;
       if (lawyerId == '') {
-        final lawyer = await _apiRepository.activeLawyer(
+        final lawyer = await apiRepository.activeLawyer(
             order.value!.serviceId!,
             order.value!.serviceType!,
             selectedDate.value.millisecondsSinceEpoch,
@@ -181,7 +181,7 @@ class PrimeController extends GetxController {
               .officeLocation;
         }
       }
-      await _apiRepository.createOrder(
+      await apiRepository.createOrder(
           selectedDate.value.millisecondsSinceEpoch,
           lawyerId,
           expiredTime,
@@ -207,7 +207,7 @@ class PrimeController extends GetxController {
   getOrderList(bool isLawyer, BuildContext context) async {
     try {
       // loading.value = true;
-      final res = await _apiRepository.orderList();
+      final res = await apiRepository.orderList();
       orders.value = res;
 
       // loading.value = false;
@@ -229,14 +229,13 @@ class PrimeController extends GetxController {
         description: description,
       )));
       selectedSubService.value = sId;
-      final lRes = await _apiRepository.suggestedLawyersByCategory(
+      final lRes = await apiRepository.suggestedLawyersByCategory(
           selectedService.value, sId);
       lawyers.value = lRes;
 
       loading.value = false;
-    } on DioError catch (e) {
+    } on DioException {
       loading.value = false;
-  
     }
   }
 
@@ -244,7 +243,7 @@ class PrimeController extends GetxController {
     try {
       loading.value = true;
       order.value?.serviceId = id;
-      final res = await _apiRepository.subServiceList(id);
+      final res = await apiRepository.subServiceList(id);
       subServices.value = res;
 
       loading.value = false;
@@ -262,11 +261,11 @@ class PrimeController extends GetxController {
   start() async {
     try {
       loading.value = true;
-      final res = await _apiRepository.servicesList();
+      final res = await apiRepository.servicesList();
       services.value = res;
-      final lRes = await _apiRepository.suggestedLawyers();
+      final lRes = await apiRepository.suggestedLawyers();
       lawyers.value = lRes;
-      final ordersRes = await _apiRepository.orderList();
+      final ordersRes = await apiRepository.orderList();
       orders.value = ordersRes;
 
       loading.value = false;

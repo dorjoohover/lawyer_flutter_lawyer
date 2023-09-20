@@ -14,7 +14,7 @@ class LawyerRegisterController extends GetxController {
   final _apiRepository = Get.find<ApiRepository>();
   final homeController = Get.put(HomeController());
   final primeController = Get.put(PrimeController());
-  final authController = Get.put(AuthController(apiRepository: Get.find()));
+  final authController = Get.put(AuthController());
   // permission
   final personal = false.obs;
   final education = false.obs;

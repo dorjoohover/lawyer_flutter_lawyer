@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/modules/auth/auth.dart';
-import 'package:frontend/modules/lawyer/controllers/controllers.dart';
 import 'package:frontend/modules/lawyer/lawyer.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
@@ -87,18 +83,17 @@ class _WorkViewState extends State<WorkView> {
                   ),
                   space32,
                   MainButton(
-                      width: double.infinity,
-                      onPressed: () {
-                        if (workKey.currentState!.validate()) {
-                          Navigator.push(
-                              context, createRoute(const OfficeView()));
-                        }
-                      },
-                      disabled: work == '' ||
-                          controller.lawyer.value?.workLocation?.lat == 0.0,
-                      text: "Үргэлжлүүлэх",
-                      child: const SizedBox(),
-                    
+                    width: double.infinity,
+                    onPressed: () {
+                      if (workKey.currentState!.validate()) {
+                        Navigator.push(
+                            context, createRoute(const OfficeView()));
+                      }
+                    },
+                    disabled: work == '' ||
+                        controller.lawyer.value?.workLocation?.lat == 0.0,
+                    text: "Үргэлжлүүлэх",
+                    child: const SizedBox(),
                   ),
                   space32,
                 ],

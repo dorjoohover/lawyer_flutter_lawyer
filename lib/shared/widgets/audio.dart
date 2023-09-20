@@ -43,7 +43,7 @@ class _State extends State<AudioView> {
       enableSpeakerphone = true,
       playEffect = false;
 
-  late TextEditingController _controller;
+  // late TextEditingController _controller;
   ChannelProfileType _channelProfileType =
       ChannelProfileType.channelProfileLiveBroadcasting;
   Timer? countdownTimer;

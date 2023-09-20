@@ -1,11 +1,11 @@
-import 'dart:async';
+// import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/emergency/emergency.dart';
 import 'package:frontend/modules/lawyer/lawyer.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class LocationView extends StatefulWidget {
@@ -15,7 +15,7 @@ class LocationView extends StatefulWidget {
 }
 
 class LocationViewState extends State<LocationView> {
-  final Completer<GoogleMapController> _controller = Completer();
+  // final Completer<GoogleMapController> _controller = Completer();
 
   LocationData? currentLocation;
   void getCurrentLocation() async {

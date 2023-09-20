@@ -272,10 +272,10 @@ class _VideoViewState extends State<VideoView> {
         children: [
           AgoraVideoView(
             controller: VideoViewController.remote(
-              rtcEngine: rtc,
-              canvas: VideoCanvas(uid: _remoteUid),
-              connection: RtcConnection(channelId: widget.channelName),
-            ),
+                rtcEngine: rtc,
+                canvas: VideoCanvas(uid: _remoteUid),
+                connection: RtcConnection(channelId: widget.channelName),
+                useFlutterTexture: isCamera),
           ),
           Positioned(
               bottom: MediaQuery.of(context).padding.bottom + 150,
@@ -307,14 +307,11 @@ class _VideoViewState extends State<VideoView> {
               children: [
                 RawMaterialButton(
                   constraints: BoxConstraints(minWidth: 70),
-                  onPressed: () {
+                  onPressed: () async {
+                    await rtc.enableLocalAudio(!isMuted);
+
                     setState(() {
                       isMuted = !isMuted;
-                      if (!isMuted) {
-                        rtc.disableAudio();
-                      } else {
-                        rtc.enableAudio();
-                      }
                     });
                   },
                   shape: const CircleBorder(),

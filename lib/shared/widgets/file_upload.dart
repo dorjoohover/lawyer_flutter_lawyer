@@ -7,8 +7,8 @@ class FileUploadView extends GetView<OrderController> {
   const FileUploadView({super.key});
   @override
   Widget build(BuildContext context) {
-    final primeController = Get.find<PrimeController>();
-    final controller = Get.put(OrderController());
+    // final primeController = Get.find<PrimeController>();
+    // final controller = Get.put(OrderController());
     return Scaffold(
       appBar: PrimeAppBar(
         title: 'Нэмэлт мэдээлэл',

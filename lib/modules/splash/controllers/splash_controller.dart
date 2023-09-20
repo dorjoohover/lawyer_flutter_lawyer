@@ -1,41 +1,21 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/routes/pages.dart';
+import 'package:frontend/routes/routes.dart';
 import 'package:frontend/shared/constants/enums.dart';
 import 'package:get/get.dart';
-// import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../../shared/index.dart';
 
 class SplashController extends GetxController {
   final token = Rxn<String?>();
   late Worker worker;
-  final storage = Get.find<SharedPreferences>();
-
+  final storage = GetStorage();
   @override
   void onInit() async {
     try {
       final isCurrent = await _isCurrentVersion();
       if (isCurrent == null) {
-        Get.bottomSheet(
-          Container(
-            height: 100,
-            color: Colors.red,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Center(
-                  child: Text('Check your internet connection and try again'),
-                ),
-                GestureDetector(
-                    onTap: _isCurrentVersion, child: const Text('Try again')),
-              ],
-            ),
-          ),
-        );
       } else {
         if (isCurrent) {
           _checkAuthStatus();
@@ -59,21 +39,14 @@ class SplashController extends GetxController {
   }
 
   logout() async {
-    final storage = Get.find<SharedPreferences>();
     await storage.remove(StorageKeys.token.name);
     token.value = null;
-    print('token deleted');
-    print(token);
   }
 
   Future<bool?> _isCurrentVersion() async {
     try {
-      return kDebugMode;
-    } on DioError catch (e) {
-      if (kDebugMode) {
-        print(e);
-        print(e.message);
-      }
+      return true;
+    } on DioException catch (e) {
       return null;
     } on Error catch (er) {
       print(er);
@@ -89,13 +62,13 @@ class SplashController extends GetxController {
       token,
       (tkn) {
         if (tkn != null) {
-          Get.offAllNamed(Routes.HOME);
+          Get.toNamed(Routes.home);
         } else {
-          Get.offAllNamed(Routes.AUTH);
+          Get.toNamed(Routes.auth);
         }
       },
     );
-    token.value = storage.getString(StorageKeys.token.name);
+    token.value = storage.read(StorageKeys.token.name);
   }
 
   // Future<String> getLocalVersion() async {

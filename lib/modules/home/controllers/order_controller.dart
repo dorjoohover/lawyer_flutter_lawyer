@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
 
 class OrderController extends GetxController {
-  final ApiRepository _apiRepository = Get.find();
+  // final ApiRepository _apiRepository = Get.find();
   final selectedDate = DateTime.now().obs;
   final selectedTime = "".obs;
   @override

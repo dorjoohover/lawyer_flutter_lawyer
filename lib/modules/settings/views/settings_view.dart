@@ -15,7 +15,7 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     final homeController = Get.put(HomeController());
-    final authController = Get.put(AuthController(apiRepository: Get.find()));
+    final authController = Get.put(AuthController());
     return SafeArea(
       child: Container(
         padding:

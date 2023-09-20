@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/providers/api_repository.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../../shared/index.dart';
 import '../../splash/splash.dart' show SplashController;
 
 class AuthController extends GetxController {
-  final ApiRepository apiRepository;
-  AuthController({required this.apiRepository});
-  final prefs = Get.find<SharedPreferences>();
+  ApiRepository apiRepository = ApiRepository();
+  final storage = GetStorage();
   final loading = false.obs;
   final isVisible = true.obs;
   get isLoading => loading.value;
@@ -128,8 +127,7 @@ class AuthController extends GetxController {
   // }
 
   Future<void> logout() async {
-    final prefs = Get.find<SharedPreferences>();
-    await prefs.remove(StorageKeys.token.name);
+    await storage.remove(StorageKeys.token.name);
     Get.find<SplashController>().token.value = null;
   }
 
@@ -142,8 +140,7 @@ class AuthController extends GetxController {
   }
 
   _saveTokens(LoginResponse res) async {
-    final prefs = Get.find<SharedPreferences>();
-    await prefs.setString(StorageKeys.token.name, res.token);
+    await storage.write(StorageKeys.token.name, res.token);
     Get.find<SplashController>().token.value = res.token;
   }
 }

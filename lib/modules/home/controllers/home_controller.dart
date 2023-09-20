@@ -8,16 +8,16 @@ import 'package:frontend/data/data.dart';
 import 'package:frontend/providers/api_repository.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../modules.dart';
 
 class HomeController extends GetxController
     with StateMixin<User>, WidgetsBindingObserver {
-  final ApiRepository _apiRepository = Get.find();
-  final authController = Get.put(AuthController(apiRepository: Get.find()));
-
+  ApiRepository apiRepository = ApiRepository();
+  final authController = Get.put(AuthController());
+  final storage = GetStorage();
   final showPerformanceOverlay = false.obs;
   final currentIndex = 0.obs;
   final isLoading = false.obs;
@@ -33,7 +33,7 @@ class HomeController extends GetxController
   Future<void> setupApp() async {
     isLoading.value = true;
     try {
-      user = await _apiRepository.getUser();
+      user = await apiRepository.getUser();
       change(user, status: RxStatus.success());
       if (user?.userType == 'lawyer') {
         currentUserType.value = 'lawyer';
@@ -66,10 +66,14 @@ class HomeController extends GetxController
         socket.on(('response_emergency_order'), ((data) {
           Order order = Order.fromJson(
               jsonDecode(jsonEncode(data)) as Map<String, dynamic>);
+
           if (our.value || order.lawyerId?.sId == user?.sId) {
             emergencyOrder.value = order;
 
             callkit(order);
+          }
+          if (order.clientId != null && order.clientId?.sId == user?.sId) {
+            emergencyOrder.value = order;
           }
         }));
         socket.on(
@@ -80,10 +84,10 @@ class HomeController extends GetxController
                 }));
       }
       isLoading.value = false;
-    } on DioError catch (e) {
+    } on DioException {
       isLoading.value = false;
 
-      Get.find<SharedPreferences>().remove(StorageKeys.token.name);
+      storage.remove(StorageKeys.token.name);
       update();
     }
   }
@@ -102,14 +106,14 @@ class HomeController extends GetxController
   }
 
   sendRate(String id, double rate) async {
-    await _apiRepository.sendRating(id, rate, '');
+    await apiRepository.sendRating(id, rate, '');
   }
 
   getChannelToken(Order order, bool isLawyer, String? profileImg) async {
     try {
       loading.value = true;
 
-      Order getOrder = await _apiRepository.getChannel(order.sId!);
+      Order getOrder = await apiRepository.getChannel(order.sId!);
 
       String channelName = getOrder.channelName!;
       if (channelName == 'string') {
@@ -120,7 +124,7 @@ class HomeController extends GetxController
           getOrder.userToken == null ||
           getOrder.lawyerToken == 'string' ||
           getOrder.userToken == 'string') {
-        getOrder = await _apiRepository.setChannel(
+        getOrder = await apiRepository.setChannel(
           user?.userType != 'user',
           order.sId!,
           channelName,

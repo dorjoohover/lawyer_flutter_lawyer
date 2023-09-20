@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
