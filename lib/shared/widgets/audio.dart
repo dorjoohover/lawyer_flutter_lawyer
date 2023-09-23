@@ -40,7 +40,7 @@ class _State extends State<AudioView> {
   String channelId = config.channelId;
   bool isJoined = false,
       openMicrophone = true,
-      enableSpeakerphone = true,
+      enableSpeakerphone = false,
       playEffect = false;
 
   // late TextEditingController _controller;
@@ -180,7 +180,7 @@ class _State extends State<AudioView> {
     setState(() {
       isJoined = false;
       openMicrophone = true;
-      enableSpeakerphone = true;
+      enableSpeakerphone = false;
       playEffect = false;
     });
     Get.to(() => const HomeView());

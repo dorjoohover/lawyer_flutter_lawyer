@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 import '../../../providers/providers.dart';
 
 class EmergencyController extends GetxController {
-  final _apiRepository = Get.find<ApiRepository>();
+  ApiRepository _apiRepository = ApiRepository();
   final homeController = Get.put(HomeController());
   //addition register
   final serviceType = "".obs;

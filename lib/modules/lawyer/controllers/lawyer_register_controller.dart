@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import '../../../providers/providers.dart';
 
 class LawyerRegisterController extends GetxController {
-  final _apiRepository = Get.find<ApiRepository>();
+  ApiRepository _apiRepository = ApiRepository();
   final homeController = Get.put(HomeController());
   final primeController = Get.put(PrimeController());
   final authController = Get.put(AuthController());

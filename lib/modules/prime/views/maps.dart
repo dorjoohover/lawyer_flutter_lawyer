@@ -25,7 +25,7 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   final Completer<GoogleMapController> _controller = Completer();
 
   static const LatLng destination = LatLng(37.33429383, -122.06600055);
-  final apiRepository = Get.find<ApiRepository>();
+  ApiRepository apiRepository = ApiRepository();
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
