@@ -112,7 +112,8 @@ class LawyerView extends GetView<LawyerController> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    primeController.getOrderList(true);
+                                    primeController.getOrderList(true, context);
+                                    homeController.currentIndex.value = 1;
                                   },
                                   child: Text(
                                     "Бүх захиалгууд",

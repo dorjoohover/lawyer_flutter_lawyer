@@ -3,7 +3,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:frontend/modules/modules.dart';
 import 'package:frontend/shared/index.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
 
 class PrimeView extends GetView<PrimeController> {
@@ -11,9 +10,9 @@ class PrimeView extends GetView<PrimeController> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PrimeController());
-    final homeController = Get.put(HomeController());
-    final authController = Get.put(AuthController(apiRepository: Get.find()));
-    final oCcy = NumberFormat("₮ #,##0", "en_US");
+    // final homeController = Get.put(HomeController());
+    // final authController = Get.put(AuthController(apiRepository: Get.find()));
+    // final oCcy = NumberFormat("₮ #,##0", "en_US");
     return SafeArea(
       child: RefreshIndicator(
           onRefresh: () async {

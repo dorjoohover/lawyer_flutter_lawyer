@@ -11,10 +11,10 @@ import 'package:get/get.dart';
 import '../../../providers/providers.dart';
 
 class LawyerRegisterController extends GetxController {
-  final _apiRepository = Get.find<ApiRepository>();
+  ApiRepository _apiRepository = ApiRepository();
   final homeController = Get.put(HomeController());
   final primeController = Get.put(PrimeController());
-  final authController = Get.put(AuthController(apiRepository: Get.find()));
+  final authController = Get.put(AuthController());
   // permission
   final personal = false.obs;
   final education = false.obs;
@@ -38,8 +38,7 @@ class LawyerRegisterController extends GetxController {
   final degree = ''.obs;
 
   // service
-  final service = <String>[].obs;
-  final serviceNames = <String>[''].obs;
+  final service = <String>[''].obs;
   // decided
   final decidedCase = <Experiences>[].obs;
 
@@ -132,16 +131,8 @@ class LawyerRegisterController extends GetxController {
       if (homeController.user?.userServices != null &&
           homeController.user!.userServices!.isNotEmpty) {
         service.value = homeController.user!.userServices!;
-        serviceNames.value =
-            List.filled(homeController.user!.userServices!.length, '');
-        for (int i = 0; i < homeController.user!.userServices!.length; i++) {
-          Service ser = primeController.services.firstWhere((element) =>
-              element.sId == homeController.user!.userServices![i]);
-          serviceNames[i] = ser.title!;
-        }
       } else {
-        service.value = [primeController.services.first.sId ?? ''];
-        serviceNames.value = [primeController.services.first.title ?? ''];
+        service.value = [''];
       }
 
       loading.value = false;

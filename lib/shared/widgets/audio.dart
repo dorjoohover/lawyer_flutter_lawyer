@@ -40,9 +40,10 @@ class _State extends State<AudioView> {
   String channelId = config.channelId;
   bool isJoined = false,
       openMicrophone = true,
-      enableSpeakerphone = true,
+      enableSpeakerphone = false,
       playEffect = false;
 
+  // late TextEditingController _controller;
   ChannelProfileType _channelProfileType =
       ChannelProfileType.channelProfileLiveBroadcasting;
   Timer? countdownTimer;
@@ -101,9 +102,8 @@ class _State extends State<AudioView> {
 
   Future<void> _dispose() async {
     await _engine.leaveChannel();
+
     await _engine.release();
-    Get.to(() => const HomeView(),
-        curve: Curves.bounceIn, duration: Duration(milliseconds: 500));
   }
 
   Future<void> _initEngine() async {
@@ -122,6 +122,9 @@ class _State extends State<AudioView> {
             '[onJoinChannelSuccess] connection: ${connection.toJson()} elapsed: $elapsed');
         logs.add(
             '[onJoinChannelSuccess] connection: ${connection.toJson()} elapsed: $elapsed');
+        setState(() {
+          isJoined = true;
+        });
       },
       onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
         debugPrint("remote user $remoteUid joined");
@@ -139,7 +142,9 @@ class _State extends State<AudioView> {
             '[onLeaveChannel] connection: ${connection.toJson()} stats: ${stats.toJson()}');
         logs.add(
             '[onLeaveChannel] connection: ${connection.toJson()} stats: ${stats.toJson()}');
-
+        setState(() {
+          isJoined = false;
+        });
         stopTimer();
       },
     ));
@@ -173,20 +178,19 @@ class _State extends State<AudioView> {
       countdownTimer!.cancel();
     }
     setState(() {
+      isJoined = false;
       openMicrophone = true;
-      enableSpeakerphone = true;
+      enableSpeakerphone = false;
       playEffect = false;
     });
-    Get.to(() => const HomeView(),
-        curve: Curves.bounceIn, duration: Duration(milliseconds: 500));
+    Get.to(() => const HomeView());
   }
 
   _switchMicrophone() async {
     // await await _engine.muteLocalAudioStream(!openMicrophone);
-
+    await _engine.enableLocalAudio(!openMicrophone);
     setState(() {
       openMicrophone = !openMicrophone;
-      _engine.muteAllRemoteAudioStreams(!openMicrophone);
     });
   }
 
@@ -291,7 +295,7 @@ class _State extends State<AudioView> {
                             width: 36,
                           ),
                           GestureDetector(
-                            onTap: _switchSpeakerphone,
+                            onTap: isJoined ? _switchSpeakerphone : null,
                             child: Container(
                               width: 60,
                               height: 60,
@@ -317,7 +321,7 @@ class _State extends State<AudioView> {
             )
           : Center(
               child: Text(
-                '${widget.uid == 2 ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл түр хүлээнэ үү ',
+                '${widget.uid == 1 ? 'Хэрэглэгч' : 'Хуульч'} орж иртэл түр хүлээнэ үү ',
                 textAlign: TextAlign.center,
               ),
             ),

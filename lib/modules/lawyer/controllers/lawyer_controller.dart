@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import '../../../providers/providers.dart';
 
 class LawyerController extends GetxController {
-  final _apiRepository = Get.find<ApiRepository>();
+  ApiRepository _apiRepository = ApiRepository();
   final homeController = Get.put(HomeController());
   //addition register
 
@@ -57,7 +57,7 @@ class LawyerController extends GetxController {
     try {
       loading.value = true;
 
-      // await homeController.setupApp();
+      await homeController.setupApp();
       // selectedAvailableDays.value = homeController.user?.availableDays ?? [];
       // selectedDate.value = DateTime.parse(
       //     homeController.user?.availableDays?.first.date ??

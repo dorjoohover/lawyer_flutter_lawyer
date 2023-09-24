@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/data/data.dart';
 import 'package:frontend/providers/api_repository.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../../shared/index.dart';
 import '../../splash/splash.dart' show SplashController;
 
 class AuthController extends GetxController {
-  final ApiRepository apiRepository;
-  AuthController({required this.apiRepository});
-  final prefs = Get.find<SharedPreferences>();
+  ApiRepository apiRepository = ApiRepository();
+  final storage = GetStorage();
   final loading = false.obs;
   final isVisible = true.obs;
   get isLoading => loading.value;
@@ -47,25 +46,8 @@ class AuthController extends GetxController {
 
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
+  final pageController = PageController();
   final currentPage = 0.obs;
-  clear() {
-    lastName.value = '';
-    phone.value = '';
-    loginPhoneController.text = '';
-    loginPasswordController.text = '';
-    firstName.value = '';
-    registerNumber.value = '';
-    registerSymbol1.value = registerSymbols[0];
-    registerSymbol2.value = registerSymbols[0];
-    registerPhone.value = '';
-    registerPasswordIsVisible.value = false;
-    registerPassword.value = '';
-    registerPasswordRepeat.value = '';
-    registerPasswordController.text = '';
-    registerPasswordRepeatController.text = '';
-    currentPage.value = 0;
-  }
-
   showPassword() async {
     isVisible.value = !isVisible.value;
     await Future.delayed(const Duration(milliseconds: 500));
@@ -92,7 +74,6 @@ class AuthController extends GetxController {
       final res = await apiRepository.register(registerPhone.value,
           registerPassword.value, firstName.value, lastName.value);
       _saveTokens(res);
-
       Get.snackbar(
         'Бүртгэл амжилттай',
         " asdf",
@@ -100,7 +81,6 @@ class AuthController extends GetxController {
         backgroundColor: success,
         colorText: Colors.white,
       );
-      clear();
       loading.value = false;
     } on DioError catch (e) {
       loading.value = false;
@@ -147,8 +127,7 @@ class AuthController extends GetxController {
   // }
 
   Future<void> logout() async {
-    final prefs = Get.find<SharedPreferences>();
-    await prefs.remove(StorageKeys.token.name);
+    await storage.remove(StorageKeys.token.name);
     Get.find<SplashController>().token.value = null;
   }
 
@@ -161,8 +140,7 @@ class AuthController extends GetxController {
   }
 
   _saveTokens(LoginResponse res) async {
-    final prefs = Get.find<SharedPreferences>();
-    await prefs.setString(StorageKeys.token.name, res.token);
+    await storage.write(StorageKeys.token.name, res.token);
     Get.find<SplashController>().token.value = res.token;
   }
 }

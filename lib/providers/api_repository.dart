@@ -1,17 +1,43 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/data/data.dart';
-import 'package:frontend/providers/dio_provider.dart';
+import 'package:frontend/shared/index.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-class ApiRepository {
-  ApiRepository({required this.apiProvider});
+class ApiRepository extends GetxService {
+  final isProduction = const bool.fromEnvironment('dart.vm.product');
+  var dio = createDio();
+  static var storage = GetStorage();
+  final token = storage.read(StorageKeys.token.name);
+  static Dio createDio() {
+    Dio dio = Dio(BaseOptions(
+      baseUrl: 'https://lawyernestjs-production.up.railway.app',
+    ));
+    dio.interceptors.addAll(
+      [
+        InterceptorsWrapper(
+          onRequest: (options, handler) async {
+            // get token from storage
+            final token = storage.read(StorageKeys.token.name);
 
-  final DioProvider apiProvider;
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            } else {}
+            return handler.next(options);
+          },
+        ),
+        // RetryOnConnectionChangeInterceptor()
+        // LogInterceptor(responseBody: true),
+      ],
+    );
+    return dio;
+  }
 
   Future<LoginResponse> login(String phone, String password) async {
     final data = {"phone": phone, "password": password};
-    final res = await apiProvider.post('/auth/login', data: data);
+    final res = await dio.post('/auth/login', data: data);
     print('asdf');
-    return LoginResponse.fromJson(res);
+    return LoginResponse.fromJson(res.data);
   }
 
   Future<LoginResponse> register(
@@ -23,16 +49,15 @@ class ApiRepository {
       "lastName": lastName,
       "userType": "lawyer"
     };
-    final res = await apiProvider.post('/auth/register', data: data);
-    return LoginResponse.fromJson(res);
+    final res = await dio.post('/auth/register', data: data);
+    return LoginResponse.fromJson(res.data);
   }
 
   Future<User> getUser() async {
     try {
-      final response =
-          await apiProvider.get('/user/me') as Map<String, dynamic>;
+      final response = await dio.get('/user/me');
 
-      return User.fromJson(response);
+      return User.fromJson(response.data);
     } on Exception {
       rethrow;
     }
@@ -40,9 +65,9 @@ class ApiRepository {
 
   Future<List<Service>> servicesList() async {
     try {
-      final response = await apiProvider.get('/service');
+      final response = await dio.get('/service');
       final services =
-          (response as List).map((e) => Service.fromJson(e)).toList();
+          (response.data as List).map((e) => Service.fromJson(e)).toList();
       return services;
     } on Exception {
       rethrow;
@@ -51,9 +76,9 @@ class ApiRepository {
 
   Future<List<SubService>> subServiceList(String id) async {
     try {
-      final response = await apiProvider.get('/service/$id');
+      final response = await dio.get('/service/$id');
       final services =
-          (response as List).map((e) => SubService.fromJson(e)).toList();
+          (response.data as List).map((e) => SubService.fromJson(e)).toList();
       return services;
     } on Exception {
       rethrow;
@@ -62,8 +87,9 @@ class ApiRepository {
 
   Future<List<User>> suggestedLawyers() async {
     try {
-      final response = await apiProvider.get('/user/suggest/lawyer');
-      final lawyers = (response as List).map((e) => User.fromJson(e)).toList();
+      final response = await dio.get('/user/suggest/lawyer');
+      final lawyers =
+          (response.data as List).map((e) => User.fromJson(e)).toList();
       return lawyers;
     } on Exception {
       rethrow;
@@ -73,9 +99,9 @@ class ApiRepository {
   Future<List<User>> suggestedLawyersByCategory(
       String id, String cateId) async {
     try {
-      final response =
-          await apiProvider.get('/user/suggest/lawyer/$id/$cateId');
-      final lawyers = (response as List).map((e) => User.fromJson(e)).toList();
+      final response = await dio.get('/user/suggest/lawyer/$id/$cateId');
+      final lawyers =
+          (response.data as List).map((e) => User.fromJson(e)).toList();
       return lawyers;
     } on Exception {
       rethrow;
@@ -122,8 +148,7 @@ class ApiRepository {
         // here
       };
 
-      final response =
-          await apiProvider.post('/order', data: data) as Map<String, dynamic>;
+      await dio.post('/order', data: data);
       return true;
     } on Exception {
       rethrow;
@@ -141,7 +166,7 @@ class ApiRepository {
         "message": comment,
       };
 
-      await apiProvider.post('/user/$id', data: data);
+      await dio.post('/user/$id', data: data);
 
       return false;
     } on Exception {
@@ -176,8 +201,7 @@ class ApiRepository {
       };
       print(data);
 
-      final response = await apiProvider.post('/order/emergency', data: data)
-          as Map<String, dynamic>;
+      await dio.post('/order/emergency', data: data);
       return true;
     } on Exception {
       rethrow;
@@ -199,7 +223,6 @@ class ApiRepository {
         'officeLocation': user.officeLocation,
         'experiences': user.experiences,
         'registerNumber': user.registerNumber,
-        'profileImg': user.profileImg,
         'userServices': user.userServices,
         'workLocationString': user.workLocationString,
         'officeLocationString': user.officeLocationString,
@@ -207,8 +230,8 @@ class ApiRepository {
         'phoneNumbers': user.phoneNumbers,
         'profileImg': user.profileImg ?? '',
       };
-      final res = await apiProvider.patch('/user', data: data) as String;
-      print(res);
+      await dio.patch('/user', data: data);
+
       return true;
     } on Exception {
       rethrow;
@@ -223,9 +246,9 @@ class ApiRepository {
         "timeDetail": time.timeDetail,
       };
 
-      final response = await apiProvider.post('/time', data: data);
+      final response = await dio.post('/time', data: data);
 
-      if (response != null) {
+      if (response.data != null) {
         return true;
       } else {
         return false;
@@ -239,9 +262,9 @@ class ApiRepository {
       String id, String type, int t, bool isActive) async {
     try {
       print('/time/active/$t/$id/$type/$isActive');
-      final response =
-          await apiProvider.get('/time/active/$t/$id/$type/$isActive');
-      final time = (response as List).map((e) => Time.fromJson(e)).toList();
+      final response = await dio.get('/time/active/$t/$id/$type/$isActive');
+      final time =
+          (response.data as List).map((e) => Time.fromJson(e)).toList();
       return time;
     } on Exception {
       rethrow;
@@ -254,15 +277,13 @@ class ApiRepository {
     String channelName,
   ) async {
     try {
-      print('token channelName $channelName');
       Agora token = await getAgoraToken(channelName, isLawyer ? 2 : 1);
-      print(token.rtcToken);
 
-      final response = await apiProvider.post(
+      final response = await dio.post(
           '/order/token/$orderId/$channelName/${isLawyer.toString()}',
-          data: {'token': token.rtcToken}) as Map<String, dynamic>;
-      print(response);
-      return Order.fromJson(response);
+          data: {'token': token.rtcToken});
+
+      return Order.fromJson(response.data);
     } on Exception {
       rethrow;
     }
@@ -270,11 +291,11 @@ class ApiRepository {
 
   Future<Order> getChannel(String id) async {
     try {
-      final response = await apiProvider.get(
+      final response = await dio.get(
         '/order/user/$id',
-      ) as Map<String, dynamic>;
+      );
 
-      return Order.fromJson(response);
+      return Order.fromJson(response.data);
     } on Exception {
       rethrow;
     }
@@ -282,8 +303,10 @@ class ApiRepository {
 
   Future<List<Order>> orderList() async {
     try {
-      final response = await apiProvider.get('/order/user');
-      final orders = (response as List).map((e) => Order.fromJson(e)).toList();
+      final response = await dio.get('/order/user');
+      final orders =
+          (response.data as List).map((e) => Order.fromJson(e)).toList();
+       
       return orders;
     } on Exception {
       rethrow;
@@ -292,13 +315,13 @@ class ApiRepository {
 
   Future<Time> getTimeLawyer(String id) async {
     try {
-      final response = await apiProvider.get(
+      final response = await dio.get(
         '/time/lawyer/$id',
       );
-      if (response == null) {
+      if (response.data == null) {
         return Time(sId: '');
       } else {
-        return Time.fromJson(response);
+        return Time.fromJson(response.data);
       }
     } on Exception {
       rethrow;
@@ -307,13 +330,13 @@ class ApiRepository {
 
   Future<LocationDto> getLawyerLocation(String id) async {
     try {
-      final response = await apiProvider.get(
+      final response = await dio.get(
         '/user/lawyer/location/$id',
       );
-      if (response == null) {
+      if (response.data == null) {
         return LocationDto(lat: 0.0, lng: 0.0);
       } else {
-        return LocationDto.fromJson(response);
+        return LocationDto.fromJson(response.data);
       }
     } on Exception catch (e) {
       print(e);
@@ -327,7 +350,7 @@ class ApiRepository {
         "lat": location.lat,
         "lng": location.lng,
       };
-      await apiProvider.patch('/user/location', data: data);
+      await dio.patch('/user/location', data: data);
 
       return true;
     } on Exception {
@@ -337,8 +360,9 @@ class ApiRepository {
 
   Future<List<Time>> getTimeService(String service, String type) async {
     try {
-      final response = await apiProvider.get('/time/service/$service/$type');
-      final times = (response as List).map((e) => Time.fromJson(e)).toList();
+      final response = await dio.get('/time/service/$service/$type');
+      final times =
+          (response.data as List).map((e) => Time.fromJson(e)).toList();
       return times;
     } on Exception {
       rethrow;

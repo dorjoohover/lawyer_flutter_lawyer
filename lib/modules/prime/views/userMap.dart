@@ -24,7 +24,7 @@ class UserOrderMapPageViewState extends State<UserOrderMapPageView> {
   final Completer<GoogleMapController> _controller = Completer();
 
   LatLng lawyer = LatLng(0.0, 0.0);
-  final apiRepository = Get.find<ApiRepository>();
+  ApiRepository apiRepository = ApiRepository();
   List<LatLng> polylineCoordinates = [];
 
   void getPolyPoints() async {
